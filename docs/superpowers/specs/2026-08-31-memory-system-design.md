@@ -30,7 +30,7 @@
 
 | 维度 | 结论 |
 |---|---|
-| 持久化机制 | LangGraph `thread_id` + `messages` 通道（`add_messages` reducer） |
+| 持久化机制 | LangGraph `thread_id` + `messages` 通道（自定义 `concat_messages` reducer 保持 dict 形态） |
 | 存储后端 | `InMemorySaver`（零新依赖；重启后历史丢失可接受，留待历史回看阶段切 SQLite） |
 | 改写节点位置 | `START → rewrite_query → classify_intent`，必须在意图识别之前 |
 
@@ -41,8 +41,7 @@
 修改 `app/agent/state.py`：
 
 ```python
-from typing import Annotated
-from langgraph.graph.message import add_messages
+from typing import Annotated, Literal
 
 class ChatMessageState(TypedDict):
     """跨轮累积的一条会话消息"""
@@ -50,9 +49,20 @@ class ChatMessageState(TypedDict):
     content: str                 # 文本内容；数据问题的 assistant 内容为结果精简摘要
     sql: str | None              # 数据问题：本轮生成的 SQL（user 消息为 None）
 
+def concat_messages(
+    left: list[ChatMessageState] | None,
+    right: list[ChatMessageState] | None,
+) -> list[ChatMessageState]:
+    """拼接两轮消息，保持 dict 形态。
+
+    不用 LangGraph 内置 add_messages：它会把 dict 转成 BaseMessage，
+    导致自定义的 sql 字段丢失。
+    """
+    return (left or []) + (right or [])
+
 class DataAgentState(TypedDict):
     query: str                                   # 当前轮原始问题（每轮覆盖）
-    messages: Annotated[list[ChatMessageState], add_messages]  # 跨轮唯一累积通道
+    messages: Annotated[list[ChatMessageState], concat_messages]  # 跨轮唯一累积通道
     resolved_query: str                          # 改写后的独立问题
     # 以下字段不变：intent / message / suggested_queries / keywords /
     # retrieved_* / table_infos / metric_infos / date_info / db_info / sql / error
