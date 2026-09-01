@@ -28,7 +28,7 @@ async def recall_column(state: DataAgentState, runtime: Runtime[DataAgentContext
     try:
         # state 保存图内业务中间结果：原始问题和上游抽取出的关键词
         keywords = state["keywords"]
-        query = state["query"]
+        query = state["resolved_query"]
         # context 保存外部运行时工具：向量仓储和 Embedding 客户端
         column_qdrant_repository = runtime.context["column_qdrant_repository"]
         embedding_client = runtime.context["embedding_client"]

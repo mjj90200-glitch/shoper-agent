@@ -27,7 +27,7 @@ async def recall_value(state: DataAgentState, runtime: Runtime[DataAgentContext]
 
     try:
         # query 用于让 LLM 生成字段值层面的检索词，keywords 来自上游通用关键词抽取
-        query = state["query"]
+        query = state["resolved_query"]
         keywords = state["keywords"]
         # 字段取值更关注真实文本命中，因此这里走 Elasticsearch，而不是向量检索
         value_es_repository = runtime.context["value_es_repository"]

@@ -97,7 +97,7 @@ async def classify_intent(state: DataAgentState, runtime: Runtime[DataAgentConte
     writer({"type": "progress", "step": step, "status": "running"})
 
     try:
-        query = state["query"]
+        query = state["resolved_query"]
         intent = classify_by_rule(query)
 
         if intent is None:

@@ -7,11 +7,28 @@ State 是 LangGraph 各节点之间传递和更新的共享数据
 SQL 生成闭环会继续写入候选 SQL 以及校验错误信息，用于控制校正或执行分支
 """
 
-from typing import Literal, TypedDict
+from typing import Annotated, Literal, TypedDict
 
 from app.entities.column_info import ColumnInfo
 from app.entities.metric_info import MetricInfo
 from app.entities.value_info import ValueInfo
+
+
+class ChatMessageState(TypedDict):
+    """一条可用于后续数据追问改写的会话消息。"""
+
+    role: Literal["user", "assistant"]
+    content: str
+    sql: str | None
+
+
+def concat_messages(
+    left: list[ChatMessageState] | None,
+    right: list[ChatMessageState] | None,
+) -> list[ChatMessageState]:
+    """累积会话消息，并保留 SQL 这一自定义字段。"""
+
+    return (left or []) + (right or [])
 
 
 class MetricInfoState(TypedDict):
@@ -63,7 +80,11 @@ class DBInfoState(TypedDict):
 class DataAgentState(TypedDict):
     """一次问数链路中的核心状态"""
 
-    query: str  # 用户输入的查询
+    query: str  # 用户本轮原始输入，用于日志和前端展示
+    # 仅保存成功数据问数的历史，供后续追问改写使用。
+    messages: Annotated[list[ChatMessageState], concat_messages]
+    # 由 rewrite_query 补全上下文后的独立问题，供下游节点统一消费。
+    resolved_query: str
     # 在进入 RAG 和 SQL 链路前确定用户请求的类型，用于控制图的入口分流。
     intent: Literal["data_query", "capability_help", "out_of_scope"]
     # 非数据问题的最终文本回复及推荐示例问题。

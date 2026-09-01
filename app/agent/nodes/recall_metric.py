@@ -27,7 +27,7 @@ async def recall_metric(state: DataAgentState, runtime: Runtime[DataAgentContext
 
     try:
         # query 用于让 LLM 生成指标层检索词，keywords 来自上游的通用关键词抽取
-        query = state["query"]
+        query = state["resolved_query"]
         keywords = state["keywords"]
         # 指标召回使用向量检索，需要 Embedding 客户端和指标 Qdrant 仓储配合
         embedding_client = runtime.context["embedding_client"]

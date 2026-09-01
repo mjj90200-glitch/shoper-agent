@@ -17,7 +17,7 @@ export type ResultEvent = {
 
 export type AssistantMessageEvent = {
   type: "assistant_message";
-  category: "capability_help" | "out_of_scope";
+  category: "non_data";
   message: string;
   suggested_queries: string[];
 };

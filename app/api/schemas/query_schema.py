@@ -5,11 +5,15 @@
 字段校验和 OpenAPI 文档生成交给 Pydantic 与 FastAPI 完成。
 """
 
-from pydantic import BaseModel
+from uuid import UUID
+
+from pydantic import BaseModel, Field
 
 
 class QuerySchema(BaseModel):
     """`/api/query` 请求体，承载用户输入的自然语言问题"""
 
     # 前端请求体中的 query 字段，例如 {"query": "统计华北地区销售额"}
-    query: str
+    query: str = Field(min_length=1, max_length=1000)
+    # 由前端为一个聊天会话生成并稳定透传。
+    session_id: UUID

@@ -9,6 +9,7 @@
 
 import asyncio
 
+from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.constants import END, START
 from langgraph.graph import StateGraph
 
@@ -24,7 +25,8 @@ from app.agent.nodes.merge_retrieved_info import merge_retrieved_info
 from app.agent.nodes.recall_column import recall_column
 from app.agent.nodes.recall_metric import recall_metric
 from app.agent.nodes.recall_value import recall_value
-from app.agent.nodes.respond_non_data import respond_capability, respond_out_of_scope
+from app.agent.nodes.respond_non_data import respond_non_data
+from app.agent.nodes.rewrite_query import rewrite_query
 from app.agent.nodes.run_sql import run_sql
 from app.agent.nodes.validate_sql import validate_sql
 from app.agent.state import DataAgentState
@@ -46,8 +48,8 @@ graph_builder = StateGraph(state_schema=DataAgentState, context_schema=DataAgent
 
 # 注册节点：每个节点负责问数链路中的一个清晰步骤
 graph_builder.add_node("classify_intent", classify_intent)
-graph_builder.add_node("respond_capability", respond_capability)
-graph_builder.add_node("respond_out_of_scope", respond_out_of_scope)
+graph_builder.add_node("rewrite_query", rewrite_query)
+graph_builder.add_node("respond_non_data", respond_non_data)
 graph_builder.add_node("extract_keywords", extract_keywords)
 graph_builder.add_node("recall_column", recall_column)
 graph_builder.add_node("recall_value", recall_value)
@@ -63,18 +65,18 @@ graph_builder.add_node("run_sql", run_sql)
 
 # 从用户问题开始，先判断是否属于电商数据分析。
 # 非数据问题在此结束，确保不会触发 RAG、SQL 生成和数仓访问。
-graph_builder.add_edge(START, "classify_intent")
+graph_builder.add_edge(START, "rewrite_query")
+graph_builder.add_edge("rewrite_query", "classify_intent")
 graph_builder.add_conditional_edges(
     source="classify_intent",
     path=lambda state: state["intent"],
     path_map={
         "data_query": "extract_keywords",
-        "capability_help": "respond_capability",
-        "out_of_scope": "respond_out_of_scope",
+        "capability_help": "respond_non_data",
+        "out_of_scope": "respond_non_data",
     },
 )
-graph_builder.add_edge("respond_capability", END)
-graph_builder.add_edge("respond_out_of_scope", END)
+graph_builder.add_edge("respond_non_data", END)
 
 # 数据分析问题才进入原有的关键词抽取和多路召回链路。
 
@@ -108,7 +110,7 @@ graph_builder.add_edge("correct_sql", "run_sql")
 graph_builder.add_edge("run_sql", END)
 
 # 编译后的 graph 是对外使用的 Agent 执行入口
-graph = graph_builder.compile()
+graph = graph_builder.compile(checkpointer=InMemorySaver())
 
 # print(graph.get_graph().draw_mermaid())
 
@@ -154,7 +156,10 @@ if __name__ == "__main__":
 
             # stream_mode="custom" 会接收各节点通过 runtime.stream_writer 写出的进度信息
             async for chunk in graph.astream(
-                input=state, context=context, stream_mode="custom"
+                input=state,
+                config={"configurable": {"thread_id": "local-debug"}},
+                context=context,
+                stream_mode="custom",
             ):
                 print(chunk)
 

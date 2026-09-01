@@ -42,7 +42,7 @@ class QueryService:
         self.metric_qdrant_repository = metric_qdrant_repository
         self.value_es_repository = value_es_repository
 
-    async def query(self, query: str):
+    async def query(self, query: str, session_id: str):
         """执行一次问数工作流，并逐段产出 SSE 消息"""
 
         # State 只放会被图节点读写和合并的业务数据，外部工具对象不塞进 State
@@ -59,7 +59,10 @@ class QueryService:
         try:
             # stream_mode="custom" 对应节点内部 writer(...) 写出的进度消息
             async for chunk in graph.astream(
-                input=state, context=context, stream_mode="custom"
+                input=state,
+                config={"configurable": {"thread_id": session_id}},
+                context=context,
+                stream_mode="custom",
             ):
                 # SSE 要求每条消息以 data: 开头，并以两个换行符结束
                 # ensure_ascii=False 保留中文进度文案，default=str 兜底处理日期等非 JSON 类型

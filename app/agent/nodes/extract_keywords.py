@@ -21,7 +21,7 @@ async def extract_keywords(state: DataAgentState, runtime: Runtime[DataAgentCont
     writer({"type": "progress", "step": step, "status": "running"})
 
     try:
-        query = state["query"]
+        query = state["resolved_query"]
 
         # 只保留更可能承载业务含义的词性，减少“的、帮我、一下”这类无检索价值的噪声
         allow_pos = (

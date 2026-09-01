@@ -25,7 +25,7 @@ async def filter_metric(state: DataAgentState, runtime: Runtime[DataAgentContext
     writer({"type": "progress", "step": step, "status": "running"})
 
     try:
-        query = state["query"]
+        query = state["resolved_query"]
         metric_infos: list[MetricInfoState] = state["metric_infos"]
 
         # metric_infos 转成 YAML 后作为候选项交给模型，模型只需要返回被选中的指标名称

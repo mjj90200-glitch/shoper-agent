@@ -25,7 +25,7 @@ async def filter_table(state: DataAgentState, runtime: Runtime[DataAgentContext]
     writer({"type": "progress", "step": step, "status": "running"})
 
     try:
-        query = state["query"]
+        query = state["resolved_query"]
         table_infos: list[TableInfoState] = state["table_infos"]
 
         # table_infos 是嵌套结构，转成 YAML 后更适合放进提示词，也保留中文字段说明

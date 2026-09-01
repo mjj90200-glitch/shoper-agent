@@ -30,7 +30,7 @@ async def correct_sql(state: DataAgentState, runtime: Runtime[DataAgentContext])
         metric_infos = state["metric_infos"]
         date_info = state["date_info"]
         db_info = state["db_info"]
-        query = state["query"]
+        query = state["resolved_query"]
 
         # sql 是待修正的候选 SQL，error 是数据库 explain 返回的具体错误信息
         sql = state["sql"]

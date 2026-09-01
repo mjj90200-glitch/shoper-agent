@@ -30,7 +30,7 @@ async def generate_sql(state: DataAgentState, runtime: Runtime[DataAgentContext]
         metric_infos = state["metric_infos"]
         date_info = state["date_info"]
         db_info = state["db_info"]
-        query = state["query"]
+        query = state["resolved_query"]
 
         prompt = PromptTemplate(
             template=load_prompt("generate_sql"),

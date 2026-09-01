@@ -27,8 +27,16 @@ async def run_sql(state: DataAgentState, runtime: Runtime[DataAgentContext]):
         # 真实数据库访问统一封装在仓储层，节点只负责从状态取 SQL 并触发执行
         result = await dw_mysql_repository.run(sql)
         logger.info(f"SQL执行结果：{result}")
+        summary = f"已返回 {len(result)} 行结果" if result else "已返回空结果"
         writer({"type": "progress", "step": step, "status": "success"})
         writer({"type": "result", "data": result})
+        # 只有成功的数据问数写入记忆；用户内容使用完整改写问题，便于继续追问。
+        return {
+            "messages": [
+                {"role": "user", "content": state["resolved_query"], "sql": None},
+                {"role": "assistant", "content": summary, "sql": sql},
+            ]
+        }
 
     except Exception as e:
         logger.error(f"{step} failed: {e}")
