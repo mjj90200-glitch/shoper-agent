@@ -1,207 +1,125 @@
-# Shopkeeper Agent 启动指南
+# 快速启动指南（Windows）
 
-本文用于启动本项目的本地演示环境，包括 Docker 基础服务、元数据知识库、FastAPI 后端和 React 前端。
+使用Zcode启动更方便
+本项目 = Python 后端（FastAPI + LangGraph）+ React 前端 + 5 个 Docker 基础服务（MySQL / Elasticsearch / Kibana / Qdrant / Embedding）。
 
-## 1. 前置条件
+## 一、环境要求（本机已装好）
 
-- Python `3.14+`
-- `uv`（或已创建项目 `.venv`）
-- Docker Desktop
-- Node.js 和 pnpm
-- DeepSeek 或其他 OpenAI 兼容 LLM 的 API Key
+| 工具           | 用途                       | 验证命令           |
+| -------------- | -------------------------- | ------------------ |
+| Docker Desktop | 运行 5 个基础服务          | `docker --version` |
+| uv             | Python 3.14 + 后端依赖管理 | `uv --version`     |
+| Node.js ≥ 20   | 前端运行环境               | `node --version`   |
+| pnpm           | 前端包管理                 | `pnpm --version`   |
 
-在项目根目录创建 `.env` 文件：
+> 首次安装/换电脑时才需要做的：
+>
+> 1. `uv sync` 安装后端依赖
+> 2. `pnpm install`（frontend 目录下，建议加 `--registry=https://registry.npmmirror.com`）
+> 3. 下载 Embedding 模型：`uv run hf download BAAI/bge-large-zh-v1.5 --local-dir docker/embedding/bge-large-zh-v1.5`
+> 4. 复制 `.env.example` 为 `.env`，填入真实的大模型 API Key（当前配置指向 DeepSeek）
 
-```env
-LLM_API_KEY=你的_API_Key
-```
+## 二、日常启动流程（每次开机后）
 
-> 不要提交 `.env`，也不要把 API Key 写入 `conf/app_config.yaml`。
+打开 **3 个终端**，按顺序执行（都在项目根目录 `shoper-agent-main` 下）。
 
-## 2. 首次启动
+### 第 1 步：启动 Docker 基础服务（终端 1）
 
-### 2.1 安装依赖
+先启动 Docker Desktop（开始菜单打开，或双击安装目录里的 `Docker Desktop.exe`），
+等右下角图标变绿后执行：
 
-后端：
-
-```bash
-uv sync
-```
-
-前端：
-
-```bash
-cd frontend
-pnpm install
-cd ..
-```
-
-### 2.2 启动 Docker 基础服务
-
-```bash
+```powershell
 docker compose -f docker/docker-compose.yaml up -d
 ```
 
-查看服务状态：
+首次启动 MySQL 会自动导入数仓 SQL，等待约 1 分钟。验证：
 
-```bash
+```powershell
 docker compose -f docker/docker-compose.yaml ps
+# 5 个容器（mysql / elasticsearch / kibana / qdrant / embedding）都是 Up 即可
 ```
 
-本项目默认端口：
+### 第 2 步：启动后端（终端 2）
 
-| 服务 | 地址/端口 | 作用 |
-| --- | --- | --- |
-| MySQL | `localhost:3307` | 教学数仓和元数据存储 |
-| Qdrant | `localhost:6333` | 字段、指标向量检索 |
-| Elasticsearch | `localhost:9200` | 地区、品牌等真实字段值检索 |
-| Embedding | `localhost:8086` | 将文本转换为向量 |
-| Kibana | `localhost:5601` | Elasticsearch 可视化，可选 |
-
-> `3307` 是为了避免占用本机已被其他项目使用的 `3306`。配置已同步在 `conf/app_config.yaml` 中。
-
-### 2.3 等待 Embedding 模型加载
-
-首次加载 `bge-large-zh-v1.5` 可能需要几分钟，并占用较多内存。可用以下请求检查服务是否已经可用：
-
-```bash
-curl -X POST http://127.0.0.1:8086/embed \
-  -H 'Content-Type: application/json' \
-  -d '{"inputs":"销售额"}'
+```powershell
+$env:NO_PROXY = "localhost,127.0.0.1"
+uv run fastapi dev main.py
 ```
 
-返回一组数字向量即表示加载成功。
+看到 `Application startup complete` 即成功。接口文档：http://127.0.0.1:8000/docs
 
-### 2.4 构建元数据知识库
+> ⚠️ `NO_PROXY` 必须设置：本机开着系统代理（127.0.0.1:7897）时，
+> 不设置它后端连 localhost 的 MySQL/Qdrant/ES 会被代理拦截报 502。
+> （新装的系统环境变量已包含此项，重开终端后可省略第一行；在 PowerShell 里执行 `echo $env:NO_PROXY` 验证）
 
-首次启动、修改 `conf/meta_config.yaml`，或清空 Docker 数据卷后，需要执行一次：
+### 第 3 步：启动前端（终端 3）
 
-```bash
+```powershell
+cd frontend
+pnpm dev
+```
+
+看到 `Local: http://localhost:5173/` 即成功，浏览器打开 **http://localhost:5173** 使用。
+
+## 三、验证项目真的能跑通
+
+任选一种：
+
+- 浏览器打开 http://localhost:5173 ，输入问题「统计华北地区的销售总额」，能看到流式的执行过程和结果表格。
+- 或用命令行测试后端（PowerShell）：
+
+```powershell
+$body = '{"query":"统计华北地区的销售总额"}'
+curl.exe -N -X POST http://127.0.0.1:8000/api/query -H "Content-Type: application/json" -d $body
+```
+
+正常会依次输出 progress 消息（识别意图 → 抽取关键词 → 召回 → 生成SQL → 校验 → 执行），
+最后一条 `type: result` 里带查询结果（正确结果应为 销售总额 41099.5）。
+
+## 四、停止 / 重启
+
+```powershell
+# 停止后端、前端：在对应终端按 Ctrl+C
+
+# 停止 Docker 服务（保留数据）
+docker compose -f docker/docker-compose.yaml down
+
+# 彻底清空 MySQL/ES/Qdrant 数据重新来（慎用）
+docker compose -f docker/docker-compose.yaml down -v
+```
+
+## 五、重新构建元数据知识库
+
+只有数仓结构变更后才需要。注意：脚本**不能重复执行**（MySQL 主键冲突），重跑前先重置 meta 库：
+
+```powershell
+docker exec -i mysql mysql -uroot -pdili123 -e "DROP DATABASE meta;"
+docker exec -i mysql mysql -uroot -pdili123 --default-character-set=utf8mb4 < docker/mysql/meta.sql
+$env:NO_PROXY = "localhost,127.0.0.1"
 uv run python -m app.scripts.build_meta_knowledge -c conf/meta_config.yaml
 ```
 
-此步骤会：
+## 六、常见问题
 
-```text
-YAML 元数据配置 + MySQL 数仓表
-  → MySQL 元数据库
-  → Qdrant 字段/指标向量库
-  → Elasticsearch 字段真实取值索引
-```
+| 现象                             | 原因与解决                                                                                                                                                                                         |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 后端报 Qdrant/ES 502 或连接失败  | 系统代理拦截了 localhost，设置 `NO_PROXY=localhost,127.0.0.1` 后重启后端                                                                                                                           |
+| Docker 拉镜像卡住/超时           | Docker Hub 被墙。镜像加速已配置在 `~/.docker/daemon.json`；ES 基础镜像需从官方源拉：`docker pull docker.elastic.co/elasticsearch/elasticsearch:8.19.10` 后 `docker tag` 为 `elasticsearch:8.19.10` |
+| 构建知识库报 Duplicate entry     | 重复执行了构建脚本，按上面「五」重置 meta 库后重跑                                                                                                                                                 |
+| pnpm install 极慢                | 加 `--registry=https://registry.npmmirror.com`                                                                                                                                                     |
+| embedding 容器日志报 onnx 不存在 | 可忽略，TEI 会自动回退到 candle 后端，`/health` 返回 200 即正常                                                                                                                                    |
+| 端口 3307/8086/9200/6333 被占用  | 这些是容器映射端口，检查占用进程或改 docker-compose.yaml 与 conf/app_config.yaml（两处要一致）                                                                                                     |
 
-> 目前构建脚本不是幂等的。不要在已有元数据时重复执行；若确需重建，请先确认清理范围，避免删除其他项目数据。
+## 七、端口与配置速查
 
-### 2.5 启动后端
+| 服务            | 本机端口 | 配置位置                                          |
+| --------------- | -------- | ------------------------------------------------- |
+| 前端            | 5173     | frontend/vite.config.ts                           |
+| 后端            | 8000     | 启动命令参数                                      |
+| MySQL           | 3307     | conf/app_config.yaml + docker/docker-compose.yaml |
+| Elasticsearch   | 9200     | 同上                                              |
+| Qdrant          | 6333     | 同上                                              |
+| Embedding (TEI) | 8086     | 同上                                              |
+| Kibana          | 5601     | 同上                                              |
 
-在项目根目录执行：
-
-```bash
-uv run fastapi dev main.py --host 0.0.0.0 --port 8000
-```
-
-访问 API 文档：
-
-```text
-http://localhost:8000/docs
-```
-
-### 2.6 启动前端
-
-另开一个终端：
-
-```bash
-cd frontend
-pnpm dev --host 0.0.0.0 --port 5173
-```
-
-访问页面：
-
-```text
-http://localhost:5173
-```
-
-前端开发环境会把 `/api` 自动代理到 `http://127.0.0.1:8000`。
-
-## 3. 日常启动
-
-如果 Docker 数据卷和元数据索引已经存在，通常只需：
-
-```bash
-docker compose -f docker/docker-compose.yaml up -d
-uv run fastapi dev main.py --host 0.0.0.0 --port 8000
-```
-
-再在另一个终端启动：
-
-```bash
-cd frontend && pnpm dev --host 0.0.0.0 --port 5173
-```
-
-## 4. 停止项目
-
-先在运行前后端的终端按 `Ctrl+C`。
-
-再停止 Docker 服务：
-
-```bash
-docker compose -f docker/docker-compose.yaml down
-```
-
-此命令会停止并删除容器和网络，但会保留 Docker volumes 中的 MySQL、Qdrant、Elasticsearch 数据。
-
-若本机内存不足，可单独停止不参与问数主链路的 Kibana：
-
-```bash
-docker compose -f docker/docker-compose.yaml stop kibana
-```
-
-## 5. 常见问题
-
-### 前端显示“接口请求失败”
-
-确认后端已启动：
-
-```bash
-curl http://127.0.0.1:8000/docs
-```
-
-若返回 HTTP `200`，后端正常；否则检查 FastAPI 终端日志。
-
-### Embedding 服务连接重置或加载缓慢
-
-`bge-large-zh-v1.5` 是本项目中最占内存的组件。建议：
-
-1. 停止 Kibana；
-2. 在 Docker Desktop 中分配至少 `6 GB` 内存；
-3. 等待模型预热完成后再发送问数请求；
-4. 查看日志：
-
-```bash
-docker compose -f docker/docker-compose.yaml logs -f embedding
-```
-
-### MySQL 端口冲突
-
-本项目使用宿主机端口 `3307`。如果该端口也被占用，修改以下两个位置保持一致：
-
-```text
-docker/docker-compose.yaml
-conf/app_config.yaml
-```
-
-### 修改模型服务
-
-OpenAI 兼容模型配置位于：
-
-```text
-conf/app_config.yaml
-```
-
-当前 DeepSeek 示例：
-
-```yaml
-llm:
-  model_name: deepseek-v4-flash
-  api_key: ${oc.env:LLM_API_KEY}
-  base_url: https://api.deepseek.com
-```
+大模型配置在 `conf/app_config.yaml` 的 `llm` 段（模型名 / base_url 可换成任意 OpenAI 兼容平台），API Key 从项目根目录 `.env` 的 `LLM_API_KEY` 读取。
