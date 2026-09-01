@@ -66,15 +66,25 @@ pnpm dev
 任选一种：
 
 - 浏览器打开 http://localhost:5173 ，输入问题「统计华北地区的销售总额」，能看到流式的执行过程和结果表格。
-- 或用命令行测试后端（PowerShell）：
+- 或用命令行测试后端（PowerShell）。注意：新版本接口必须传 `session_id`（UUID 格式，同一会话多轮对话用同一个值）：
 
 ```powershell
-$body = '{"query":"统计华北地区的销售总额"}'
+$sessionId = [guid]::NewGuid().ToString()
+$body = '{"query":"统计华北地区的销售总额","session_id":"' + $sessionId + '"}'
 curl.exe -N -X POST http://127.0.0.1:8000/api/query -H "Content-Type: application/json" -d $body
 ```
 
 正常会依次输出 progress 消息（识别意图 → 抽取关键词 → 召回 → 生成SQL → 校验 → 执行），
 最后一条 `type: result` 里带查询结果（正确结果应为 销售总额 41099.5）。
+多轮对话时传同一个 session_id，后续可以直接问「那华东地区呢？」这类指代性问题（服务端会用大模型改写补全）。
+
+## 三点五、运行单元测试
+
+```powershell
+uv run python -m unittest tests.test_memory -v
+```
+
+（必须在项目根目录执行；直接 `python tests/test_memory.py` 会报找不到 app 模块）
 
 ## 四、停止 / 重启
 
