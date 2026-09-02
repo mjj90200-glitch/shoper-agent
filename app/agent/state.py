@@ -9,6 +9,7 @@ SQL 生成闭环会继续写入候选 SQL 以及校验错误信息，用于控�
 
 from typing import Annotated, Literal, TypedDict
 
+from app.agent.result_analysis import ResultAnalysis
 from app.entities.column_info import ColumnInfo
 from app.entities.metric_info import MetricInfo
 from app.entities.value_info import ValueInfo
@@ -102,4 +103,7 @@ class DataAgentState(TypedDict):
 
     sql: str  # 生成或校正后的SQL
 
-    error: str  # 校验SQL时出现的错误信息
+    error: str | None  # SQL 安全检查或校验时出现的错误信息
+    sql_retry_count: int  # 当前轮 SQL 修正次数，防止校正失败后无限循环
+    result: list[dict]  # 数据库实际返回的结果，仅用于本轮展示与解读
+    analysis: ResultAnalysis  # 基于真实结果生成的确定性摘要与图表规格

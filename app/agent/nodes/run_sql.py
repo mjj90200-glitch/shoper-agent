@@ -29,9 +29,12 @@ async def run_sql(state: DataAgentState, runtime: Runtime[DataAgentContext]):
         logger.info(f"SQL执行结果：{result}")
         summary = f"已返回 {len(result)} 行结果" if result else "已返回空结果"
         writer({"type": "progress", "step": step, "status": "success"})
+        # 仅在实际执行成功后公开最终 SQL，便于用户核对与后续离线评测。
+        writer({"type": "sql", "sql": sql})
         writer({"type": "result", "data": result})
         # 只有成功的数据问数写入记忆；用户内容使用完整改写问题，便于继续追问。
         return {
+            "result": result,
             "messages": [
                 {"role": "user", "content": state["resolved_query"], "sql": None},
                 {"role": "assistant", "content": summary, "sql": sql},

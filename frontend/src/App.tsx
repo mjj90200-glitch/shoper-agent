@@ -27,9 +27,25 @@ const examples = [
 ];
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "Vite /api proxy";
+const CONVERSATION_STORAGE_KEY = "shopkeeper-agent:active-conversation";
 
 function makeId() {
   return crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
+function loadConversation(): { messages: ChatMessage[]; sessionId: string } {
+  const fallback = { messages: [], sessionId: makeId() };
+  try {
+    const saved = window.localStorage.getItem(CONVERSATION_STORAGE_KEY);
+    if (!saved) return fallback;
+    const parsed = JSON.parse(saved) as Partial<typeof fallback>;
+    return {
+      messages: Array.isArray(parsed.messages) ? parsed.messages : [],
+      sessionId: typeof parsed.sessionId === "string" ? parsed.sessionId : fallback.sessionId,
+    };
+  } catch {
+    return fallback;
+  }
 }
 
 function upsertStep(steps: StepState[] = [], event: Extract<AgentEvent, { type: "progress" }>) {
@@ -43,9 +59,10 @@ function upsertStep(steps: StepState[] = [], event: Extract<AgentEvent, { type: 
 }
 
 export default function App() {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [initialConversation] = useState(loadConversation);
+  const [messages, setMessages] = useState<ChatMessage[]>(initialConversation.messages);
   const [draft, setDraft] = useState("");
-  const [sessionId, setSessionId] = useState(() => makeId());
+  const [sessionId, setSessionId] = useState(initialConversation.sessionId);
   const [activeController, setActiveController] = useState<AbortController | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
@@ -63,6 +80,14 @@ export default function App() {
       behavior: "smooth",
     });
   }, [messages]);
+
+  useEffect(() => {
+    if (isStreaming) return;
+    window.localStorage.setItem(
+      CONVERSATION_STORAGE_KEY,
+      JSON.stringify({ messages, sessionId }),
+    );
+  }, [isStreaming, messages, sessionId]);
 
   const startQuery = async (rawQuery = draft) => {
     const query = rawQuery.trim();
@@ -110,6 +135,22 @@ export default function App() {
               content: summarizeResult(event.data),
               result: event.data,
             };
+          }
+
+          if (event.type === "query_context") {
+            return {
+              ...message,
+              originalQuery: event.original_query,
+              resolvedQuery: event.resolved_query,
+            };
+          }
+
+          if (event.type === "sql") {
+            return { ...message, sql: event.sql };
+          }
+
+          if (event.type === "analysis") {
+            return { ...message, analysis: { summary: event.summary, chart: event.chart } };
           }
 
           if (event.type === "assistant_message") {
@@ -166,6 +207,7 @@ export default function App() {
 
   const clearConversation = () => {
     if (isStreaming) return;
+    window.localStorage.removeItem(CONVERSATION_STORAGE_KEY);
     setMessages([]);
     setDraft("");
     setSessionId(makeId());

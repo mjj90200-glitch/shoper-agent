@@ -15,17 +15,20 @@ from langgraph.graph import StateGraph
 
 from app.agent.context import DataAgentContext
 from app.agent.nodes.add_extra_context import add_extra_context
+from app.agent.nodes.analyze_result import analyze_result_node
 from app.agent.nodes.classify_intent import classify_intent
 from app.agent.nodes.correct_sql import correct_sql
 from app.agent.nodes.extract_keywords import extract_keywords
 from app.agent.nodes.filter_metric import filter_metric
 from app.agent.nodes.filter_table import filter_table
 from app.agent.nodes.generate_sql import generate_sql
+from app.agent.nodes.guard_sql import guard_sql_node
 from app.agent.nodes.merge_retrieved_info import merge_retrieved_info
 from app.agent.nodes.recall_column import recall_column
 from app.agent.nodes.recall_metric import recall_metric
 from app.agent.nodes.recall_value import recall_value
 from app.agent.nodes.respond_non_data import respond_non_data
+from app.agent.nodes.respond_sql_rejected import respond_sql_rejected
 from app.agent.nodes.rewrite_query import rewrite_query
 from app.agent.nodes.run_sql import run_sql
 from app.agent.nodes.validate_sql import validate_sql
@@ -59,9 +62,12 @@ graph_builder.add_node("filter_metric", filter_metric)
 graph_builder.add_node("filter_table", filter_table)
 graph_builder.add_node("add_extra_context", add_extra_context)
 graph_builder.add_node("generate_sql", generate_sql)
+graph_builder.add_node("guard_sql", guard_sql_node)
 graph_builder.add_node("validate_sql", validate_sql)
 graph_builder.add_node("correct_sql", correct_sql)
 graph_builder.add_node("run_sql", run_sql)
+graph_builder.add_node("analyze_result", analyze_result_node)
+graph_builder.add_node("respond_sql_rejected", respond_sql_rejected)
 
 # 从用户问题开始，先判断是否属于电商数据分析。
 # 非数据问题在此结束，确保不会触发 RAG、SQL 生成和数仓访问。
@@ -98,16 +104,36 @@ graph_builder.add_edge("merge_retrieved_info", "filter_metric")
 graph_builder.add_edge("filter_table", "add_extra_context")
 graph_builder.add_edge("filter_metric", "add_extra_context")
 graph_builder.add_edge("add_extra_context", "generate_sql")
-graph_builder.add_edge("generate_sql", "validate_sql")
+graph_builder.add_edge("generate_sql", "guard_sql")
+graph_builder.add_conditional_edges(
+    source="guard_sql",
+    path=lambda state: "validate_sql" if state["error"] is None else "respond_sql_rejected",
+    path_map={
+        "validate_sql": "validate_sql",
+        "respond_sql_rejected": "respond_sql_rejected",
+    },
+)
 
 # SQL 校验通过就直接执行，校验失败则先进入修正节点
 graph_builder.add_conditional_edges(
     source="validate_sql",
-    path=lambda state: "run_sql" if state["error"] is None else "correct_sql",
-    path_map={"run_sql": "run_sql", "correct_sql": "correct_sql"},
+    path=lambda state: (
+        "run_sql"
+        if state["error"] is None
+        else "correct_sql"
+        if state.get("sql_retry_count", 0) < 1
+        else "respond_sql_rejected"
+    ),
+    path_map={
+        "run_sql": "run_sql",
+        "correct_sql": "correct_sql",
+        "respond_sql_rejected": "respond_sql_rejected",
+    },
 )
-graph_builder.add_edge("correct_sql", "run_sql")
-graph_builder.add_edge("run_sql", END)
+graph_builder.add_edge("correct_sql", "guard_sql")
+graph_builder.add_edge("run_sql", "analyze_result")
+graph_builder.add_edge("analyze_result", END)
+graph_builder.add_edge("respond_sql_rejected", END)
 
 # 编译后的 graph 是对外使用的 Agent 执行入口
 graph = graph_builder.compile(checkpointer=InMemorySaver())

@@ -4,6 +4,7 @@
  */
 import { Bot, Copy, UserRound } from "lucide-react";
 import { ResultTable } from "./ResultTable";
+import { ResultInsight } from "./ResultInsight";
 import { StepRail } from "./StepRail";
 import { cn, formatTime, toClipboardText } from "../lib/format";
 import type { ChatMessage } from "../types/agent";
@@ -60,7 +61,23 @@ export function MessageBubble({ message, onUseSuggestion }: MessageBubbleProps) 
           )}
 
           {!isUser && !message.category && <StepRail steps={message.steps} />}
+          {!isUser &&
+            message.resolvedQuery &&
+            message.originalQuery !== message.resolvedQuery && (
+              <div className="mt-3 border-l-2 border-moss/50 bg-moss/5 px-3 py-2 text-sm leading-6 text-ink/70">
+                已结合上下文理解为：{message.resolvedQuery}
+              </div>
+            )}
+          {!isUser && message.sql && (
+            <details className="mt-3 border border-ink/10 bg-ink/[0.025] px-3 py-2">
+              <summary className="cursor-pointer text-sm font-medium text-ink/70">执行 SQL</summary>
+              <pre className="mt-2 overflow-x-auto whitespace-pre-wrap font-mono text-xs leading-5 text-ink/75">
+                {message.sql}
+              </pre>
+            </details>
+          )}
           {!isUser && message.result !== undefined && <ResultTable data={message.result} />}
+          {!isUser && message.analysis && <ResultInsight analysis={message.analysis} />}
 
           {!isUser && message.suggestedQueries && message.suggestedQueries.length > 0 && (
             <section className="mt-4 border border-moss/20 bg-moss/5 p-3">

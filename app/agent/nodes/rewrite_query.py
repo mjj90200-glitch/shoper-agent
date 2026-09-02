@@ -58,9 +58,17 @@ async def rewrite_query(state: DataAgentState, runtime: Runtime[DataAgentContext
             ).strip() or query
 
         logger.info(f"改写后的问题：{resolved_query}")
+        writer(
+            {
+                "type": "query_context",
+                "original_query": query,
+                "resolved_query": resolved_query,
+            }
+        )
         writer({"type": "progress", "step": step, "status": "success"})
-        return {"resolved_query": resolved_query}
+        # 每一轮重新开始 SQL 校验与修正计数，避免旧 checkpoint 的中间态泄漏。
+        return {"resolved_query": resolved_query, "error": None, "sql_retry_count": 0}
     except Exception as error:
         logger.error(f"追问改写失败，使用原始问题: {error}")
         writer({"type": "progress", "step": step, "status": "error"})
-        return {"resolved_query": query}
+        return {"resolved_query": query, "error": None, "sql_retry_count": 0}

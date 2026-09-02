@@ -15,6 +15,41 @@ export type ResultEvent = {
   data: unknown;
 };
 
+export type QueryContextEvent = {
+  type: "query_context";
+  original_query: string;
+  resolved_query: string;
+};
+
+export type SqlEvent = {
+  type: "sql";
+  sql: string;
+};
+
+export type ChartPoint = {
+  label: string;
+  value: number;
+};
+
+export type ChartSpec = {
+  type: "bar" | "line";
+  label_key: string;
+  value_key: string;
+  data: ChartPoint[];
+  truncated: boolean;
+};
+
+export type ResultAnalysis = {
+  summary: string;
+  chart: ChartSpec | null;
+};
+
+export type AnalysisEvent = {
+  type: "analysis";
+  summary: string;
+  chart: ChartSpec | null;
+};
+
 export type AssistantMessageEvent = {
   type: "assistant_message";
   category: "non_data";
@@ -27,7 +62,14 @@ export type ErrorEvent = {
   message: string;
 };
 
-export type AgentEvent = ProgressEvent | ResultEvent | AssistantMessageEvent | ErrorEvent;
+export type AgentEvent =
+  | ProgressEvent
+  | ResultEvent
+  | QueryContextEvent
+  | SqlEvent
+  | AnalysisEvent
+  | AssistantMessageEvent
+  | ErrorEvent;
 
 export type StepState = {
   step: string;
@@ -43,6 +85,10 @@ export type ChatMessage = {
   status?: "streaming" | "done" | "error";
   steps?: StepState[];
   result?: unknown;
+  originalQuery?: string;
+  resolvedQuery?: string;
+  sql?: string;
+  analysis?: ResultAnalysis;
   error?: string;
   category?: AssistantMessageEvent["category"];
   suggestedQueries?: string[];
