@@ -31,6 +31,7 @@ async def generate_sql(state: DataAgentState, runtime: Runtime[DataAgentContext]
         date_info = state["date_info"]
         db_info = state["db_info"]
         query = state["resolved_query"]
+        user_scope = runtime.context["user"].prompt_context()
 
         prompt = PromptTemplate(
             template=load_prompt("generate_sql"),
@@ -40,6 +41,7 @@ async def generate_sql(state: DataAgentState, runtime: Runtime[DataAgentContext]
                 "date_info",
                 "db_info",
                 "query",
+                "user_scope",
             ],
         )
         # SQL 生成节点只需要纯文本 SQL，不能要求模型输出 JSON 或 Markdown 代码块
@@ -58,6 +60,7 @@ async def generate_sql(state: DataAgentState, runtime: Runtime[DataAgentContext]
                 "date_info": yaml.dump(date_info, allow_unicode=True, sort_keys=False),
                 "db_info": yaml.dump(db_info, allow_unicode=True, sort_keys=False),
                 "query": query,
+                "user_scope": user_scope,
             }
         )
         logger.info(f"生成的SQL：{result}")

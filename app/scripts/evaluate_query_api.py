@@ -29,14 +29,34 @@ def parse_sse_events(body: str) -> list[dict]:
     return events
 
 
-def call_query(base_url: str, query: str, session_id: str, timeout: int) -> list[dict]:
+def login(base_url: str, username: str, password: str, timeout: int) -> str:
+    """登录本地演示账号，并返回后续请求使用的 Bearer 令牌。"""
+
+    payload = json.dumps({"username": username, "password": password}).encode()
+    request = Request(
+        f"{base_url.rstrip('/')}/api/auth/login",
+        data=payload,
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    with urlopen(request, timeout=timeout) as response:  # noqa: S310 - base_url is CLI input
+        return json.loads(response.read().decode())["access_token"]
+
+
+def call_query(
+    base_url: str, query: str, session_id: str, timeout: int, access_token: str
+) -> list[dict]:
     """向 SSE 接口发送一次问数请求，并收集全部事件。"""
 
     payload = json.dumps({"query": query, "session_id": session_id}).encode()
     request = Request(
         f"{base_url.rstrip('/')}/api/query",
         data=payload,
-        headers={"Content-Type": "application/json", "Accept": "text/event-stream"},
+        headers={
+            "Content-Type": "application/json",
+            "Accept": "text/event-stream",
+            "Authorization": f"Bearer {access_token}",
+        },
         method="POST",
     )
     with urlopen(request, timeout=timeout) as response:  # noqa: S310 - base_url is CLI input
@@ -70,14 +90,19 @@ def evaluate_turn(events: list[dict], expected: dict) -> tuple[bool, list[str]]:
     return not errors, errors
 
 
-def evaluate_cases(base_url: str, cases: list[dict], timeout: int) -> list[dict]:
+def evaluate_cases(
+    base_url: str,
+    cases: list[dict],
+    timeout: int,
+    access_token: str,
+) -> list[dict]:
     """按用例顺序执行多轮会话，并返回每轮可审计结果。"""
 
     report: list[dict] = []
     for case in cases:
         session_id = str(uuid.uuid4())
         for turn_index, turn in enumerate(case["turns"], start=1):
-            events = call_query(base_url, turn["query"], session_id, timeout)
+            events = call_query(base_url, turn["query"], session_id, timeout, access_token)
             passed, errors = evaluate_turn(events, turn["expected"])
             report.append(
                 {
@@ -113,10 +138,13 @@ def main() -> None:
     parser.add_argument("--cases", type=Path, default=DEFAULT_CASES_PATH)
     parser.add_argument("--report", type=Path, default=DEFAULT_REPORT_PATH)
     parser.add_argument("--timeout", type=int, default=90)
+    parser.add_argument("--username", default="admin", help="本地演示账号")
+    parser.add_argument("--password", default="admin123", help="本地演示密码")
     args = parser.parse_args()
 
     cases = json.loads(args.cases.read_text())
-    report = evaluate_cases(args.base_url, cases, args.timeout)
+    access_token = login(args.base_url, args.username, args.password, args.timeout)
+    report = evaluate_cases(args.base_url, cases, args.timeout, access_token)
     summary = summarize_report(report)
     args.report.parent.mkdir(parents=True, exist_ok=True)
     args.report.write_text(

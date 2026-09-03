@@ -9,6 +9,7 @@ from langgraph.runtime import Runtime
 
 from app.agent.context import DataAgentContext
 from app.agent.state import DataAgentState
+from app.auth.policy import mask_sensitive_rows
 from app.core.log import logger
 
 
@@ -25,7 +26,9 @@ async def run_sql(state: DataAgentState, runtime: Runtime[DataAgentContext]):
         dw_mysql_repository = runtime.context["dw_mysql_repository"]
 
         # 真实数据库访问统一封装在仓储层，节点只负责从状态取 SQL 并触发执行
-        result = await dw_mysql_repository.run(sql)
+        result = mask_sensitive_rows(
+            await dw_mysql_repository.run(sql), runtime.context["user"]
+        )
         logger.info(f"SQL执行结果：{result}")
         summary = f"已返回 {len(result)} 行结果" if result else "已返回空结果"
         writer({"type": "progress", "step": step, "status": "success"})

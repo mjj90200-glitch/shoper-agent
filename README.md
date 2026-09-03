@@ -209,8 +209,12 @@ uv run fastapi dev main.py
 后端接口：
 
 ```text
+POST http://127.0.0.1:8000/api/auth/login
 POST http://127.0.0.1:8000/api/query
 ```
+
+`/api/query` 需要先登录并携带 `Authorization: Bearer <access_token>`。本地演示账号见
+[`conf/auth_config.yaml`](conf/auth_config.yaml)；该配置仅用于演示，生产环境不能保留内置账号或内存令牌。
 
 请求示例：
 
@@ -228,6 +232,18 @@ SSE 消息类型：
 | `progress` | 节点执行进度 |
 | `result`   | 最终查询结果 |
 | `error`    | 全局异常消息 |
+
+### 9. 本地演示权限
+
+前端首次打开会显示登录页，提供以下可点击填充的演示账号：
+
+| 账号 | 密码 | 数据范围 |
+| --- | --- | --- |
+| `admin` | `admin123` | 全部地区与字段 |
+| `east_manager` | `east123` | 仅华东地区，客户姓名不可查询/展示 |
+| `analyst` | `analyst123` | 全地区汇总，客户姓名不可查询/展示 |
+
+权限在 LangGraph 的 SQL 安全节点中检查，执行结果还会再次按字段脱敏。它是用于本地答辩演示的应用层实现；生产部署应替换为企业身份认证、数据库行级权限和持久化会话。
 
 ### 9. 启动前端
 

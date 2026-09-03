@@ -5,6 +5,7 @@ from langgraph.runtime import Runtime
 from app.agent.context import DataAgentContext
 from app.agent.sql_guardrail import SQLSafetyError, guard_sql
 from app.agent.state import DataAgentState
+from app.auth.policy import enforce_data_policy
 from app.core.log import logger
 
 
@@ -15,7 +16,7 @@ async def guard_sql_node(state: DataAgentState, runtime: Runtime[DataAgentContex
     step = "检查SQL安全"
     writer({"type": "progress", "step": step, "status": "running"})
     try:
-        sql = guard_sql(state["sql"])
+        sql = enforce_data_policy(guard_sql(state["sql"]), runtime.context["user"])
         writer({"type": "progress", "step": step, "status": "success"})
         return {"sql": sql, "error": None}
     except SQLSafetyError as error:

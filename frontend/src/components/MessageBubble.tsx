@@ -6,15 +6,18 @@ import { Bot, Copy, UserRound } from "lucide-react";
 import { ResultTable } from "./ResultTable";
 import { ResultInsight } from "./ResultInsight";
 import { StepRail } from "./StepRail";
+import { FeedbackControls } from "./FeedbackControls";
 import { cn, formatTime, toClipboardText } from "../lib/format";
 import type { ChatMessage } from "../types/agent";
 
 type MessageBubbleProps = {
   message: ChatMessage;
   onUseSuggestion?: (query: string) => void;
+  accessToken?: string;
+  onFeedbackSaved?: (score: "up" | "down") => void;
 };
 
-export function MessageBubble({ message, onUseSuggestion }: MessageBubbleProps) {
+export function MessageBubble({ message, onUseSuggestion, accessToken, onFeedbackSaved }: MessageBubbleProps) {
   const isUser = message.role === "user";
 
   const copy = async () => {
@@ -78,6 +81,15 @@ export function MessageBubble({ message, onUseSuggestion }: MessageBubbleProps) 
           )}
           {!isUser && message.result !== undefined && <ResultTable data={message.result} />}
           {!isUser && message.analysis && <ResultInsight analysis={message.analysis} />}
+
+          {!isUser && message.status === "done" && message.auditId && accessToken && (
+            <FeedbackControls
+              auditId={message.auditId}
+              accessToken={accessToken}
+              initialScore={message.feedbackScore}
+              onSaved={(score) => onFeedbackSaved?.(score)}
+            />
+          )}
 
           {!isUser && message.suggestedQueries && message.suggestedQueries.length > 0 && (
             <section className="mt-4 border border-moss/20 bg-moss/5 p-3">

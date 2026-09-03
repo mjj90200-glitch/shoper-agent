@@ -13,6 +13,8 @@ from langchain_huggingface import HuggingFaceEndpointEmbeddings
 from app.agent.context import DataAgentContext
 from app.agent.graph import graph
 from app.agent.state import DataAgentState
+from app.audit.service import query_audit_service
+from app.auth.service import UserIdentity
 from app.repositories.es.value_es_repository import ValueESRepository
 from app.repositories.mysql.dw.dw_mysql_repository import DWMySQLRepository
 from app.repositories.mysql.meta.meta_mysql_repository import MetaMySQLRepository
@@ -42,9 +44,11 @@ class QueryService:
         self.metric_qdrant_repository = metric_qdrant_repository
         self.value_es_repository = value_es_repository
 
-    async def query(self, query: str, session_id: str):
+    async def query(self, query: str, session_id: str, user: UserIdentity):
         """执行一次问数工作流，并逐段产出 SSE 消息"""
 
+        audit_record = query_audit_service.start(user.username, session_id, query)
+        yield f"data: {json.dumps({'type': 'audit_context', 'audit_id': audit_record.id}, ensure_ascii=False)}\n\n"
         # State 只放会被图节点读写和合并的业务数据，外部工具对象不塞进 State
         state = DataAgentState(query=query)
         # Context 保存本次图执行需要复用的外部依赖，节点通过 runtime.context 读取
@@ -55,19 +59,24 @@ class QueryService:
             value_es_repository=self.value_es_repository,
             meta_mysql_repository=self.meta_mysql_repository,
             dw_mysql_repository=self.dw_mysql_repository,
+            user=user,
         )
         try:
             # stream_mode="custom" 对应节点内部 writer(...) 写出的进度消息
             async for chunk in graph.astream(
                 input=state,
-                config={"configurable": {"thread_id": session_id}},
+                config={"configurable": {"thread_id": f"{user.username}:{session_id}"}},
                 context=context,
                 stream_mode="custom",
             ):
                 # SSE 要求每条消息以 data: 开头，并以两个换行符结束
                 # ensure_ascii=False 保留中文进度文案，default=str 兜底处理日期等非 JSON 类型
+                query_audit_service.observe(audit_record, chunk)
                 yield f"data: {json.dumps(chunk, ensure_ascii=False, default=str)}\n\n"
         except Exception as e:
             # 流式接口已经开始返回后不能再改 HTTP 状态码，因此把异常也包装成一条 SSE 消息
             error = {"type": "error", "message": str(e)}
+            query_audit_service.observe(audit_record, error)
             yield f"data: {json.dumps(error, ensure_ascii=False, default=str)}\n\n"
+        finally:
+            query_audit_service.finish(audit_record)

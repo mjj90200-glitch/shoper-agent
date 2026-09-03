@@ -12,6 +12,7 @@ from typing import TypedDict
 
 from langchain_huggingface import HuggingFaceEndpointEmbeddings
 
+from app.auth.service import UserIdentity
 from app.repositories.es.value_es_repository import ValueESRepository
 from app.repositories.mysql.dw.dw_mysql_repository import DWMySQLRepository
 from app.repositories.mysql.meta.meta_mysql_repository import MetaMySQLRepository
@@ -34,3 +35,5 @@ class DataAgentContext(TypedDict):
     meta_mysql_repository: MetaMySQLRepository
     # 数仓仓储，负责在额外上下文补全时读取数据库方言 版本等执行环境信息
     dw_mysql_repository: DWMySQLRepository
+    # 当前登录用户，供 SQL 权限控制与结果脱敏使用。
+    user: UserIdentity

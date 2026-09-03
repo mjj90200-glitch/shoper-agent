@@ -33,6 +33,7 @@ from app.agent.nodes.rewrite_query import rewrite_query
 from app.agent.nodes.run_sql import run_sql
 from app.agent.nodes.validate_sql import validate_sql
 from app.agent.state import DataAgentState
+from app.auth.service import UserIdentity
 from app.clients.embedding_client_manager import embedding_client_manager
 from app.clients.es_client_manager import es_client_manager
 from app.clients.mysql_client_manager import (
@@ -178,6 +179,13 @@ if __name__ == "__main__":
                 value_es_repository=value_es_repository,
                 meta_mysql_repository=meta_mysql_repository,
                 dw_mysql_repository=dw_mysql_repository,
+                user=UserIdentity(
+                    username="local_debug",
+                    display_name="本地调试",
+                    role="admin",
+                    allowed_regions=(),
+                    masked_fields=(),
+                ),
             )
 
             # stream_mode="custom" 会接收各节点通过 runtime.stream_writer 写出的进度信息

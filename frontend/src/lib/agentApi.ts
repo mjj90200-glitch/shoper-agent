@@ -8,6 +8,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, "") ?? ""
 
 type QueryOptions = {
   sessionId: string;
+  accessToken: string;
   signal?: AbortSignal;
   onEvent: (event: AgentEvent) => void;
 };
@@ -18,6 +19,7 @@ export async function streamQuery(query: string, options: QueryOptions) {
     headers: {
       "Content-Type": "application/json",
       Accept: "text/event-stream",
+      Authorization: `Bearer ${options.accessToken}`,
     },
     body: JSON.stringify({ query, session_id: options.sessionId }),
     signal: options.signal,

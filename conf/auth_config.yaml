@@ -1,0 +1,24 @@
+# 仅供本地演示。生产环境应改用企业身份提供商和持久化会话存储。
+session_ttl_minutes: 480
+users:
+  - username: admin
+    display_name: 系统管理员
+    password_salt: shopkeeper-admin-v1
+    password_hash: ba8e5ed41de2fca9d880f903f8c52af7747e870722a0aeaf1ffa6ec81a17dd14
+    role: admin
+    allowed_regions: []
+    masked_fields: []
+  - username: east_manager
+    display_name: 华东区域经理
+    password_salt: shopkeeper-east-v1
+    password_hash: 8e9cf3b1a324a2afb6c79de6499899648567376b848b33814fc45bf9ab1d05ca
+    role: regional_manager
+    allowed_regions: [华东]
+    masked_fields: [customer_name]
+  - username: analyst
+    display_name: 经营分析员
+    password_salt: shopkeeper-analyst-v1
+    password_hash: 780bad159209ab2a963b4c73c6312729ca5239ad2abc7a83155c22b5ae956b67
+    role: analyst
+    allowed_regions: []
+    masked_fields: [customer_name]

@@ -5,6 +5,7 @@
 import {
   Activity,
   BarChart3,
+  ClipboardList,
   Eraser,
   History,
   Leaf,
@@ -13,11 +14,13 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Composer } from "./components/Composer";
+import { AuditPanel } from "./components/AuditPanel";
 import { EmptyState } from "./components/EmptyState";
+import { LoginPanel } from "./components/LoginPanel";
 import { MessageBubble } from "./components/MessageBubble";
 import { streamQuery } from "./lib/agentApi";
 import { cn, summarizeResult } from "./lib/format";
-import type { AgentEvent, ChatMessage, StepState } from "./types/agent";
+import type { AgentEvent, ChatMessage, CurrentUser, StepState } from "./types/agent";
 
 const examples = [
   "统计 2025 年第一季度各大区的 GMV，并按 GMV 从高到低排序",
@@ -28,6 +31,7 @@ const examples = [
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "Vite /api proxy";
 const CONVERSATION_STORAGE_KEY = "shopkeeper-agent:active-conversation";
+const AUTH_STORAGE_KEY = "shopkeeper-agent:demo-auth";
 
 function makeId() {
   return crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -48,6 +52,20 @@ function loadConversation(): { messages: ChatMessage[]; sessionId: string } {
   }
 }
 
+type StoredAuth = { accessToken: string; user: CurrentUser };
+
+function loadAuth(): StoredAuth | null {
+  try {
+    const saved = window.localStorage.getItem(AUTH_STORAGE_KEY);
+    if (!saved) return null;
+    const parsed = JSON.parse(saved) as Partial<StoredAuth>;
+    if (typeof parsed.accessToken !== "string" || !parsed.user) return null;
+    return { accessToken: parsed.accessToken, user: parsed.user };
+  } catch {
+    return null;
+  }
+}
+
 function upsertStep(steps: StepState[] = [], event: Extract<AgentEvent, { type: "progress" }>) {
   const next = steps.filter((item) => item.step !== event.step);
   next.push({
@@ -59,11 +77,13 @@ function upsertStep(steps: StepState[] = [], event: Extract<AgentEvent, { type: 
 }
 
 export default function App() {
+  const [auth, setAuth] = useState<StoredAuth | null>(loadAuth);
   const [initialConversation] = useState(loadConversation);
   const [messages, setMessages] = useState<ChatMessage[]>(initialConversation.messages);
   const [draft, setDraft] = useState("");
   const [sessionId, setSessionId] = useState(initialConversation.sessionId);
   const [activeController, setActiveController] = useState<AbortController | null>(null);
+  const [isAuditOpen, setIsAuditOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
   const isStreaming = Boolean(activeController);
@@ -91,7 +111,7 @@ export default function App() {
 
   const startQuery = async (rawQuery = draft) => {
     const query = rawQuery.trim();
-    if (!query || isStreaming) return;
+    if (!query || isStreaming || !auth) return;
 
     const userMessage: ChatMessage = {
       id: makeId(),
@@ -126,6 +146,10 @@ export default function App() {
               content: event.status === "running" ? `正在执行：${event.step}` : message.content,
               steps: upsertStep(message.steps, event),
             };
+          }
+
+          if (event.type === "audit_context") {
+            return { ...message, auditId: event.audit_id };
           }
 
           if (event.type === "result") {
@@ -174,7 +198,12 @@ export default function App() {
     };
 
     try {
-      await streamQuery(query, { sessionId, signal: controller.signal, onEvent });
+      await streamQuery(query, {
+        sessionId,
+        accessToken: auth.accessToken,
+        signal: controller.signal,
+        onEvent,
+      });
       setMessages((current) =>
         current.map((message) =>
           message.id === assistantId && message.status === "streaming"
@@ -212,6 +241,29 @@ export default function App() {
     setDraft("");
     setSessionId(makeId());
   };
+
+  const handleLoggedIn = (nextAuth: StoredAuth) => {
+    window.localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(nextAuth));
+    window.localStorage.removeItem(CONVERSATION_STORAGE_KEY);
+    setAuth(nextAuth);
+    setMessages([]);
+    setDraft("");
+    setSessionId(makeId());
+  };
+
+  const logout = () => {
+    if (isStreaming) return;
+    window.localStorage.removeItem(AUTH_STORAGE_KEY);
+    window.localStorage.removeItem(CONVERSATION_STORAGE_KEY);
+    setMessages([]);
+    setDraft("");
+    setSessionId(makeId());
+    setAuth(null);
+  };
+
+  if (!auth) {
+    return <LoginPanel onLoggedIn={handleLoggedIn} />;
+  }
 
   return (
     <div className="h-dvh overflow-hidden bg-parchment text-ink">
@@ -295,18 +347,42 @@ export default function App() {
                 <div className="truncate text-xs text-ink/45">FastAPI SSE / LangGraph</div>
               </div>
             </div>
-            <button
-              type="button"
-              onClick={clearConversation}
-              disabled={messages.length === 0 || isStreaming}
-              className={cn(
-                "grid h-9 w-9 place-items-center rounded-full text-ink/55 transition hover:bg-ink/5 hover:text-ink disabled:cursor-not-allowed disabled:opacity-35",
-              )}
-              title="清空"
-              aria-label="清空"
-            >
-              <Eraser className="h-4 w-4" aria-hidden="true" />
-            </button>
+            <div className="flex items-center gap-2">
+              <span className="hidden text-right text-xs text-ink/55 sm:block">
+                <span className="block font-semibold text-ink/75">{auth.user.display_name}</span>
+                <span>{auth.user.role}</span>
+              </span>
+              <button
+                type="button"
+                onClick={logout}
+                disabled={isStreaming}
+                className="px-2 py-1 text-xs text-ink/55 transition hover:text-ink disabled:cursor-not-allowed disabled:opacity-35"
+              >
+                退出
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsAuditOpen(true)}
+                disabled={isStreaming}
+                className="grid h-9 w-9 place-items-center rounded-full text-ink/55 transition hover:bg-ink/5 hover:text-ink disabled:cursor-not-allowed disabled:opacity-35"
+                title="查询审计"
+                aria-label="查询审计"
+              >
+                <ClipboardList className="h-4 w-4" aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                onClick={clearConversation}
+                disabled={messages.length === 0 || isStreaming}
+                className={cn(
+                  "grid h-9 w-9 place-items-center rounded-full text-ink/55 transition hover:bg-ink/5 hover:text-ink disabled:cursor-not-allowed disabled:opacity-35",
+                )}
+                title="清空"
+                aria-label="清空"
+              >
+                <Eraser className="h-4 w-4" aria-hidden="true" />
+              </button>
+            </div>
           </header>
 
           <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
@@ -319,6 +395,8 @@ export default function App() {
                     key={message.id}
                     message={message}
                     onUseSuggestion={startQuery}
+                    accessToken={auth.accessToken}
+                    onFeedbackSaved={(score) => setMessages((current) => current.map((item) => item.id === message.id ? { ...item, feedbackScore: score } : item))}
                   />
                 ))}
               </div>
@@ -341,6 +419,7 @@ export default function App() {
           />
         </main>
       </div>
+      {isAuditOpen && <AuditPanel accessToken={auth.accessToken} onClose={() => setIsAuditOpen(false)} />}
     </div>
   );
 }

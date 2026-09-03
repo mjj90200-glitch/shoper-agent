@@ -4,6 +4,31 @@
  */
 export type ProgressStatus = "running" | "success" | "error";
 
+export type CurrentUser = {
+  username: string;
+  display_name: string;
+  role: string;
+  allowed_regions: string[];
+  masked_fields: string[];
+};
+
+export type QueryAudit = {
+  id: string;
+  session_id: string;
+  query: string;
+  resolved_query: string | null;
+  sql: string | null;
+  result_row_count: number | null;
+  terminal_type: string | null;
+  status: "running" | "succeeded" | "failed";
+  error: string | null;
+  feedback_score: "up" | "down" | null;
+  feedback_comment: string | null;
+  feedback_at: string | null;
+  started_at: string;
+  duration_ms: number | null;
+};
+
 export type ProgressEvent = {
   type: "progress";
   step: string;
@@ -62,6 +87,11 @@ export type ErrorEvent = {
   message: string;
 };
 
+export type AuditContextEvent = {
+  type: "audit_context";
+  audit_id: string;
+};
+
 export type AgentEvent =
   | ProgressEvent
   | ResultEvent
@@ -69,6 +99,7 @@ export type AgentEvent =
   | SqlEvent
   | AnalysisEvent
   | AssistantMessageEvent
+  | AuditContextEvent
   | ErrorEvent;
 
 export type StepState = {
@@ -92,4 +123,6 @@ export type ChatMessage = {
   error?: string;
   category?: AssistantMessageEvent["category"];
   suggestedQueries?: string[];
+  auditId?: string;
+  feedbackScore?: "up" | "down";
 };

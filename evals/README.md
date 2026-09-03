@@ -8,6 +8,6 @@ Docker、后端和前端服务均可用后，在项目根目录执行：
 uv run python -m app.scripts.evaluate_query_api
 ```
 
-脚本会为每个场景生成独立 `session_id`，同一场景中的追问共享会话。报告默认输出到 `evals/reports/latest.json`，包含逐轮 SSE 事件和汇总指标：总轮数、通过轮数、失败轮数、通过率、失败用例 ID。
+脚本默认使用本地演示管理员 `admin / admin123` 登录。需要切换角色时传入 `--username east_manager --password east123`。脚本会为每个场景生成独立 `session_id`，同一场景中的追问共享会话。报告默认输出到 `evals/reports/latest.json`，包含逐轮 SSE 事件和汇总指标：总轮数、通过轮数、失败轮数、通过率、失败用例 ID。
 
 评测不是替代人工审查：`sql_contains` 仅验证关键表/安全上限等最低约束。每次模型、Prompt、元数据或检索策略变化后，应抽查失败样本和关键业务结果。

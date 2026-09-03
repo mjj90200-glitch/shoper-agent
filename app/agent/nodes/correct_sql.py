@@ -31,6 +31,7 @@ async def correct_sql(state: DataAgentState, runtime: Runtime[DataAgentContext])
         date_info = state["date_info"]
         db_info = state["db_info"]
         query = state["resolved_query"]
+        user_scope = runtime.context["user"].prompt_context()
 
         # sql 是待修正的候选 SQL，error 是数据库 explain 返回的具体错误信息
         sql = state["sql"]
@@ -46,6 +47,7 @@ async def correct_sql(state: DataAgentState, runtime: Runtime[DataAgentContext])
                 "query",
                 "sql",
                 "error",
+                "user_scope",
             ],
         )
         # 修正后的输出仍然是一条纯 SQL 文本，用来覆盖 state["sql"]
@@ -66,6 +68,7 @@ async def correct_sql(state: DataAgentState, runtime: Runtime[DataAgentContext])
                 "query": query,
                 "sql": sql,
                 "error": error,
+                "user_scope": user_scope,
             }
         )
 
