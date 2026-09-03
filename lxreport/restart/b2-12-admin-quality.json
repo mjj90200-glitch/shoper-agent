@@ -1,0 +1,20 @@
+{
+  "http_status": 200,
+  "body": {
+    "total_queries": 3,
+    "completed_queries": 3,
+    "success_rate": 1.0,
+    "average_duration_ms": 15815,
+    "feedback_count": 1,
+    "helpful_rate": 0.0,
+    "negative_feedback": [
+      {
+        "id": "8a405210-44bb-482a-bbec-0292182b4cc0",
+        "username": "admin",
+        "query": "按大区统计 2025 年第一季度销售额",
+        "feedback_comment": "结果正确但希望按品牌进一步拆分展示",
+        "started_at": "2026-09-03T02:19:22.656584+00:00"
+      }
+    ]
+  }
+}

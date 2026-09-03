@@ -1,0 +1,20 @@
+{
+  "http_status": 200,
+  "audit_id": "8a405210-44bb-482a-bbec-0292182b4cc0",
+  "body": {
+    "id": "8a405210-44bb-482a-bbec-0292182b4cc0",
+    "session_id": "fa29c046-c51f-458e-bce1-5b66c938810f",
+    "query": "按大区统计 2025 年第一季度销售额",
+    "resolved_query": "按大区统计 2025 年第一季度销售额",
+    "sql": "SELECT r.region_name AS 大区, SUM(f.order_amount) AS 销售额 FROM fact_order f JOIN dim_region r ON f.region_id = r.region_id WHERE f.date_id BETWEEN 20250101 AND 20250331 GROUP BY r.region_name LIMIT 1000",
+    "result_row_count": 5,
+    "terminal_type": "result",
+    "status": "succeeded",
+    "error": null,
+    "feedback_score": "down",
+    "feedback_comment": "结果正确但希望按品牌进一步拆分展示",
+    "feedback_at": "2026-09-03T02:19:48.684795+00:00",
+    "started_at": "2026-09-03T02:19:22.656584+00:00",
+    "duration_ms": 10578
+  }
+}

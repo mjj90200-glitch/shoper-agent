@@ -1,0 +1,16 @@
+{
+  "http_status": 200,
+  "body": {
+    "access_token": "pFdex77M7gvgs6OUSc1xr2j6s73SdN_2hW3WcnMY4Ic",
+    "token_type": "bearer",
+    "user": {
+      "username": "analyst",
+      "display_name": "经营分析员",
+      "role": "analyst",
+      "allowed_regions": [],
+      "masked_fields": [
+        "customer_name"
+      ]
+    }
+  }
+}

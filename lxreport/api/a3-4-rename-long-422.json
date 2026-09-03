@@ -1,0 +1,19 @@
+{
+  "http_status": 422,
+  "body": {
+    "detail": [
+      {
+        "type": "string_too_long",
+        "loc": [
+          "body",
+          "title"
+        ],
+        "msg": "String should have at most 80 characters",
+        "input": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "ctx": {
+          "max_length": 80
+        }
+      }
+    ]
+  }
+}

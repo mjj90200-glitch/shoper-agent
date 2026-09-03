@@ -1,0 +1,111 @@
+{
+  "url": "http://localhost:5173/",
+  "text": "电商问数\nshopkeeper-agent\n新会话\n样例\n统计 2025 年第一季度各大区的 GMV，并按 GMV 从高到低排序统计 2025 年 3 月各商品品类的销量和销售额查询华东地区 2025 年第一季度销售额最高的前 5 个商品按会员等级统计 2025 年第一季度的订单数和销售额\nAPI\nVite /api proxy\n完成\n0\n智能数据分析 Agent\nFastAPI SSE / LangGraph\n系统管理员\nadmin\n退出\n历史\nShopkeeper Agent\n电商问数\n混合检索\nSQL 闭环\n电商数仓\n统计 2025 年第一季度各大区的 GMV，并按 GMV 从高到低排序\n统计 2025 年 3 月各商品品类的销量和销售额\n查询华东地区 2025 年第一季度销售额最高的前 5 个商品\n按会员等级统计 2025 年第一季度的订单数和销售额\n就绪",
+  "inputs": [
+    {
+      "tag": "BUTTON",
+      "type": "button",
+      "placeholder": null,
+      "text": "新会话",
+      "aria": null
+    },
+    {
+      "tag": "BUTTON",
+      "type": "button",
+      "placeholder": null,
+      "text": "统计 2025 年第一季度各大区的 GMV，并按 GMV 从高到低排序",
+      "aria": null
+    },
+    {
+      "tag": "BUTTON",
+      "type": "button",
+      "placeholder": null,
+      "text": "统计 2025 年 3 月各商品品类的销量和销售额",
+      "aria": null
+    },
+    {
+      "tag": "BUTTON",
+      "type": "button",
+      "placeholder": null,
+      "text": "查询华东地区 2025 年第一季度销售额最高的前 5 个商品",
+      "aria": null
+    },
+    {
+      "tag": "BUTTON",
+      "type": "button",
+      "placeholder": null,
+      "text": "按会员等级统计 2025 年第一季度的订单数和销售额",
+      "aria": null
+    },
+    {
+      "tag": "BUTTON",
+      "type": "button",
+      "placeholder": null,
+      "text": "退出",
+      "aria": null
+    },
+    {
+      "tag": "BUTTON",
+      "type": "button",
+      "placeholder": null,
+      "text": "历史",
+      "aria": null
+    },
+    {
+      "tag": "BUTTON",
+      "type": "button",
+      "placeholder": null,
+      "text": "",
+      "aria": "查询审计"
+    },
+    {
+      "tag": "BUTTON",
+      "type": "button",
+      "placeholder": null,
+      "text": "",
+      "aria": "清空"
+    },
+    {
+      "tag": "BUTTON",
+      "type": "button",
+      "placeholder": null,
+      "text": "统计 2025 年第一季度各大区的 GMV，并按 GMV 从高到低排序",
+      "aria": null
+    },
+    {
+      "tag": "BUTTON",
+      "type": "button",
+      "placeholder": null,
+      "text": "统计 2025 年 3 月各商品品类的销量和销售额",
+      "aria": null
+    },
+    {
+      "tag": "BUTTON",
+      "type": "button",
+      "placeholder": null,
+      "text": "查询华东地区 2025 年第一季度销售额最高的前 5 个商品",
+      "aria": null
+    },
+    {
+      "tag": "BUTTON",
+      "type": "button",
+      "placeholder": null,
+      "text": "按会员等级统计 2025 年第一季度的订单数和销售额",
+      "aria": null
+    },
+    {
+      "tag": "TEXTAREA",
+      "type": null,
+      "placeholder": "问一个电商数据问题...",
+      "text": "",
+      "aria": null
+    },
+    {
+      "tag": "BUTTON",
+      "type": "submit",
+      "placeholder": null,
+      "text": "",
+      "aria": "发送"
+    }
+  ]
+}

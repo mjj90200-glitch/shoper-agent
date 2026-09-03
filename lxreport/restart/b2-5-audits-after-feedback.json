@@ -1,0 +1,53 @@
+{
+  "http_status": 200,
+  "body": [
+    {
+      "id": "8a405210-44bb-482a-bbec-0292182b4cc0",
+      "session_id": "fa29c046-c51f-458e-bce1-5b66c938810f",
+      "query": "按大区统计 2025 年第一季度销售额",
+      "resolved_query": "按大区统计 2025 年第一季度销售额",
+      "sql": "SELECT r.region_name AS 大区, SUM(f.order_amount) AS 销售额 FROM fact_order f JOIN dim_region r ON f.region_id = r.region_id WHERE f.date_id BETWEEN 20250101 AND 20250331 GROUP BY r.region_name LIMIT 1000",
+      "result_row_count": 5,
+      "terminal_type": "result",
+      "status": "succeeded",
+      "error": null,
+      "feedback_score": "down",
+      "feedback_comment": "结果正确但希望按品牌进一步拆分展示",
+      "feedback_at": "2026-09-03T02:19:48.684795+00:00",
+      "started_at": "2026-09-03T02:19:22.656584+00:00",
+      "duration_ms": 10578
+    },
+    {
+      "id": "0b27e711-ba90-46c6-a4a7-daf89683ec27",
+      "session_id": "fc0e81d1-b000-4453-87be-33a14c3ae785",
+      "query": "那华北呢？",
+      "resolved_query": "统计华北地区 2025 年第一季度销售额",
+      "sql": "SELECT SUM(fo.order_amount) AS 销售额 FROM fact_order fo JOIN dim_region dr ON fo.region_id = dr.region_id JOIN dim_date dd ON fo.date_id = dd.date_id WHERE dr.region_name = '华北' AND dd.year = 2025 AND dd.quarter = 'Q1' LIMIT 1000",
+      "result_row_count": 1,
+      "terminal_type": "result",
+      "status": "succeeded",
+      "error": null,
+      "feedback_score": null,
+      "feedback_comment": null,
+      "feedback_at": null,
+      "started_at": "2026-09-03T02:18:39.403408+00:00",
+      "duration_ms": 26682
+    },
+    {
+      "id": "d16813f4-61da-4e11-869b-07c31e425c6c",
+      "session_id": "fc0e81d1-b000-4453-87be-33a14c3ae785",
+      "query": "统计华东地区 2025 年第一季度销售额",
+      "resolved_query": "统计华东地区 2025 年第一季度销售额",
+      "sql": "SELECT SUM(fo.order_amount) AS 销售额\nFROM fact_order fo\nJOIN dim_region dr ON fo.region_id = dr.region_id\nJOIN dim_date dd ON fo.date_id = dd.date_id\nWHERE dr.region_name = '华东' AND dd.year = 2025 AND dd.quarter = 'Q1' LIMIT 1000",
+      "result_row_count": 1,
+      "terminal_type": "result",
+      "status": "succeeded",
+      "error": null,
+      "feedback_score": null,
+      "feedback_comment": null,
+      "feedback_at": null,
+      "started_at": "2026-09-03T02:17:54.859460+00:00",
+      "duration_ms": 10185
+    }
+  ]
+}

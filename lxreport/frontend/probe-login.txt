@@ -1,0 +1,49 @@
+{
+  "title": "电商问数 | Shopkeeper Agent",
+  "url": "http://localhost:5173/",
+  "text": "电商问数 · 演示登录\n\n本地账号与数据权限演示\n\n用户名\n密码\n登录\n演示账号\nadmin / admin123 · 管理员：全部数据\neast_manager / east123 · 区域经理：仅华东，姓名脱敏\nanalyst / analyst123 · 分析员：全地区汇总，姓名脱敏",
+  "inputs": [
+    {
+      "tag": "INPUT",
+      "type": null,
+      "placeholder": null,
+      "text": "",
+      "aria": null
+    },
+    {
+      "tag": "INPUT",
+      "type": "password",
+      "placeholder": null,
+      "text": "",
+      "aria": null
+    },
+    {
+      "tag": "BUTTON",
+      "type": "submit",
+      "placeholder": null,
+      "text": "登录",
+      "aria": null
+    },
+    {
+      "tag": "BUTTON",
+      "type": "button",
+      "placeholder": null,
+      "text": "admin / admin123 · 管理员：全部数据",
+      "aria": null
+    },
+    {
+      "tag": "BUTTON",
+      "type": "button",
+      "placeholder": null,
+      "text": "east_manager / east123 · 区域经理：仅华东，姓名脱敏",
+      "aria": null
+    },
+    {
+      "tag": "BUTTON",
+      "type": "button",
+      "placeholder": null,
+      "text": "analyst / analyst123 · 分析员：全地区汇总，姓名脱敏",
+      "aria": null
+    }
+  ]
+}

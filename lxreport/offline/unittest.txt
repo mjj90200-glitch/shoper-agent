@@ -1,0 +1,40 @@
+test_configured_demo_account_can_authenticate (test_local_auth_policy.LocalAuthPolicyTests.test_configured_demo_account_can_authenticate) ... ok
+test_region_manager_requires_its_region_filter (test_local_auth_policy.LocalAuthPolicyTests.test_region_manager_requires_its_region_filter) ... ok
+test_sensitive_customer_field_is_rejected_and_masked (test_local_auth_policy.LocalAuthPolicyTests.test_sensitive_customer_field_is_rejected_and_masked) ... ok
+test_wrong_password_is_rejected (test_local_auth_policy.LocalAuthPolicyTests.test_wrong_password_is_rejected) ... ok
+test_concat_messages_preserves_custom_sql_field (test_memory.MemoryStateTests.test_concat_messages_preserves_custom_sql_field) ... ok
+test_history_format_includes_sql (test_memory.MemoryStateTests.test_history_format_includes_sql) ... ok
+test_history_is_limited_to_latest_five_rounds (test_memory.MemoryStateTests.test_history_is_limited_to_latest_five_rounds) ... ok
+test_non_data_response_does_not_return_messages (test_memory.NonDataResponseTests.test_non_data_response_does_not_return_messages) ... ok
+[32m2026-09-03 10:13:58.473[0m | [1mINFO    [0m | [35mrequest_id - 1[0m | [36mapp.agent.nodes.rewrite_query[0m:[36mrewrite_query[0m:[36m60[0m - [1m改写后的问题：你好[0m
+[32m2026-09-03 10:13:58.477[0m | [1mINFO    [0m | [35mrequest_id - 1[0m | [36mapp.agent.nodes.classify_intent[0m:[36mclassify_intent[0m:[36m111[0m - [1m识别请求意图：out_of_scope[0m
+test_non_data_turn_leaves_checkpointer_history_empty (test_memory.NonDataResponseTests.test_non_data_turn_leaves_checkpointer_history_empty) ... ok
+test_audit_records_are_isolated_by_user_and_errors_are_retained (test_query_audit.QueryAuditServiceTests.test_audit_records_are_isolated_by_user_and_errors_are_retained) ... ok
+test_only_owner_can_submit_feedback_for_completed_audit (test_query_audit.QueryAuditServiceTests.test_only_owner_can_submit_feedback_for_completed_audit) ... ok
+test_successful_query_records_trace_without_result_rows (test_query_audit.QueryAuditServiceTests.test_successful_query_records_trace_without_result_rows) ... ok
+test_unfinished_record_is_marked_failed (test_query_audit.QueryAuditServiceTests.test_unfinished_record_is_marked_failed) ... ok
+test_eval_cases_cover_required_scenarios (test_query_evaluator.QueryEvaluatorTests.test_eval_cases_cover_required_scenarios) ... ok
+test_evaluate_turn_checks_context_and_sql (test_query_evaluator.QueryEvaluatorTests.test_evaluate_turn_checks_context_and_sql) ... ok
+test_parse_sse_events (test_query_evaluator.QueryEvaluatorTests.test_parse_sse_events) ... ok
+test_summarize_report (test_query_evaluator.QueryEvaluatorTests.test_summarize_report) ... ok
+test_category_result_becomes_bar_chart (test_result_analysis.ResultAnalysisTests.test_category_result_becomes_bar_chart) ... ok
+test_chart_is_limited_to_twelve_rows (test_result_analysis.ResultAnalysisTests.test_chart_is_limited_to_twelve_rows) ... ok
+test_empty_result_has_no_chart (test_result_analysis.ResultAnalysisTests.test_empty_result_has_no_chart) ... ok
+test_node_emits_analysis_event (test_result_analysis.ResultAnalysisTests.test_node_emits_analysis_event) ... ok
+test_temporal_result_becomes_line_chart (test_result_analysis.ResultAnalysisTests.test_temporal_result_becomes_line_chart) ... ok
+test_adds_limit_when_only_subquery_has_limit (test_sql_guardrail.SQLGuardrailTests.test_adds_limit_when_only_subquery_has_limit) ... ok
+test_allows_cte_ending_in_select (test_sql_guardrail.SQLGuardrailTests.test_allows_cte_ending_in_select) ... ok
+test_allows_select_and_adds_limit (test_sql_guardrail.SQLGuardrailTests.test_allows_select_and_adds_limit) ... ok
+[32m2026-09-03 10:13:58.512[0m | [33m[1mWARNING [0m | [35mrequest_id - 1[0m | [36mapp.agent.nodes.guard_sql[0m:[36mguard_sql_node[0m:[36m24[0m - [33m[1m仅允许执行 SELECT 或 WITH ... SELECT 查询。[0m
+test_guard_node_returns_error_event_without_raising (test_sql_guardrail.SQLGuardrailTests.test_guard_node_returns_error_event_without_raising) ... ok
+test_ignores_blocked_words_inside_string_literals (test_sql_guardrail.SQLGuardrailTests.test_ignores_blocked_words_inside_string_literals) ... ok
+test_preserves_existing_outer_limit (test_sql_guardrail.SQLGuardrailTests.test_preserves_existing_outer_limit) ... ok
+test_rejects_comments (test_sql_guardrail.SQLGuardrailTests.test_rejects_comments) ... ok
+test_rejects_non_readonly_or_multi_statement_sql (test_sql_guardrail.SQLGuardrailTests.test_rejects_non_readonly_or_multi_statement_sql) ... ok
+test_api_graph_uses_lifecycle_configured_checkpointer (test_sqlite_checkpointer.SqliteCheckpointerTests.test_api_graph_uses_lifecycle_configured_checkpointer) ... ok
+test_checkpoint_survives_reopening_sqlite_connection (test_sqlite_checkpointer.SqliteCheckpointerTests.test_checkpoint_survives_reopening_sqlite_connection) ... ok
+
+----------------------------------------------------------------------
+Ran 32 tests in 0.500s
+
+OK

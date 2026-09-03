@@ -1,0 +1,227 @@
+{
+  "http_status": 200,
+  "session_id": "fa29c046-c51f-458e-bce1-5b66c938810f",
+  "query": "按大区统计 2025 年第一季度销售额",
+  "events": [
+    {
+      "type": "audit_context",
+      "audit_id": "8a405210-44bb-482a-bbec-0292182b4cc0"
+    },
+    {
+      "type": "progress",
+      "step": "理解上下文",
+      "status": "running"
+    },
+    {
+      "type": "query_context",
+      "original_query": "按大区统计 2025 年第一季度销售额",
+      "resolved_query": "按大区统计 2025 年第一季度销售额"
+    },
+    {
+      "type": "progress",
+      "step": "理解上下文",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "识别问题意图",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "识别问题意图",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "抽取关键词",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "抽取关键词",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "召回字段信息",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "召回指标信息",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "召回字段取值",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "召回字段信息",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "召回指标信息",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "召回字段取值",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "合并召回信息",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "合并召回信息",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "过滤指标信息",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "过滤表信息",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "过滤指标信息",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "过滤表信息",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "添加额外上下文",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "添加额外上下文",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "生成SQL",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "生成SQL",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "检查SQL安全",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "检查SQL安全",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "校验SQL",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "校验SQL",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "执行SQL",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "执行SQL",
+      "status": "success"
+    },
+    {
+      "type": "sql",
+      "sql": "SELECT r.region_name AS 大区, SUM(f.order_amount) AS 销售额 FROM fact_order f JOIN dim_region r ON f.region_id = r.region_id WHERE f.date_id BETWEEN 20250101 AND 20250331 GROUP BY r.region_name LIMIT 1000"
+    },
+    {
+      "type": "result",
+      "data": [
+        {
+          "大区": "华南",
+          "销售额": 70202.0
+        },
+        {
+          "大区": "华东",
+          "销售额": 107373.0
+        },
+        {
+          "大区": "华北",
+          "销售额": 41099.5
+        },
+        {
+          "大区": "西南",
+          "销售额": 31528.0
+        },
+        {
+          "大区": "华中",
+          "销售额": 28957.0
+        }
+      ]
+    },
+    {
+      "type": "progress",
+      "step": "解读查询结果",
+      "status": "running"
+    },
+    {
+      "type": "analysis",
+      "summary": "共 5 行；销售额 最高为 华东（107,373），最低为 华中（28,957）。",
+      "chart": {
+        "type": "bar",
+        "label_key": "大区",
+        "value_key": "销售额",
+        "data": [
+          {
+            "label": "华南",
+            "value": 70202.0
+          },
+          {
+            "label": "华东",
+            "value": 107373.0
+          },
+          {
+            "label": "华北",
+            "value": 41099.5
+          },
+          {
+            "label": "西南",
+            "value": 31528.0
+          },
+          {
+            "label": "华中",
+            "value": 28957.0
+          }
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "type": "progress",
+      "step": "解读查询结果",
+      "status": "success"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "http_status": 200,
+  "body": {
+    "access_token": "FmhhcRLqfu_P8sPmH6jLFOKmVYm17y9cmt0Gb0OW7d8",
+    "token_type": "bearer",
+    "user": {
+      "username": "admin",
+      "display_name": "系统管理员",
+      "role": "admin",
+      "allowed_regions": [],
+      "masked_fields": []
+    }
+  }
+}
