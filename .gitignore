@@ -66,3 +66,6 @@ docker/embedding/
 # Runtime logs & linter cache
 /logs/
 .ruff_cache/
+
+# Local SQLite state (LangGraph checkpoint, demo history and audit data)
+/data/

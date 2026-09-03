@@ -11,7 +11,7 @@ import json
 from langchain_huggingface import HuggingFaceEndpointEmbeddings
 
 from app.agent.context import DataAgentContext
-from app.agent.graph import graph
+from app.agent.graph import get_graph
 from app.agent.state import DataAgentState
 from app.audit.service import query_audit_service
 from app.auth.service import UserIdentity
@@ -62,8 +62,9 @@ class QueryService:
             user=user,
         )
         try:
+            agent_graph = get_graph()
             # stream_mode="custom" 对应节点内部 writer(...) 写出的进度消息
-            async for chunk in graph.astream(
+            async for chunk in agent_graph.astream(
                 input=state,
                 config={"configurable": {"thread_id": f"{user.username}:{session_id}"}},
                 context=context,

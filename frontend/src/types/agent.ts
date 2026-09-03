@@ -29,6 +29,16 @@ export type QueryAudit = {
   duration_ms: number | null;
 };
 
+export type QualitySummary = {
+  total_queries: number;
+  completed_queries: number;
+  success_rate: number;
+  average_duration_ms: number;
+  feedback_count: number;
+  helpful_rate: number;
+  negative_feedback: { id: string; username: string; query: string; feedback_comment: string | null; started_at: string }[];
+};
+
 export type ProgressEvent = {
   type: "progress";
   step: string;

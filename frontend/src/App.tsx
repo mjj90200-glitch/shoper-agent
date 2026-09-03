@@ -15,6 +15,7 @@ import {
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Composer } from "./components/Composer";
 import { AuditPanel } from "./components/AuditPanel";
+import { SessionPanel } from "./components/SessionPanel";
 import { EmptyState } from "./components/EmptyState";
 import { LoginPanel } from "./components/LoginPanel";
 import { MessageBubble } from "./components/MessageBubble";
@@ -84,6 +85,7 @@ export default function App() {
   const [sessionId, setSessionId] = useState(initialConversation.sessionId);
   const [activeController, setActiveController] = useState<AbortController | null>(null);
   const [isAuditOpen, setIsAuditOpen] = useState(false);
+  const [isSessionsOpen, setIsSessionsOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
   const isStreaming = Boolean(activeController);
@@ -261,6 +263,15 @@ export default function App() {
     setAuth(null);
   };
 
+  const restoreSession = (item: { session_id: string }, records: import("./types/agent").QueryAudit[]) => {
+    setSessionId(item.session_id);
+    setMessages(records.flatMap((record) => [
+      { id: `${record.id}-user`, role: "user" as const, content: record.query, createdAt: Date.parse(record.started_at) },
+      { id: `${record.id}-assistant`, role: "assistant" as const, content: record.error || (record.result_row_count !== null ? `已返回 ${record.result_row_count} 行结果` : "已完成处理"), createdAt: Date.parse(record.started_at), status: record.status === "failed" ? "error" as const : "done" as const, sql: record.sql ?? undefined, resolvedQuery: record.resolved_query ?? undefined, error: record.error ?? undefined },
+    ]));
+    setIsSessionsOpen(false);
+  };
+
   if (!auth) {
     return <LoginPanel onLoggedIn={handleLoggedIn} />;
   }
@@ -360,6 +371,7 @@ export default function App() {
               >
                 退出
               </button>
+              <button type="button" onClick={() => setIsSessionsOpen(true)} className="px-2 py-1 text-xs text-ink/55 hover:text-ink">历史</button>
               <button
                 type="button"
                 onClick={() => setIsAuditOpen(true)}
@@ -419,7 +431,8 @@ export default function App() {
           />
         </main>
       </div>
-      {isAuditOpen && <AuditPanel accessToken={auth.accessToken} onClose={() => setIsAuditOpen(false)} />}
+      {isAuditOpen && <AuditPanel accessToken={auth.accessToken} isAdmin={auth.user.role === "admin"} onClose={() => setIsAuditOpen(false)} />}
+      {isSessionsOpen && <SessionPanel accessToken={auth.accessToken} onClose={() => setIsSessionsOpen(false)} onSelect={restoreSession} />}
     </div>
   );
 }

@@ -1,10 +1,11 @@
 import { Clock3, FileSearch, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { fetchMyAudits } from "../lib/auditApi";
-import type { QueryAudit } from "../types/agent";
+import { fetchMyAudits, fetchQualitySummary } from "../lib/auditApi";
+import type { QualitySummary, QueryAudit } from "../types/agent";
 
 type AuditPanelProps = {
   accessToken: string;
+  isAdmin: boolean;
   onClose: () => void;
 };
 
@@ -17,10 +18,11 @@ function formatTime(value: string) {
   }).format(new Date(value));
 }
 
-export function AuditPanel({ accessToken, onClose }: AuditPanelProps) {
+export function AuditPanel({ accessToken, isAdmin, onClose }: AuditPanelProps) {
   const [records, setRecords] = useState<QueryAudit[]>([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const [summary, setSummary] = useState<QualitySummary | null>(null);
 
   useEffect(() => {
     void fetchMyAudits(accessToken)
@@ -28,6 +30,10 @@ export function AuditPanel({ accessToken, onClose }: AuditPanelProps) {
       .catch((reason: unknown) => setError(reason instanceof Error ? reason.message : "加载失败。"))
       .finally(() => setLoading(false));
   }, [accessToken]);
+
+  useEffect(() => {
+    if (isAdmin) void fetchQualitySummary(accessToken).then(setSummary).catch(() => undefined);
+  }, [accessToken, isAdmin]);
 
   return (
     <div className="fixed inset-0 z-20 bg-ink/25 p-4 sm:p-8" role="dialog" aria-modal="true" aria-label="查询审计记录">
@@ -43,6 +49,7 @@ export function AuditPanel({ accessToken, onClose }: AuditPanelProps) {
         </header>
 
         <div className="min-h-0 flex-1 space-y-3 overflow-y-auto p-4">
+          {summary && <section className="grid grid-cols-2 gap-px bg-ink/10 text-center text-xs"><div className="bg-[#fffaf1] p-3">总问数<br /><b>{summary.total_queries}</b></div><div className="bg-[#fffaf1] p-3">成功率<br /><b>{Math.round(summary.success_rate * 100)}%</b></div><div className="bg-[#fffaf1] p-3">平均耗时<br /><b>{summary.average_duration_ms}ms</b></div><div className="bg-[#fffaf1] p-3">好评率<br /><b>{summary.feedback_count ? `${Math.round(summary.helpful_rate * 100)}%` : "—"}</b></div></section>}
           {loading && <p className="text-sm text-ink/55">正在读取记录…</p>}
           {error && <p className="text-sm text-tomato">{error}</p>}
           {!loading && !error && records.length === 0 && <p className="text-sm text-ink/55">当前还没有查询记录。</p>}

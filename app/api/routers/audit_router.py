@@ -5,11 +5,18 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from app.api.dependencies import get_current_user
-from app.api.schemas.audit_schema import QueryAuditSchema, QueryFeedbackSchema
+from app.api.schemas.audit_schema import (
+    QualitySummarySchema,
+    QueryAuditSchema,
+    QueryFeedbackSchema,
+    RenameSessionSchema,
+    SessionSchema,
+)
 from app.audit.service import query_audit_service
 from app.auth.service import UserIdentity
 
 audit_router = APIRouter(prefix="/api/audits", tags=["audits"])
+session_router = APIRouter(prefix="/api/sessions", tags=["sessions"])
 
 
 @audit_router.get("/me", response_model=list[QueryAuditSchema])
@@ -39,3 +46,46 @@ async def submit_feedback(
             detail="未找到可反馈的查询记录。",
         )
     return record
+
+
+@audit_router.get("/quality-summary", response_model=QualitySummarySchema)
+async def quality_summary(user: Annotated[UserIdentity, Depends(get_current_user)]):
+    """仅管理员可查看全局问数质量统计。"""
+
+    if user.role != "admin":
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="无权查看质量看板。")
+    return query_audit_service.quality_summary()
+
+
+@session_router.get("", response_model=list[SessionSchema])
+async def list_sessions(user: Annotated[UserIdentity, Depends(get_current_user)]):
+    return query_audit_service.list_sessions(user.username)
+
+
+@session_router.patch("/{session_id}", response_model=SessionSchema)
+async def rename_session(
+    session_id: str,
+    payload: RenameSessionSchema,
+    user: Annotated[UserIdentity, Depends(get_current_user)],
+):
+    if not query_audit_service.rename_session(user.username, session_id, payload.title):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="未找到会话。")
+    return next(item for item in query_audit_service.list_sessions(user.username) if item["session_id"] == session_id)
+
+
+@session_router.get("/{session_id}", response_model=list[QueryAuditSchema])
+async def session_detail(
+    session_id: str, user: Annotated[UserIdentity, Depends(get_current_user)]
+):
+    records = query_audit_service.list_for_session(user.username, session_id)
+    if records is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="未找到会话。")
+    return records
+
+
+@session_router.delete("/{session_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_session(
+    session_id: str, user: Annotated[UserIdentity, Depends(get_current_user)]
+):
+    if not query_audit_service.delete_session(user.username, session_id):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="未找到会话。")

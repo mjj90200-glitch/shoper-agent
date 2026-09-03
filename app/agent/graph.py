@@ -9,6 +9,7 @@
 
 import asyncio
 
+from langgraph.checkpoint.base import BaseCheckpointSaver
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.constants import END, START
 from langgraph.graph import StateGraph
@@ -136,8 +137,30 @@ graph_builder.add_edge("run_sql", "analyze_result")
 graph_builder.add_edge("analyze_result", END)
 graph_builder.add_edge("respond_sql_rejected", END)
 
-# 编译后的 graph 是对外使用的 Agent 执行入口
+# `graph` 是单元测试和脚本的内存回退图；真实 API 会在 lifespan 中注入 SQLite
+# Checkpointer 并通过 `get_graph()` 取得持久化实例。
 graph = graph_builder.compile(checkpointer=InMemorySaver())
+_persistent_graph = None
+
+
+def configure_checkpointer(checkpointer: BaseCheckpointSaver) -> None:
+    """使用应用生命周期持有的 Checkpointer 编译 API 运行图。"""
+
+    global _persistent_graph
+    _persistent_graph = graph_builder.compile(checkpointer=checkpointer)
+
+
+def clear_persistent_graph() -> None:
+    """关闭应用时释放对生命周期 Checkpointer 的图引用。"""
+
+    global _persistent_graph
+    _persistent_graph = None
+
+
+def get_graph():
+    """优先返回 SQLite 持久化图；未启动 API 时退回内存图。"""
+
+    return _persistent_graph or graph
 
 # print(graph.get_graph().draw_mermaid())
 

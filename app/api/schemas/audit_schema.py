@@ -23,3 +23,24 @@ class QueryAuditSchema(BaseModel):
     feedback_at: str | None
     started_at: str
     duration_ms: int | None
+
+
+class QualitySummarySchema(BaseModel):
+    total_queries: int
+    completed_queries: int
+    success_rate: float
+    average_duration_ms: int
+    feedback_count: int
+    helpful_rate: float
+    negative_feedback: list[dict]
+
+
+class SessionSchema(BaseModel):
+    session_id: str
+    title: str
+    created_at: str
+    updated_at: str
+
+
+class RenameSessionSchema(BaseModel):
+    title: str = Field(min_length=1, max_length=80)

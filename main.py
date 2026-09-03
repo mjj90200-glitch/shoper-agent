@@ -11,7 +11,7 @@ import uuid
 from fastapi import FastAPI, Request
 
 from app.api.lifespan import lifespan
-from app.api.routers.audit_router import audit_router
+from app.api.routers.audit_router import audit_router, session_router
 from app.api.routers.auth_router import auth_router
 from app.api.routers.query_router import query_router
 from app.core.context import request_id_ctx_var
@@ -23,6 +23,7 @@ app = FastAPI(lifespan=lifespan)
 app.include_router(query_router)
 app.include_router(auth_router)
 app.include_router(audit_router)
+app.include_router(session_router)
 
 
 @app.middleware("http")

@@ -1,4 +1,4 @@
-import type { QueryAudit } from "../types/agent";
+import type { QualitySummary, QueryAudit } from "../types/agent";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, "") ?? "";
 
@@ -10,6 +10,12 @@ export async function fetchMyAudits(accessToken: string): Promise<QueryAudit[]> 
     throw new Error("无法读取审计记录。");
   }
   return response.json() as Promise<QueryAudit[]>;
+}
+
+export async function fetchQualitySummary(accessToken: string): Promise<QualitySummary> {
+  const response = await fetch(`${API_BASE_URL}/api/audits/quality-summary`, { headers: { Authorization: `Bearer ${accessToken}` } });
+  if (!response.ok) throw new Error("无法读取质量统计。");
+  return response.json() as Promise<QualitySummary>;
 }
 
 export async function submitAuditFeedback(
