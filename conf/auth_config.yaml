@@ -1,5 +1,7 @@
 # 仅供本地演示。生产环境应改用企业身份提供商和持久化会话存储。
 session_ttl_minutes: 480
+# 本地演示令牌签名密钥。生产环境应从密钥管理服务或环境变量注入。
+token_signing_secret: shopkeeper-local-demo-token-v1-2026
 users:
   - username: admin
     display_name: 系统管理员

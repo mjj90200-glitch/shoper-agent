@@ -2,12 +2,6 @@ version = 1
 revision = 3
 requires-python = ">=3.14"
 
-[manifest]
-members = [
-    "shopkeeper-agent",
-    "shopkeeper-agent-main",
-]
-
 [[package]]
 name = "aiohappyeyeballs"
 version = "2.6.1"
@@ -1743,11 +1737,6 @@ dev = [
     { name = "pre-commit", specifier = ">=4.3.0" },
     { name = "ruff", specifier = ">=0.11.0" },
 ]
-
-[[package]]
-name = "shopkeeper-agent-main"
-version = "0.1.0"
-source = { virtual = "shopkeeper-agent-main" }
 
 [[package]]
 name = "six"

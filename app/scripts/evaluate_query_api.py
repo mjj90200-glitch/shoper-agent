@@ -142,7 +142,7 @@ def main() -> None:
     parser.add_argument("--password", default="admin123", help="本地演示密码")
     args = parser.parse_args()
 
-    cases = json.loads(args.cases.read_text())
+    cases = json.loads(args.cases.read_text(encoding="utf-8"))
     access_token = login(args.base_url, args.username, args.password, args.timeout)
     report = evaluate_cases(args.base_url, cases, args.timeout, access_token)
     summary = summarize_report(report)

@@ -2,6 +2,7 @@
 
 import asyncio
 import unittest
+from decimal import Decimal
 from types import SimpleNamespace
 
 from app.agent.nodes.analyze_result import analyze_result_node
@@ -42,6 +43,17 @@ class ResultAnalysisTests(unittest.TestCase):
         )
         self.assertEqual(len(analysis["chart"]["data"]), 12)
         self.assertTrue(analysis["chart"]["truncated"])
+
+    def test_decimal_and_serialized_numbers_are_chartable(self):
+        analysis = analyze_result(
+            [
+                {"月份": "1月", "销售总额": Decimal("1200.50")},
+                {"月份": "2月", "销售总额": "980.25"},
+            ]
+        )
+        self.assertEqual(analysis["chart"]["type"], "line")
+        self.assertEqual(analysis["chart"]["value_key"], "销售总额")
+        self.assertIn("合计", analysis["summary"])
 
     def test_node_emits_analysis_event(self):
         events = []

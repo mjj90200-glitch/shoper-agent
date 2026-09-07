@@ -1,0 +1,117 @@
+"""把业务分析目标拆成可审核、可逐步问数的执行计划。"""
+
+import json
+
+from app.agent.llm import llm
+from app.api.schemas.analysis_schema import (
+    AnalysisPlanResponse,
+    AnalysisPlanStep,
+    AnalysisReport,
+    AnalysisSummaryRequest,
+)
+
+WAREHOUSE_SCOPE = """
+当前数仓是电商销售数仓，仅包含：地区、客户、商品、日期和订单事实。
+可分析销售额、销量、订单、商品、品类、品牌、地区、会员等级和日期趋势。
+不得编造库存、成本、利润、广告、流量、竞品或外部市场数据。
+""".strip()
+
+
+def fallback_plan(goal: str) -> AnalysisPlanResponse:
+    concise_goal = " ".join(goal.split())
+    title = concise_goal[:18] + ("…" if len(concise_goal) > 18 else "")
+    return AnalysisPlanResponse(
+        title=title,
+        summary="围绕目标先建立整体基线，再拆解关键维度并定位值得关注的差异。",
+        steps=[
+            AnalysisPlanStep(
+                id="baseline",
+                title="建立整体基线",
+                question=f"围绕“{concise_goal}”，统计相关的总体销售额、销量和订单量",
+                purpose="明确当前总体规模，作为后续比较基准。",
+            ),
+            AnalysisPlanStep(
+                id="trend",
+                title="观察时间趋势",
+                question=f"围绕“{concise_goal}”，按月统计销售额和销量并按时间排序",
+                purpose="识别增长、回落和异常时间点。",
+            ),
+            AnalysisPlanStep(
+                id="breakdown",
+                title="拆解关键维度",
+                question=f"围绕“{concise_goal}”，按地区和商品品类分析销售额，列出贡献最高的前 10 项",
+                purpose="定位主要贡献来源和结构差异。",
+            ),
+        ],
+    )
+
+
+class AnalysisPlanningService:
+    async def create_plan(self, goal: str) -> AnalysisPlanResponse:
+        prompt = f"""
+你是电商数据分析规划师。请把用户目标拆成 2 到 5 个可以独立交给问数智能体执行的问题。
+
+{WAREHOUSE_SCOPE}
+
+要求：
+1. 每一步只查询当前数仓，问题必须具体、可生成 SQL。
+2. 步骤由整体到局部，避免重复。
+3. 不承诺因果结论，只做数仓现有数据支持的描述性分析。
+4. id 使用简短英文小写标识；标题、问题、目的使用中文。
+5. 只返回一个 JSON 对象，不要 Markdown。格式为：
+{{"title":"分析标题","summary":"计划摘要","steps":[{{"id":"baseline","title":"步骤标题","question":"可直接执行的问数问题","purpose":"本步骤用途"}}]}}
+
+用户目标：{goal}
+""".strip()
+        try:
+            response = await llm.ainvoke(prompt)
+            content = response.content
+            if isinstance(content, list):
+                content = "".join(str(part) for part in content)
+            raw = str(content)
+            start, end = raw.find("{"), raw.rfind("}")
+            if start < 0 or end <= start:
+                raise ValueError("规划模型没有返回 JSON")
+            return AnalysisPlanResponse.model_validate(json.loads(raw[start : end + 1]))
+        except Exception:
+            # 规划服务不可用时仍给出可审核的保守计划，执行阶段继续走既有问数链路。
+            return fallback_plan(goal)
+
+    async def summarize(self, payload: AnalysisSummaryRequest) -> AnalysisReport:
+        compact_steps = [
+            {
+                "title": step.title,
+                "question": step.question,
+                "analysis": step.analysis,
+                "result": step.result[:20] if isinstance(step.result, list) else step.result,
+            }
+            for step in payload.steps
+        ]
+        prompt = f"""
+你是电商数据分析师。只依据给出的真实查询结果完成综合分析，不得补造数字或因果关系。
+分析目标：{payload.goal}
+步骤结果：{json.dumps(compact_steps, ensure_ascii=False, default=str)}
+
+只返回 JSON：
+{{"overview":"总体结论","findings":["关键发现"],"recommendations":["可执行建议"],"cautions":["口径或数据限制"]}}
+""".strip()
+        try:
+            response = await llm.ainvoke(prompt)
+            raw = str(response.content)
+            start, end = raw.find("{"), raw.rfind("}")
+            return AnalysisReport.model_validate(json.loads(raw[start : end + 1]))
+        except Exception:
+            findings = []
+            for step in payload.steps:
+                summary = (step.analysis or {}).get("summary")
+                if summary:
+                    findings.append(f"{step.title}：{summary}")
+            return AnalysisReport(
+                overview=f"已围绕“{payload.goal}”完成 {len(payload.steps)} 个分析步骤。",
+                findings=findings or ["各分析步骤已完成，请结合下方图表与明细查看结果。"],
+                recommendations=["优先复核贡献最高和变化最明显的维度，再结合业务背景制定行动。"],
+                cautions=["结论仅基于当前电商数仓中的销售数据，不代表因果关系。"],
+            )
+
+
+analysis_planning_service = AnalysisPlanningService()

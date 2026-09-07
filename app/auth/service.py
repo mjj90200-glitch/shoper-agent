@@ -1,7 +1,9 @@
 """零外部依赖的本地演示认证服务。"""
 
+import base64
 import hashlib
 import hmac
+import json
 import secrets
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
@@ -36,18 +38,13 @@ class _ConfiguredUser:
     password_hash: str
 
 
-@dataclass(frozen=True)
-class _Session:
-    identity: UserIdentity
-    expires_at: datetime
-
-
 class LocalAuthService:
-    """内存令牌 + 配置文件账号，仅用于本地演示。"""
+    """使用稳定签名令牌的本地演示认证服务，可跨后端重启验证。"""
 
     def __init__(self, config_path: Path):
-        config = yaml.safe_load(config_path.read_text())
+        config = yaml.safe_load(config_path.read_text(encoding="utf-8"))
         self._ttl = timedelta(minutes=config["session_ttl_minutes"])
+        self._signing_secret = config["token_signing_secret"].encode("utf-8")
         self._users = {
             item["username"]: _ConfiguredUser(
                 identity=UserIdentity(
@@ -62,7 +59,7 @@ class LocalAuthService:
             )
             for item in config["users"]
         }
-        self._sessions: dict[str, _Session] = {}
+        self._revoked_tokens: set[str] = set()
 
     @staticmethod
     def _password_hash(password: str, salt: str) -> str:
@@ -77,22 +74,48 @@ class LocalAuthService:
         actual_hash = self._password_hash(password, configured_user.password_salt)
         if not hmac.compare_digest(actual_hash, configured_user.password_hash):
             return None
-        token = secrets.token_urlsafe(32)
-        self._sessions[token] = _Session(
-            identity=configured_user.identity,
-            expires_at=datetime.now(UTC) + self._ttl,
-        )
+        now = datetime.now(UTC)
+        payload = {
+            "sub": configured_user.identity.username,
+            "iat": int(now.timestamp()),
+            "exp": int((now + self._ttl).timestamp()),
+            "jti": secrets.token_urlsafe(12),
+        }
+        body = self._encode(json.dumps(payload, separators=(",", ":"), sort_keys=True).encode("utf-8"))
+        signature = self._sign(body)
+        token = f"{body}.{signature}"
         return token, configured_user.identity
 
     def get_identity(self, token: str) -> UserIdentity | None:
-        session = self._sessions.get(token)
-        if session is None or session.expires_at <= datetime.now(UTC):
-            self._sessions.pop(token, None)
+        if token in self._revoked_tokens:
             return None
-        return session.identity
+        try:
+            body, signature = token.split(".", 1)
+            if not hmac.compare_digest(signature, self._sign(body)):
+                return None
+            payload = json.loads(self._decode(body))
+            if int(payload["exp"]) <= int(datetime.now(UTC).timestamp()):
+                return None
+            configured_user = self._users.get(str(payload["sub"]))
+            return configured_user.identity if configured_user else None
+        except (ValueError, KeyError, TypeError, json.JSONDecodeError):
+            return None
 
     def revoke(self, token: str) -> None:
-        self._sessions.pop(token, None)
+        self._revoked_tokens.add(token)
+
+    @staticmethod
+    def _encode(value: bytes) -> str:
+        return base64.urlsafe_b64encode(value).rstrip(b"=").decode("ascii")
+
+    @staticmethod
+    def _decode(value: str) -> bytes:
+        padding = "=" * (-len(value) % 4)
+        return base64.urlsafe_b64decode(value + padding)
+
+    def _sign(self, body: str) -> str:
+        digest = hmac.new(self._signing_secret, body.encode("ascii"), hashlib.sha256).digest()
+        return self._encode(digest)
 
 
 project_root = Path(__file__).parents[2]

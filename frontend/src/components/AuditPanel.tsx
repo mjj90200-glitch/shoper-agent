@@ -36,25 +36,25 @@ export function AuditPanel({ accessToken, isAdmin, onClose }: AuditPanelProps) {
   }, [accessToken, isAdmin]);
 
   return (
-    <div className="fixed inset-0 z-20 bg-ink/25 p-4 sm:p-8" role="dialog" aria-modal="true" aria-label="查询审计记录">
-      <section className="ml-auto flex h-full w-full max-w-xl flex-col bg-[#fffaf1] shadow-line">
-        <header className="flex items-center justify-between border-b border-ink/10 px-5 py-4">
+    <div className="fixed inset-0 z-20 bg-slate-950/45 p-4 backdrop-blur-sm sm:p-8" role="dialog" aria-modal="true" aria-label="查询审计记录">
+      <section className="ml-auto flex h-full w-full max-w-xl flex-col overflow-hidden rounded-3xl bg-white shadow-panel">
+        <header className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
           <div>
             <h2 className="flex items-center gap-2 font-semibold"><FileSearch className="h-4 w-4 text-moss" />查询审计</h2>
-            <p className="mt-1 text-xs text-ink/50">仅显示当前登录用户、本次服务进程内的最近记录</p>
+            <p className="mt-1 text-xs text-slate-500">仅显示当前登录用户、本次服务进程内的最近记录</p>
           </div>
-          <button type="button" onClick={onClose} className="grid h-8 w-8 place-items-center text-ink/55 hover:bg-ink/5" aria-label="关闭审计记录">
+          <button type="button" onClick={onClose} className="grid h-8 w-8 place-items-center rounded-xl text-slate-400 hover:bg-slate-100 hover:text-slate-800" aria-label="关闭审计记录">
             <X className="h-4 w-4" />
           </button>
         </header>
 
         <div className="min-h-0 flex-1 space-y-3 overflow-y-auto p-4">
-          {summary && <section className="grid grid-cols-2 gap-px bg-ink/10 text-center text-xs"><div className="bg-[#fffaf1] p-3">总问数<br /><b>{summary.total_queries}</b></div><div className="bg-[#fffaf1] p-3">成功率<br /><b>{Math.round(summary.success_rate * 100)}%</b></div><div className="bg-[#fffaf1] p-3">平均耗时<br /><b>{summary.average_duration_ms}ms</b></div><div className="bg-[#fffaf1] p-3">好评率<br /><b>{summary.feedback_count ? `${Math.round(summary.helpful_rate * 100)}%` : "—"}</b></div></section>}
+          {summary && <section className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl bg-blue-100 text-center text-xs"><div className="bg-blue-50 p-3">总问数<br /><b>{summary.total_queries}</b></div><div className="bg-blue-50 p-3">成功率<br /><b>{Math.round(summary.success_rate * 100)}%</b></div><div className="bg-blue-50 p-3">平均耗时<br /><b>{summary.average_duration_ms}ms</b></div><div className="bg-blue-50 p-3">好评率<br /><b>{summary.feedback_count ? `${Math.round(summary.helpful_rate * 100)}%` : "—"}</b></div></section>}
           {loading && <p className="text-sm text-ink/55">正在读取记录…</p>}
           {error && <p className="text-sm text-tomato">{error}</p>}
           {!loading && !error && records.length === 0 && <p className="text-sm text-ink/55">当前还没有查询记录。</p>}
           {records.map((record) => (
-            <article key={record.id} className="border border-ink/12 bg-white/60 p-3 text-sm">
+            <article key={record.id} className="rounded-2xl border border-slate-200 bg-white p-4 text-sm shadow-line">
               <div className="mb-2 flex items-center justify-between gap-3 text-xs text-ink/50">
                 <span className="inline-flex items-center gap-1"><Clock3 className="h-3.5 w-3.5" />{formatTime(record.started_at)}</span>
                 <span className={record.status === "succeeded" ? "text-moss" : "text-tomato"}>

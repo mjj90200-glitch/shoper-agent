@@ -36,14 +36,14 @@ export function FeedbackControls({
   };
 
   return (
-    <section className="mt-4 border-t border-ink/10 pt-3 text-xs text-ink/55">
+    <section className="mt-4 border-t border-slate-100 pt-3 text-xs text-slate-500">
       <div className="flex items-center gap-2">
         <span>本次回答有帮助吗？</span>
         <button
           type="button"
           disabled={saving}
           onClick={() => void save("up")}
-          className={`inline-flex items-center gap-1 px-2 py-1 transition hover:bg-moss/10 disabled:opacity-50 ${score === "up" ? "bg-moss/10 text-moss" : ""}`}
+          className={`inline-flex items-center gap-1 rounded-lg px-2 py-1 transition hover:bg-blue-50 disabled:opacity-50 ${score === "up" ? "bg-blue-50 text-moss" : ""}`}
           aria-label="有帮助"
         >
           <ThumbsUp className="h-3.5 w-3.5" />有帮助
@@ -52,7 +52,7 @@ export function FeedbackControls({
           type="button"
           disabled={saving}
           onClick={() => { setShowComment(true); void save("down"); }}
-          className={`inline-flex items-center gap-1 px-2 py-1 transition hover:bg-tomato/10 disabled:opacity-50 ${score === "down" ? "bg-tomato/10 text-tomato" : ""}`}
+          className={`inline-flex items-center gap-1 rounded-lg px-2 py-1 transition hover:bg-tomato/10 disabled:opacity-50 ${score === "down" ? "bg-tomato/10 text-tomato" : ""}`}
           aria-label="需要改进"
         >
           <ThumbsDown className="h-3.5 w-3.5" />需改进
@@ -65,9 +65,9 @@ export function FeedbackControls({
             maxLength={500}
             onChange={(event) => setComment(event.target.value)}
             placeholder="可补充原因，例如指标口径不符合预期"
-            className="min-w-0 flex-1 border border-ink/15 bg-white px-2 py-1.5 outline-none focus:border-moss"
+            className="min-w-0 flex-1 rounded-lg border border-slate-200 bg-white px-2 py-1.5 outline-none focus:border-moss"
           />
-          <button type="button" disabled={saving} onClick={() => void save("down")} className="border border-ink/20 px-2 py-1 text-ink/70 disabled:opacity-50">
+          <button type="button" disabled={saving} onClick={() => void save("down")} className="rounded-lg border border-slate-200 px-2 py-1 text-slate-600 hover:bg-slate-50 disabled:opacity-50">
             保存
           </button>
         </div>

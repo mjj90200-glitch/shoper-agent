@@ -136,3 +136,13 @@ export type ChatMessage = {
   auditId?: string;
   feedbackScore?: "up" | "down";
 };
+
+export type ChatConversation = {
+  sessionId: string;
+  title: string;
+  messages: ChatMessage[];
+  createdAt: number;
+  updatedAt: number;
+  customTitle?: boolean;
+  remote?: boolean;
+};

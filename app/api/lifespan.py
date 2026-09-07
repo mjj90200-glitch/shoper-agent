@@ -14,6 +14,7 @@ from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 
 from app.agent.graph import clear_persistent_graph, configure_checkpointer
 from app.audit.service import query_audit_service
+from app.services.analysis_project_service import analysis_project_service
 from app.clients.embedding_client_manager import embedding_client_manager
 from app.clients.es_client_manager import es_client_manager
 from app.clients.mysql_client_manager import (
@@ -30,6 +31,7 @@ async def lifespan(app: FastAPI):
     database_path = Path(__file__).parents[2] / "data" / "langgraph-checkpoints.sqlite"
     database_path.parent.mkdir(parents=True, exist_ok=True)
     query_audit_service.configure_database(database_path.parent / "shopkeeper-state.sqlite")
+    analysis_project_service.configure_database(database_path.parent / "shopkeeper-state.sqlite")
 
     # Checkpointer 连接必须覆盖整个应用运行期，图实例才能持续写入同一 SQLite 文件。
     async with AsyncSqliteSaver.from_conn_string(str(database_path)) as checkpointer:

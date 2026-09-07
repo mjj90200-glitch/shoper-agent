@@ -3,6 +3,7 @@
  * 封装后端 /api/query SSE 流式接口请求与事件解析逻辑
  */
 import type { AgentEvent } from "../types/agent";
+import { authenticatedFetch } from "./http";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, "") ?? "";
 
@@ -14,7 +15,7 @@ type QueryOptions = {
 };
 
 export async function streamQuery(query: string, options: QueryOptions) {
-  const response = await fetch(`${API_BASE_URL}/api/query`, {
+  const response = await authenticatedFetch(`${API_BASE_URL}/api/query`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

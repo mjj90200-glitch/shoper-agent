@@ -13,7 +13,7 @@ from app.scripts.evaluate_query_api import (
 
 class QueryEvaluatorTests(unittest.TestCase):
     def test_eval_cases_cover_required_scenarios(self):
-        cases = json.loads(Path("evals/query_cases.json").read_text())
+        cases = json.loads(Path("evals/query_cases.json").read_text(encoding="utf-8"))
         turns = [turn for case in cases for turn in case["turns"]]
         self.assertEqual(len(cases), 30)
         self.assertEqual(len(turns), 35)

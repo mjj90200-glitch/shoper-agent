@@ -1,9 +1,10 @@
 import type { QualitySummary, QueryAudit } from "../types/agent";
+import { authenticatedFetch } from "./http";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, "") ?? "";
 
 export async function fetchMyAudits(accessToken: string): Promise<QueryAudit[]> {
-  const response = await fetch(`${API_BASE_URL}/api/audits/me`, {
+  const response = await authenticatedFetch(`${API_BASE_URL}/api/audits/me`, {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
   if (!response.ok) {
@@ -13,7 +14,7 @@ export async function fetchMyAudits(accessToken: string): Promise<QueryAudit[]> 
 }
 
 export async function fetchQualitySummary(accessToken: string): Promise<QualitySummary> {
-  const response = await fetch(`${API_BASE_URL}/api/audits/quality-summary`, { headers: { Authorization: `Bearer ${accessToken}` } });
+  const response = await authenticatedFetch(`${API_BASE_URL}/api/audits/quality-summary`, { headers: { Authorization: `Bearer ${accessToken}` } });
   if (!response.ok) throw new Error("无法读取质量统计。");
   return response.json() as Promise<QualitySummary>;
 }
@@ -24,7 +25,7 @@ export async function submitAuditFeedback(
   score: "up" | "down",
   comment?: string,
 ): Promise<QueryAudit> {
-  const response = await fetch(`${API_BASE_URL}/api/audits/${auditId}/feedback`, {
+  const response = await authenticatedFetch(`${API_BASE_URL}/api/audits/${auditId}/feedback`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",

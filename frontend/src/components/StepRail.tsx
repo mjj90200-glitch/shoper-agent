@@ -1,8 +1,8 @@
 /**
  * 智能体执行流程图组件
- * 按 LangGraph 节点拓扑展示各步骤状态
+ * 展开时按原有 LangGraph 节点拓扑展示，折叠时保留轻量 SSE 状态。
  */
-import { Check, Circle, LoaderCircle, X } from "lucide-react";
+import { Check, Circle, LoaderCircle, Radio, X } from "lucide-react";
 import { cn } from "../lib/format";
 import type { ProgressStatus, StepState } from "../types/agent";
 
@@ -10,6 +10,7 @@ type FlowStatus = ProgressStatus | "pending";
 
 type FlowNode = {
   step: string;
+  eventStep?: string;
   x: number;
   y: number;
   w?: number;
@@ -23,7 +24,13 @@ const nodes: FlowNode[] = [
   { step: "合并召回信息", x: 410, y: 214 },
   { step: "过滤指标信息", x: 290, y: 318 },
   { step: "过滤表信息", x: 530, y: 318 },
-  { step: "增加额外上下文", x: 410, y: 422, w: 176 },
+  {
+    step: "增加额外上下文",
+    eventStep: "添加额外上下文",
+    x: 410,
+    y: 422,
+    w: 176,
+  },
   { step: "生成SQL", x: 410, y: 526 },
   { step: "校验SQL", x: 410, y: 630 },
   { step: "校正SQL", x: 670, y: 630 },
@@ -90,19 +97,19 @@ function FlowNodeCard({ node, status }: { node: FlowNode; status: FlowStatus }) 
     >
       <div
         className={cn(
-          "flex h-10 items-center gap-2 border px-3 text-sm font-semibold shadow-line transition",
-          status === "pending" && "border-ink/10 bg-white/55 text-ink/45",
-          status === "running" && "border-brass/45 bg-brass/15 text-ink",
-          status === "success" && "border-moss/25 bg-moss/10 text-ink",
-          status === "error" && "border-tomato/35 bg-tomato/10 text-tomato",
+          "flex h-10 items-center gap-2 rounded-xl border px-3 text-sm font-semibold shadow-line transition",
+          status === "pending" && "border-slate-200 bg-white/70 text-slate-400",
+          status === "running" && "border-blue-300 bg-blue-50 text-moss shadow-md shadow-moss/10",
+          status === "success" && "border-cyan-200 bg-cyan-50 text-slate-700",
+          status === "error" && "border-red-200 bg-red-50 text-tomato",
         )}
       >
         <span
           className={cn(
             "grid h-6 w-6 shrink-0 place-items-center rounded-full",
-            status === "pending" && "bg-ink/5 text-ink/35",
-            status === "running" && "bg-brass/20 text-brass",
-            status === "success" && "bg-moss/15 text-moss",
+            status === "pending" && "bg-slate-100 text-slate-400",
+            status === "running" && "bg-blue-100 text-moss",
+            status === "success" && "bg-cyan-100 text-cyan-600",
             status === "error" && "bg-tomato/15 text-tomato",
           )}
         >
@@ -114,16 +121,44 @@ function FlowNodeCard({ node, status }: { node: FlowNode; status: FlowStatus }) 
   );
 }
 
+export function CompactStepStatus({ steps = [] }: { steps?: StepState[] }) {
+  if (steps.length === 0) return null;
+
+  const running = [...steps].reverse().find((item) => item.status === "running");
+  const failed = [...steps].reverse().find((item) => item.status === "error");
+  const latest = running ?? failed ?? steps[steps.length - 1];
+  const finished = steps.filter((item) => item.status === "success").length;
+
+  return (
+    <div
+      className="mt-3 flex min-w-0 items-center gap-2 border-l-2 border-moss/30 px-3 py-1.5 text-xs text-slate-400"
+      aria-live="polite"
+    >
+      <Radio
+        className={cn("h-3 w-3 shrink-0", running && "animate-pulse text-brass/65")}
+        aria-hidden="true"
+      />
+      <span className="truncate">
+        {running
+          ? `SSE 进行中 · ${latest.step}`
+          : failed
+            ? `流程中断 · ${latest.step}`
+            : `流程已完成 · ${finished} 个节点`}
+      </span>
+    </div>
+  );
+}
+
 export function StepRail({ steps = [] }: { steps?: StepState[] }) {
   if (steps.length === 0) return null;
 
   const statusMap = getStatusMap(steps);
 
   return (
-    <section className="mt-4 border border-ink/10 bg-white/40 px-3 py-4 shadow-line">
+    <section className="mt-4 rounded-2xl border border-slate-200 bg-slate-50/70 px-3 py-4 shadow-line">
       <div className="mb-3 flex items-center justify-between gap-3 px-1">
         <div className="text-sm font-semibold text-ink">执行流程</div>
-        <div className="text-xs text-ink/45">LangGraph</div>
+        <div className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-moss">LangGraph</div>
       </div>
 
       <div className="overflow-x-auto">
@@ -143,14 +178,14 @@ export function StepRail({ steps = [] }: { steps?: StepState[] }) {
                 refX="6"
                 refY="4"
               >
-                <path d="M0 0 L8 4 L0 8 Z" fill="rgba(32,32,29,0.58)" />
+                <path d="M0 0 L8 4 L0 8 Z" fill="rgba(100,116,139,0.72)" />
               </marker>
             </defs>
             {connectors.map((path) => (
               <path
                 key={path}
                 d={path}
-                stroke="rgba(32,32,29,0.5)"
+                stroke="rgba(100,116,139,0.55)"
                 strokeWidth="1.5"
                 markerEnd="url(#flow-arrow)"
               />
@@ -160,7 +195,7 @@ export function StepRail({ steps = [] }: { steps?: StepState[] }) {
                 key={label.text}
                 x={label.x}
                 y={label.y}
-                fill="rgba(32,32,29,0.62)"
+                fill="rgba(71,85,105,0.72)"
                 fontSize="13"
                 fontWeight="600"
               >
@@ -173,7 +208,7 @@ export function StepRail({ steps = [] }: { steps?: StepState[] }) {
             <FlowNodeCard
               key={node.step}
               node={node}
-              status={statusFor(node.step, statusMap)}
+              status={statusFor(node.eventStep ?? node.step, statusMap)}
             />
           ))}
         </div>

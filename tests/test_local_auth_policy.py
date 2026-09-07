@@ -1,10 +1,11 @@
 """本地演示账号和数据权限规则测试。"""
 
 import unittest
+from pathlib import Path
 
 from app.agent.sql_guardrail import SQLSafetyError
 from app.auth.policy import enforce_data_policy, mask_sensitive_rows
-from app.auth.service import UserIdentity, local_auth_service
+from app.auth.service import LocalAuthService, UserIdentity, local_auth_service
 
 
 class LocalAuthPolicyTests(unittest.TestCase):
@@ -30,6 +31,17 @@ class LocalAuthPolicyTests(unittest.TestCase):
 
     def test_wrong_password_is_rejected(self):
         self.assertIsNone(local_auth_service.authenticate("admin", "wrong-password"))
+
+    def test_login_token_survives_service_restart(self):
+        config_path = Path(__file__).parents[1] / "conf" / "auth_config.yaml"
+        first_service = LocalAuthService(config_path)
+        second_service = LocalAuthService(config_path)
+        token, user = first_service.authenticate("admin", "admin123") or ("", self.admin)
+        self.assertEqual(second_service.get_identity(token), user)
+
+    def test_tampered_login_token_is_rejected(self):
+        token, _ = local_auth_service.authenticate("admin", "admin123") or ("", self.admin)
+        self.assertIsNone(local_auth_service.get_identity(f"{token}changed"))
 
     def test_region_manager_requires_its_region_filter(self):
         safe_sql = """
