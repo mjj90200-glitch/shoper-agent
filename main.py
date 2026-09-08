@@ -11,8 +11,8 @@ import uuid
 from fastapi import FastAPI, Request
 
 from app.api.lifespan import lifespan
-from app.api.routers.audit_router import audit_router, session_router
 from app.api.routers.analysis_router import analysis_router
+from app.api.routers.audit_router import audit_router, session_router
 from app.api.routers.auth_router import auth_router
 from app.api.routers.query_router import query_router
 from app.core.context import request_id_ctx_var

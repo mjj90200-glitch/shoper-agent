@@ -7,6 +7,7 @@ import {
   CircleAlert,
   Download,
   FileText,
+  Link2,
   LoaderCircle,
   PencilLine,
   Play,
@@ -15,13 +16,19 @@ import {
   Sparkles,
   Trash2,
 } from "lucide-react";
-import { useMemo, useState } from "react";
-import { createAnalysisPlan, createAnalysisSummary } from "../lib/analysisApi";
-import { streamQuery } from "../lib/agentApi";
+import { useEffect, useMemo, useState } from "react";
+import {
+  askAnalysisFollowUp,
+  createAnalysisPlan,
+  createAnalysisSummary,
+  fetchAnalysisProject,
+  runAnalysisProject,
+  saveAnalysisProject,
+  stopAnalysisProject,
+} from "../lib/analysisApi";
 import { normalizeRows } from "../lib/dataAnalysis";
 import { cn } from "../lib/format";
-import type { AgentEvent, StepState } from "../types/agent";
-import type { AnalysisPlanStep, AnalysisStepRun, DataAnalysisProject } from "../types/analysis";
+import type { AnalysisPlanStep, DataAnalysisProject } from "../types/analysis";
 import { ResultInsight } from "./ResultInsight";
 import { ResultTable } from "./ResultTable";
 
@@ -31,16 +38,14 @@ type Props = {
   onChange: (project: DataAnalysisProject) => void;
 };
 
-function upsertProgress(items: StepState[], event: Extract<AgentEvent, { type: "progress" }>) {
-  return [...items.filter((item) => item.step !== event.step), { step: event.step, status: event.status, updatedAt: Date.now() }];
-}
-
 export function AnalysisWorkspace({ project, accessToken, onChange }: Props) {
   const [goal, setGoal] = useState(project.goal);
   const [planning, setPlanning] = useState(false);
-  const [controller, setController] = useState<AbortController | null>(null);
+  const [commanding, setCommanding] = useState(false);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [notice, setNotice] = useState<string | null>(null);
+  const [followUpQuestion, setFollowUpQuestion] = useState("");
+  const [askingFollowUp, setAskingFollowUp] = useState(false);
   const completed = project.runs.filter((run) => run.status === "done").length;
   const isRunning = project.status === "running";
 
@@ -48,6 +53,29 @@ export function AnalysisWorkspace({ project, accessToken, onChange }: Props) {
     () => new Map(project.runs.map((run) => [run.stepId, run])),
     [project.runs],
   );
+
+  useEffect(() => {
+    if (!isRunning) return;
+    let cancelled = false;
+    let timer: number | undefined;
+    const poll = async () => {
+      try {
+        const latest = await fetchAnalysisProject(project.id, accessToken);
+        if (cancelled) return;
+        onChange(latest);
+        if (latest.status === "running") timer = window.setTimeout(poll, 800);
+      } catch (error) {
+        if (cancelled) return;
+        setNotice(error instanceof Error ? error.message : "暂时无法获取分析进度");
+        timer = window.setTimeout(poll, 1500);
+      }
+    };
+    timer = window.setTimeout(poll, 250);
+    return () => {
+      cancelled = true;
+      if (timer !== undefined) window.clearTimeout(timer);
+    };
+  }, [accessToken, isRunning, project.id]);
 
   const updateProject = (patch: Partial<DataAnalysisProject>) => {
     onChange({ ...project, ...patch, updatedAt: Date.now() });
@@ -108,77 +136,52 @@ export function AnalysisWorkspace({ project, accessToken, onChange }: Props) {
       setNotice("请先补全每个步骤的查询问题");
       return;
     }
-    const abortController = new AbortController();
-    setController(abortController);
+    setCommanding(true);
     setNotice(null);
-    const stepsToRun = onlyStepId
-      ? project.plan.steps.filter((step) => step.id === onlyStepId)
-      : project.status === "error"
-        ? project.plan.steps.filter((step) => runById.get(step.id)?.status === "error")
-        : project.plan.steps;
-    let working: DataAnalysisProject = {
-      ...project,
-      status: "running",
-      report: onlyStepId || project.status === "error" ? project.report : undefined,
-      runs: onlyStepId || project.status === "error"
-        ? project.runs.map((run) => stepsToRun.some((step) => step.id === run.stepId) ? { stepId: run.stepId, status: "pending", progress: [] } : run)
-        : project.plan.steps.map((step) => ({ stepId: step.id, status: "pending", progress: [] })),
-      updatedAt: Date.now(),
-    };
-    onChange(working);
-
     try {
-      for (const step of stepsToRun) {
-        if (abortController.signal.aborted) break;
-        const updateRun = (patch: Partial<AnalysisStepRun>) => {
-          working = {
-            ...working,
-            runs: working.runs.map((run) => run.stepId === step.id ? { ...run, ...patch } : run),
-            updatedAt: Date.now(),
-          };
-          onChange(working);
-        };
-        updateRun({ status: "running", progress: [] });
-        await streamQuery(step.question, {
-          sessionId: project.id,
-          accessToken,
-          signal: abortController.signal,
-          onEvent: (event) => {
-            const current = working.runs.find((run) => run.stepId === step.id)!;
-            if (event.type === "progress") updateRun({ progress: upsertProgress(current.progress, event) });
-            if (event.type === "result") updateRun({ result: event.data });
-            if (event.type === "analysis") updateRun({ analysis: { summary: event.summary, chart: event.chart } });
-            if (event.type === "sql") updateRun({ sql: event.sql });
-            if (event.type === "error") updateRun({ status: "error", error: event.message });
-          },
-        });
-        const finished = working.runs.find((run) => run.stepId === step.id)!;
-        updateRun(finished.error ? { status: "error" } : { status: "done" });
-      }
-      working = { ...working, status: abortController.signal.aborted ? "review" : working.runs.some((run) => run.status === "error") ? "error" : "complete", updatedAt: Date.now() };
-      onChange(working);
-      if (working.status === "complete") {
-        try {
-          const report = await createAnalysisSummary(working, accessToken);
-          working = { ...working, report, updatedAt: Date.now() };
-          onChange(working);
-        } catch {
-          setNotice("查询已完成，但综合报告暂时生成失败，可以稍后重新执行生成");
-        }
-      }
+      await saveAnalysisProject(project, accessToken);
+      const started = await runAnalysisProject(project.id, accessToken, onlyStepId);
+      onChange(started);
     } catch (error) {
-      if (abortController.signal.aborted) {
-        working = { ...working, status: "review", runs: working.runs.map((run) => run.status === "running" ? { ...run, status: "pending" } : run), updatedAt: Date.now() };
-        onChange(working);
-      } else {
-        const message = error instanceof Error ? error.message : "分析执行失败";
-        working = { ...working, status: "error", runs: working.runs.map((run) => run.status === "running" ? { ...run, status: "error", error: message } : run), updatedAt: Date.now() };
-        onChange(working);
-        setNotice(message);
-      }
+      setNotice(error instanceof Error ? error.message : "分析执行失败");
     } finally {
-      setController(null);
+      setCommanding(false);
     }
+  };
+
+  const stop = async () => {
+    setCommanding(true);
+    setNotice(null);
+    try {
+      onChange(await stopAnalysisProject(project.id, accessToken));
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "停止分析失败");
+    } finally {
+      setCommanding(false);
+    }
+  };
+
+  const askFollowUp = async () => {
+    const question = followUpQuestion.trim();
+    if (!question) return;
+    setAskingFollowUp(true);
+    setNotice(null);
+    try {
+      await askAnalysisFollowUp(project.id, question, accessToken);
+      onChange(await fetchAnalysisProject(project.id, accessToken));
+      setFollowUpQuestion("");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "暂时无法回答追问");
+    } finally {
+      setAskingFollowUp(false);
+    }
+  };
+
+  const revealStep = (stepId: string) => {
+    setExpanded((current) => ({ ...current, [stepId]: true }));
+    window.setTimeout(() => {
+      document.getElementById(`analysis-step-${stepId}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
   };
 
   const skipStep = async (stepId: string) => {
@@ -256,7 +259,7 @@ export function AnalysisWorkspace({ project, accessToken, onChange }: Props) {
           <div className="flex gap-2">
             {!isRunning && <button type="button" onClick={() => updateProject({ status: "draft", plan: undefined, runs: [] })} className="inline-flex h-10 items-center gap-2 rounded-xl border border-slate-200 px-3 text-sm text-slate-600 hover:bg-slate-50"><ArrowLeft className="h-4 w-4" />修改目标</button>}
             {project.status === "complete" && <><button type="button" onClick={exportCsv} className="inline-flex h-10 items-center gap-2 rounded-xl border border-slate-200 px-3 text-sm text-slate-600"><Download className="h-4 w-4" />完整数据</button><button type="button" onClick={printReport} className="inline-flex h-10 items-center gap-2 rounded-xl border border-slate-200 px-3 text-sm text-slate-600"><FileText className="h-4 w-4" />打印 / PDF</button></>}
-            <button type="button" onClick={isRunning ? () => controller?.abort() : () => execute()} className={cn("inline-flex h-10 items-center gap-2 rounded-xl px-4 text-sm font-semibold text-white", isRunning ? "bg-slate-700" : "bg-moss")}>
+            <button type="button" onClick={isRunning ? stop : () => execute()} disabled={commanding} className={cn("inline-flex h-10 items-center gap-2 rounded-xl px-4 text-sm font-semibold text-white disabled:opacity-50", isRunning ? "bg-slate-700" : "bg-moss")}>
               {isRunning ? <CircleAlert className="h-4 w-4" /> : project.status === "complete" ? <RotateCcw className="h-4 w-4" /> : <Play className="h-4 w-4" />}{isRunning ? "停止分析" : project.status === "complete" ? "重新执行" : project.status === "error" ? "重试失败步骤" : "确认并执行"}
             </button>
           </div>
@@ -268,7 +271,7 @@ export function AnalysisWorkspace({ project, accessToken, onChange }: Props) {
         {project.plan.steps.map((step, index) => {
           const run = runById.get(step.id);
           const isExpanded = expanded[step.id] ?? Boolean(run?.result);
-          return <section key={step.id} className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-line">
+          return <section id={`analysis-step-${step.id}`} key={step.id} className="scroll-mt-5 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-line">
             <div className="flex items-start gap-3 p-4 sm:p-5">
               <div className={cn("grid h-9 w-9 shrink-0 place-items-center rounded-xl text-sm font-semibold", run?.status === "done" ? "bg-emerald-50 text-emerald-600" : run?.status === "running" ? "bg-blue-50 text-moss" : run?.status === "error" ? "bg-rose-50 text-rose-600" : "bg-slate-100 text-slate-500")}>{run?.status === "done" ? <Check className="h-4 w-4" /> : run?.status === "running" ? <LoaderCircle className="h-4 w-4 animate-spin" /> : index + 1}</div>
               <div className="min-w-0 flex-1">
@@ -287,7 +290,77 @@ export function AnalysisWorkspace({ project, accessToken, onChange }: Props) {
       </div>
       {!isRunning && project.status !== "complete" && project.plan.steps.length < 6 && <button type="button" onClick={addStep} className="mt-4 inline-flex h-10 items-center gap-2 rounded-xl border border-dashed border-slate-300 px-4 text-sm text-slate-500 hover:border-moss hover:text-moss"><Plus className="h-4 w-4" />添加分析步骤</button>}
       {notice && <div className="mt-4 rounded-xl bg-rose-50 px-4 py-3 text-sm text-rose-700">{notice}</div>}
-      {project.status === "complete" && <section className="mt-5 overflow-hidden rounded-2xl bg-gradient-to-r from-blue-700 to-cyan-600 text-white shadow-lg shadow-blue-200"><div className="p-5"><div className="flex items-center gap-2 text-sm font-semibold"><BarChart3 className="h-4 w-4" />综合分析报告</div><p className="mt-3 text-sm leading-6 text-blue-50">{project.report?.overview ?? `已完成 ${completed} 个分析步骤，正在整理综合结论。`}</p></div>{project.report && <div className="grid gap-px bg-white/15 sm:grid-cols-3">{[["关键发现", project.report.findings], ["行动建议", project.report.recommendations], ["数据说明", project.report.cautions]].map(([title, items]) => <div key={title as string} className="bg-blue-700/65 p-5"><div className="text-xs font-semibold uppercase tracking-[0.14em] text-cyan-100">{title as string}</div><ul className="mt-3 space-y-2 text-xs leading-5 text-blue-50">{(items as string[]).map((item) => <li key={item}>• {item}</li>)}</ul></div>)}</div>}</section>}
+      {project.status === "complete" && (
+        <>
+          <section className="mt-5 overflow-hidden rounded-2xl bg-gradient-to-r from-blue-700 to-cyan-600 text-white shadow-lg shadow-blue-200">
+            <div className="p-5">
+              <div className="flex items-center gap-2 text-sm font-semibold"><BarChart3 className="h-4 w-4" />综合分析报告</div>
+              <p className="mt-3 text-sm leading-6 text-blue-50">{project.report?.overview ?? `已完成 ${completed} 个分析步骤，正在整理综合结论。`}</p>
+            </div>
+            {project.report && (
+              <>
+                <div className="grid gap-px bg-white/15 sm:grid-cols-3">
+                  {[["关键发现", project.report.findings], ["行动建议", project.report.recommendations], ["数据说明", project.report.cautions]].map(([title, items]) => (
+                    <div key={title as string} className="bg-blue-700/65 p-5">
+                      <div className="text-xs font-semibold uppercase tracking-[0.14em] text-cyan-100">{title as string}</div>
+                      <ul className="mt-3 space-y-2 text-xs leading-5 text-blue-50">{(items as string[]).map((item) => <li key={item}>• {item}</li>)}</ul>
+                    </div>
+                  ))}
+                </div>
+                {(project.report.evidence?.length ?? 0) > 0 && (
+                  <div className="border-t border-white/15 bg-blue-950/20 p-5">
+                    <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-cyan-100"><Link2 className="h-3.5 w-3.5" />结论依据</div>
+                    <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                      {project.report.evidence?.map((item) => (
+                        <div key={`${item.finding}-${item.step_ids.join("-")}`} className="rounded-xl bg-white/10 p-3 text-xs leading-5 text-blue-50">
+                          <p>{item.finding}</p>
+                          {item.data_points.length > 0 && <p className="mt-1 text-cyan-100">数据：{item.data_points.join("；")}</p>}
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            {item.step_ids.map((stepId) => (
+                              <button key={stepId} type="button" onClick={() => revealStep(stepId)} className="rounded-lg border border-white/25 px-2 py-1 hover:bg-white/10">
+                                查看{project.plan?.steps.find((step) => step.id === stepId)?.title ?? "来源步骤"}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+          </section>
+
+          <section className="mt-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-line">
+            <div className="flex items-center gap-2 text-sm font-semibold text-ink"><Sparkles className="h-4 w-4 text-moss" />继续追问这份分析</div>
+            <p className="mt-1 text-xs leading-5 text-slate-500">回答只会引用本项目已经完成的查询结果，并标注来源步骤。</p>
+            {(project.followUps?.length ?? 0) > 0 && (
+              <div className="mt-4 space-y-3">
+                {project.followUps?.map((item) => (
+                  <div key={item.id} className="rounded-xl bg-slate-50 p-4 text-sm">
+                    <p className="font-medium text-slate-800">问：{item.question}</p>
+                    <p className="mt-2 leading-6 text-slate-600">{item.answer}</p>
+                    {item.caution && <p className="mt-2 text-xs text-amber-700">说明：{item.caution}</p>}
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {item.step_ids.map((stepId) => (
+                        <button key={stepId} type="button" onClick={() => revealStep(stepId)} className="text-xs font-medium text-moss underline underline-offset-2">
+                          来源：{project.plan?.steps.find((step) => step.id === stepId)?.title ?? stepId}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            <div className="mt-4 flex gap-2">
+              <input value={followUpQuestion} onChange={(event) => setFollowUpQuestion(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter" && !event.nativeEvent.isComposing) void askFollowUp(); }} placeholder="例如：华东地区下一季度应该优先关注什么？" className="min-w-0 flex-1 rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-moss" />
+              <button type="button" onClick={askFollowUp} disabled={askingFollowUp || !followUpQuestion.trim()} className="inline-flex items-center gap-2 rounded-xl bg-moss px-4 text-sm font-semibold text-white disabled:opacity-50">
+                {askingFollowUp && <LoaderCircle className="h-4 w-4 animate-spin" />}{askingFollowUp ? "回答中" : "发送追问"}
+              </button>
+            </div>
+          </section>
+        </>
+      )}
     </div>
   );
 }

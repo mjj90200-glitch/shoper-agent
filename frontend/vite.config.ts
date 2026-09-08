@@ -11,6 +11,15 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react()],
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            charts: ["recharts"],
+          },
+        },
+      },
+    },
     server: {
       host: "0.0.0.0",
       port: 5173,

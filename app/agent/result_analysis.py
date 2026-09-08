@@ -1,6 +1,5 @@
 """基于真实查询结果生成确定性摘要与轻量图表规格。"""
 
-from datetime import date, datetime
 from decimal import Decimal, InvalidOperation
 from typing import Literal, TypedDict
 

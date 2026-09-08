@@ -21,6 +21,22 @@ export type AnalysisStepRun = {
   analysis?: ResultAnalysis;
   sql?: string;
   error?: string;
+  auditId?: string;
+};
+
+export type AnalysisEvidence = {
+  finding: string;
+  step_ids: string[];
+  data_points: string[];
+};
+
+export type AnalysisFollowUp = {
+  id: string;
+  question: string;
+  answer: string;
+  step_ids: string[];
+  caution?: string | null;
+  createdAt: number;
 };
 
 export type DataAnalysisProject = {
@@ -31,6 +47,7 @@ export type DataAnalysisProject = {
   plan?: AnalysisPlan;
   runs: AnalysisStepRun[];
   report?: AnalysisReport;
+  followUps?: AnalysisFollowUp[];
   createdAt: number;
   updatedAt: number;
 };
@@ -40,4 +57,5 @@ export type AnalysisReport = {
   findings: string[];
   recommendations: string[];
   cautions: string[];
+  evidence?: AnalysisEvidence[];
 };

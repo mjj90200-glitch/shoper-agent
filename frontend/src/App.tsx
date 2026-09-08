@@ -181,6 +181,7 @@ function loadAnalysisProjects(): DataAnalysisProject[] {
           plan: item.plan,
           runs: Array.isArray(item.runs) ? item.runs : [],
           report: item.report,
+          followUps: Array.isArray(item.followUps) ? item.followUps : [],
           createdAt: typeof item.createdAt === "number" ? item.createdAt : Date.now(),
           updatedAt: typeof item.updatedAt === "number" ? item.updatedAt : item.createdAt ?? Date.now(),
         }))
@@ -344,11 +345,8 @@ export default function App() {
         setAnalysisProjects((localProjects) => {
           const merged = new Map(localProjects.map((project) => [project.id, project]));
           for (const remote of remoteProjects) {
-            const restored = remote.status === "running"
-              ? { ...remote, status: "review" as const, runs: remote.runs.map((run) => run.status === "running" ? { ...run, status: "pending" as const } : run) }
-              : remote;
             const local = merged.get(remote.id);
-            if (!local || restored.updatedAt >= local.updatedAt) merged.set(remote.id, restored);
+            if (!local || remote.updatedAt >= local.updatedAt) merged.set(remote.id, remote);
           }
           return [...merged.values()];
         });
@@ -571,6 +569,7 @@ export default function App() {
       goal: "",
       status: "draft",
       runs: [],
+      followUps: [],
       createdAt: now,
       updatedAt: now,
     };
@@ -942,6 +941,7 @@ export default function App() {
             <div className="min-h-0 flex-1 overflow-y-auto">
               {activeAnalysisProject ? (
                 <AnalysisWorkspace
+                  key={activeAnalysisProject.id}
                   project={activeAnalysisProject}
                   accessToken={auth.accessToken}
                   onChange={updateAnalysisProject}

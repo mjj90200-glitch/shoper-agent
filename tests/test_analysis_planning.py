@@ -34,6 +34,70 @@ class AnalysisPlanningTests(unittest.TestCase):
             self.assertTrue(service.delete("alice", project["id"]))
             self.assertEqual(service.list("alice"), [])
 
+    def test_project_payload_over_two_megabytes_is_rejected(self):
+        with TemporaryDirectory() as directory:
+            service = AnalysisProjectService()
+            service.configure_database(Path(directory) / "state.sqlite")
+            project = {
+                "id": "2bc87f17-65fd-4074-8da6-0aa6e6ee0c45",
+                "title": "超大分析",
+                "goal": "验证持久化边界",
+                "status": "complete",
+                "runs": [{"result": "数" * 1_100_000}],
+                "createdAt": 1,
+                "updatedAt": 1,
+            }
+
+            with self.assertRaisesRegex(ValueError, "2MB"):
+                service.save("alice", project)
+
+    def test_running_project_rejects_stale_client_snapshot(self):
+        with TemporaryDirectory() as directory:
+            service = AnalysisProjectService()
+            service.configure_database(Path(directory) / "state.sqlite")
+            running = {
+                "id": "2bc87f17-65fd-4074-8da6-0aa6e6ee0c45",
+                "title": "地区分析",
+                "goal": "分析地区销售",
+                "status": "running",
+                "runs": [{"stepId": "region", "status": "running"}],
+                "createdAt": 1,
+                "updatedAt": 3,
+            }
+            service.save("alice", running)
+
+            returned = service.save_from_client(
+                "alice", {**running, "status": "review", "runs": [], "updatedAt": 2}
+            )
+
+            self.assertEqual(returned, running)
+            self.assertEqual(service.get("alice", running["id"]), running)
+
+    def test_interrupted_running_projects_become_resumable(self):
+        with TemporaryDirectory() as directory:
+            service = AnalysisProjectService()
+            service.configure_database(Path(directory) / "state.sqlite")
+            project = {
+                "id": "2bc87f17-65fd-4074-8da6-0aa6e6ee0c45",
+                "title": "地区分析",
+                "goal": "分析地区销售",
+                "status": "running",
+                "runs": [
+                    {"stepId": "region", "status": "running", "error": "旧错误"},
+                    {"stepId": "trend", "status": "done"},
+                ],
+                "createdAt": 1,
+                "updatedAt": 3,
+            }
+            service.save("alice", project)
+
+            self.assertEqual(service.recover_interrupted(), 1)
+            recovered = service.get("alice", project["id"])
+            self.assertEqual(recovered["status"], "review")
+            self.assertEqual(recovered["runs"][0]["status"], "pending")
+            self.assertIsNone(recovered["runs"][0]["error"])
+            self.assertEqual(recovered["runs"][1]["status"], "done")
+
 
 if __name__ == "__main__":
     unittest.main()

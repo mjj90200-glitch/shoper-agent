@@ -1,4 +1,4 @@
-import type { AnalysisPlan, AnalysisReport, DataAnalysisProject } from "../types/analysis";
+import type { AnalysisFollowUp, AnalysisPlan, AnalysisReport, DataAnalysisProject } from "../types/analysis";
 import { authenticatedFetch } from "./http";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, "") ?? "";
@@ -24,7 +24,7 @@ export async function createAnalysisSummary(project: DataAnalysisProject, access
       goal: project.goal,
       steps: (project.plan?.steps ?? []).map((step) => {
         const run = project.runs.find((item) => item.stepId === step.id);
-        return { title: step.title, question: step.question, result: run?.result, analysis: run?.analysis };
+        return { id: step.id, title: step.title, question: step.question, result: run?.result, analysis: run?.analysis };
       }),
     }),
   });
@@ -47,6 +47,50 @@ export async function saveAnalysisProject(project: DataAnalysisProject, accessTo
     body: JSON.stringify(project),
   });
   if (!response.ok) throw new Error(`保存分析项目失败：HTTP ${response.status}`);
+  return response.json() as Promise<DataAnalysisProject>;
+}
+
+export async function fetchAnalysisProject(projectId: string, accessToken: string): Promise<DataAnalysisProject> {
+  const response = await authenticatedFetch(`${API_BASE_URL}/api/analysis/projects/${projectId}`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  if (!response.ok) throw new Error(`刷新分析任务失败：HTTP ${response.status}`);
+  return response.json() as Promise<DataAnalysisProject>;
+}
+
+export async function runAnalysisProject(projectId: string, accessToken: string, stepId?: string): Promise<DataAnalysisProject> {
+  const response = await authenticatedFetch(`${API_BASE_URL}/api/analysis/projects/${projectId}/run`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
+    body: JSON.stringify({ step_id: stepId ?? null }),
+  });
+  if (!response.ok) {
+    const body = await response.json().catch(() => null) as { detail?: string } | null;
+    throw new Error(body?.detail || `启动分析任务失败：HTTP ${response.status}`);
+  }
+  return response.json() as Promise<DataAnalysisProject>;
+}
+
+export async function stopAnalysisProject(projectId: string, accessToken: string): Promise<DataAnalysisProject> {
+  const response = await authenticatedFetch(`${API_BASE_URL}/api/analysis/projects/${projectId}/stop`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  if (!response.ok) throw new Error(`停止分析任务失败：HTTP ${response.status}`);
+  return response.json() as Promise<DataAnalysisProject>;
+}
+
+export async function askAnalysisFollowUp(projectId: string, question: string, accessToken: string): Promise<Omit<AnalysisFollowUp, "id" | "question" | "createdAt">> {
+  const response = await authenticatedFetch(`${API_BASE_URL}/api/analysis/projects/${projectId}/follow-up`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
+    body: JSON.stringify({ question }),
+  });
+  if (!response.ok) {
+    const body = await response.json().catch(() => null) as { detail?: string } | null;
+    throw new Error(body?.detail || `分析追问失败：HTTP ${response.status}`);
+  }
+  return response.json() as Promise<Omit<AnalysisFollowUp, "id" | "question" | "createdAt">>;
 }
 
 export async function deleteAnalysisProject(projectId: string, accessToken: string) {

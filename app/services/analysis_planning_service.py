@@ -4,6 +4,8 @@ import json
 
 from app.agent.llm import llm
 from app.api.schemas.analysis_schema import (
+    AnalysisEvidence,
+    AnalysisFollowUpResponse,
     AnalysisPlanResponse,
     AnalysisPlanStep,
     AnalysisReport,
@@ -80,6 +82,7 @@ class AnalysisPlanningService:
     async def summarize(self, payload: AnalysisSummaryRequest) -> AnalysisReport:
         compact_steps = [
             {
+                "id": step.id,
                 "title": step.title,
                 "question": step.question,
                 "analysis": step.analysis,
@@ -93,24 +96,113 @@ class AnalysisPlanningService:
 步骤结果：{json.dumps(compact_steps, ensure_ascii=False, default=str)}
 
 只返回 JSON：
-{{"overview":"总体结论","findings":["关键发现"],"recommendations":["可执行建议"],"cautions":["口径或数据限制"]}}
+{{"overview":"总体结论","findings":["关键发现"],"recommendations":["可执行建议"],"cautions":["口径或数据限制"],"evidence":[{{"finding":"关键发现","step_ids":["步骤ID"],"data_points":["结果中原样出现的字段和值"]}}]}}
 """.strip()
         try:
             response = await llm.ainvoke(prompt)
             raw = str(response.content)
             start, end = raw.find("{"), raw.rfind("}")
-            return AnalysisReport.model_validate(json.loads(raw[start : end + 1]))
+            report = AnalysisReport.model_validate(json.loads(raw[start : end + 1]))
+            allowed = {step.id: step for step in payload.steps}
+            evidence = []
+            for item in report.evidence:
+                step_ids = [step_id for step_id in item.step_ids if step_id in allowed]
+                if not step_ids:
+                    continue
+                source = json.dumps(
+                    [allowed[step_id].result for step_id in step_ids],
+                    ensure_ascii=False,
+                    default=str,
+                )
+                data_points = [point for point in item.data_points if point in source]
+                evidence.append(
+                    AnalysisEvidence(
+                        finding=item.finding,
+                        step_ids=step_ids,
+                        data_points=data_points,
+                    )
+                )
+            return report.model_copy(update={"evidence": evidence})
         except Exception:
             findings = []
+            evidence = []
             for step in payload.steps:
                 summary = (step.analysis or {}).get("summary")
                 if summary:
-                    findings.append(f"{step.title}：{summary}")
+                    finding = f"{step.title}：{summary}"
+                    findings.append(finding)
+                    evidence.append(
+                        AnalysisEvidence(
+                            finding=finding,
+                            step_ids=[step.id],
+                            data_points=[],
+                        )
+                    )
             return AnalysisReport(
                 overview=f"已围绕“{payload.goal}”完成 {len(payload.steps)} 个分析步骤。",
                 findings=findings or ["各分析步骤已完成，请结合下方图表与明细查看结果。"],
                 recommendations=["优先复核贡献最高和变化最明显的维度，再结合业务背景制定行动。"],
                 cautions=["结论仅基于当前电商数仓中的销售数据，不代表因果关系。"],
+                evidence=evidence,
+            )
+
+    async def follow_up(self, project: dict, question: str) -> AnalysisFollowUpResponse:
+        completed_steps = []
+        step_by_id = {
+            str(step.get("id")): step for step in (project.get("plan") or {}).get("steps", [])
+        }
+        for run in project.get("runs", []):
+            if run.get("status") != "done" or run.get("result") is None:
+                continue
+            step_id = str(run.get("stepId"))
+            step = step_by_id.get(step_id, {})
+            completed_steps.append(
+                {
+                    "id": step_id,
+                    "title": step.get("title", step_id),
+                    "question": step.get("question", ""),
+                    "analysis": run.get("analysis"),
+                    "result": run.get("result", [])[:20]
+                    if isinstance(run.get("result"), list)
+                    else run.get("result"),
+                }
+            )
+        if not completed_steps:
+            raise ValueError("当前项目还没有可用于追问的已完成结果。")
+
+        prompt = f"""
+你是电商数据分析助理。只能依据提供的已完成步骤回答，不得使用外部事实或编造数字。
+如果数据不足，必须明确说明限制。建议必须说明它是建议，不得伪装成数据事实。
+
+分析目标：{project.get('goal', '')}
+用户追问：{question}
+步骤结果：{json.dumps(completed_steps, ensure_ascii=False, default=str)}
+
+只返回 JSON：
+{{"answer":"回答","step_ids":["支持回答的步骤ID"],"caution":"数据不足或口径提醒，可为 null"}}
+""".strip()
+        try:
+            response = await llm.ainvoke(prompt)
+            raw = str(response.content)
+            start, end = raw.find("{"), raw.rfind("}")
+            result = AnalysisFollowUpResponse.model_validate(
+                json.loads(raw[start : end + 1])
+            )
+            allowed_ids = {step["id"] for step in completed_steps}
+            return result.model_copy(
+                update={
+                    "step_ids": [
+                        step_id for step_id in result.step_ids if step_id in allowed_ids
+                    ]
+                }
+            )
+        except Exception:
+            report = project.get("report") or {}
+            answer = report.get("overview") or "现有步骤结果不足以形成可靠回答。"
+            return AnalysisFollowUpResponse(
+                answer=answer,
+                step_ids=[step["id"] for step in completed_steps],
+                caution="当前为保守回答，请结合引用步骤中的真实数据核对。",
             )
 
 

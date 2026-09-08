@@ -14,7 +14,6 @@ from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 
 from app.agent.graph import clear_persistent_graph, configure_checkpointer
 from app.audit.service import query_audit_service
-from app.services.analysis_project_service import analysis_project_service
 from app.clients.embedding_client_manager import embedding_client_manager
 from app.clients.es_client_manager import es_client_manager
 from app.clients.mysql_client_manager import (
@@ -22,6 +21,8 @@ from app.clients.mysql_client_manager import (
     meta_mysql_client_manager,
 )
 from app.clients.qdrant_client_manager import qdrant_client_manager
+from app.services.analysis_execution_service import analysis_execution_service
+from app.services.analysis_project_service import analysis_project_service
 
 
 @asynccontextmanager
@@ -32,6 +33,7 @@ async def lifespan(app: FastAPI):
     database_path.parent.mkdir(parents=True, exist_ok=True)
     query_audit_service.configure_database(database_path.parent / "shopkeeper-state.sqlite")
     analysis_project_service.configure_database(database_path.parent / "shopkeeper-state.sqlite")
+    analysis_project_service.recover_interrupted()
 
     # Checkpointer 连接必须覆盖整个应用运行期，图实例才能持续写入同一 SQLite 文件。
     async with AsyncSqliteSaver.from_conn_string(str(database_path)) as checkpointer:
@@ -48,6 +50,7 @@ async def lifespan(app: FastAPI):
             # yield 之前是启动逻辑，yield 之后是关闭逻辑；中间阶段由 FastAPI 正常处理请求
             yield
         finally:
+            await analysis_execution_service.shutdown()
             # 关闭阶段：按应用级资源统一释放连接，避免进程退出前留下未关闭的网络连接
             await qdrant_client_manager.close()
             await es_client_manager.close()
