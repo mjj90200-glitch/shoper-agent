@@ -1,8 +1,0 @@
-{
-  "query": "按大区统计全国销售额",
-  "expected": "blocked",
-  "passed": false,
-  "has_result": true,
-  "has_error": false,
-  "error_detail": null
-}

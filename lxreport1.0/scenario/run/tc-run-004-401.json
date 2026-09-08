@@ -1,9 +1,0 @@
-{
-  "sessions_invalid_token": 401,
-  "query_invalid_token": 401,
-  "plan_invalid_token": 401,
-  "audits_invalid_token": 401,
-  "sessions_no_token": 401,
-  "projects_no_token": 401,
-  "sessions_tampered": 401
-}

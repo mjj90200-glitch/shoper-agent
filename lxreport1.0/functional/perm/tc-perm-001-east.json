@@ -1,8 +1,0 @@
-{
-  "query": "统计华东地区销售额",
-  "expected": "allowed",
-  "passed": true,
-  "has_result": true,
-  "has_error": false,
-  "error_detail": null
-}
