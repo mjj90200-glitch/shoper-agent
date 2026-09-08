@@ -1,0 +1,218 @@
+{
+  "case": "tc-q-10",
+  "query": "查询华北地区销售额最高的前 3 个商品",
+  "http_status": 200,
+  "http_status_text": 200,
+  "event_count": 35,
+  "events": [
+    {
+      "type": "audit_context",
+      "audit_id": "648febdc-cde3-464d-aaa8-713c2a017070"
+    },
+    {
+      "type": "progress",
+      "step": "理解上下文",
+      "status": "running"
+    },
+    {
+      "type": "query_context",
+      "original_query": "查询华北地区销售额最高的前 3 个商品",
+      "resolved_query": "查询华北地区销售额最高的前 3 个商品"
+    },
+    {
+      "type": "progress",
+      "step": "理解上下文",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "识别问题意图",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "识别问题意图",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "抽取关键词",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "抽取关键词",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "召回字段信息",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "召回指标信息",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "召回字段取值",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "召回字段取值",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "召回指标信息",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "召回字段信息",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "合并召回信息",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "合并召回信息",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "过滤指标信息",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "过滤表信息",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "过滤指标信息",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "过滤表信息",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "添加额外上下文",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "添加额外上下文",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "生成SQL",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "生成SQL",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "检查SQL安全",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "检查SQL安全",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "校验SQL",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "校验SQL",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "执行SQL",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "执行SQL",
+      "status": "success"
+    },
+    {
+      "type": "sql",
+      "sql": "SELECT dp.product_id, dp.product_name, SUM(fo.order_amount) AS 销售额 FROM fact_order fo JOIN dim_product dp ON fo.product_id = dp.product_id JOIN dim_region dr ON fo.region_id = dr.region_id WHERE dr.region_name = '华北' GROUP BY dp.product_id, dp.product_name ORDER BY 销售额 DESC LIMIT 3"
+    },
+    {
+      "type": "result",
+      "data": [
+        {
+          "product_id": "P002",
+          "product_name": "Galaxy S24 Ultra",
+          "销售额": 9499.0
+        },
+        {
+          "product_id": "P001",
+          "product_name": "iPhone 15 Pro",
+          "销售额": 8999.0
+        },
+        {
+          "product_id": "P003",
+          "product_name": "Mate 60 Pro",
+          "销售额": 6999.0
+        }
+      ]
+    },
+    {
+      "type": "progress",
+      "step": "解读查询结果",
+      "status": "running"
+    },
+    {
+      "type": "analysis",
+      "summary": "共 3 个数据点；销售额 合计 25,497，平均 8,499。最高为 P002（9,499），最低为 P003（6,999）。",
+      "chart": {
+        "type": "bar",
+        "label_key": "product_id",
+        "value_key": "销售额",
+        "data": [
+          {
+            "label": "P002",
+            "value": 9499.0
+          },
+          {
+            "label": "P001",
+            "value": 8999.0
+          },
+          {
+            "label": "P003",
+            "value": 6999.0
+          }
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "type": "progress",
+      "step": "解读查询结果",
+      "status": "success"
+    }
+  ],
+  "error": null,
+  "requested_at": "2026-09-08 10:07:24"
+}

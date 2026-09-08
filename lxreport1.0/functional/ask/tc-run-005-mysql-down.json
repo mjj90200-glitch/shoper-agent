@@ -1,0 +1,94 @@
+{
+  "case": "tc-run-005-mysql-down",
+  "query": "统计华北地区的销售总额",
+  "http_status": 200,
+  "http_status_text": 200,
+  "event_count": 17,
+  "events": [
+    {
+      "type": "audit_context",
+      "audit_id": "1edc36c3-aa05-40e6-b1a8-60011681deb0"
+    },
+    {
+      "type": "progress",
+      "step": "理解上下文",
+      "status": "running"
+    },
+    {
+      "type": "query_context",
+      "original_query": "统计华北地区的销售总额",
+      "resolved_query": "统计华北地区的销售总额"
+    },
+    {
+      "type": "progress",
+      "step": "理解上下文",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "识别问题意图",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "识别问题意图",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "抽取关键词",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "抽取关键词",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "召回字段信息",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "召回指标信息",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "召回字段取值",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "召回字段取值",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "召回字段信息",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "召回指标信息",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "合并召回信息",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "合并召回信息",
+      "status": "error"
+    },
+    {
+      "type": "error",
+      "message": "(asyncmy.errors.OperationalError) (2003, \"Can't connect to MySQL server on 'localhost' ([WinError 1225] 远程计算机拒绝网络连接。)\")\n(Background on this error at: https://sqlalche.me/e/20/e3q8)"
+    }
+  ],
+  "error": null,
+  "requested_at": "2026-09-08 11:02:40"
+}

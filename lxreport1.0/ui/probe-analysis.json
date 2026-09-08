@@ -1,0 +1,20 @@
+{
+  "url": "http://127.0.0.1:5173/",
+  "bodyHead": "AI数分助手\nAI data analyst\n问数\n数据分析\n新建分析\n分析项目\n1\n越权删除验证-f19518\nAPI\nVite /api proxy\n分析项目\n1\n数据分析工作台\n制定计划 · 审核步骤 · 生成洞察\n系统管理员\nadmin\n退出\n\n新建一个分析项目开始工作\n\n新建分析项目",
+  "hasNewAnalysis": false,
+  "hasGoalInput": 0,
+  "placeholders": [],
+  "buttons": [
+    "问数",
+    "数据分析",
+    "新建分析",
+    "越权删除验证-f19518",
+    "重命名分析项目",
+    "删除分析项目",
+    "问数",
+    "退出",
+    "项目",
+    "新建分析",
+    "新建分析项目"
+  ]
+}

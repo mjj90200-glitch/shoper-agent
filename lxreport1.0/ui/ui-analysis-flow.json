@@ -1,0 +1,202 @@
+{
+  "enteredNewProject": true,
+  "newProjectBodyHead": "AI数分助手\nAI data analyst\n问数\n数据分析\n新建分析\n分析项目\n2\n分析项目 2\n越权删除验证-f19518\nAPI\nVite /api proxy\n分析项目\n2\n分析项目 2\n制定计划 · 审核步骤 · 生成洞察\n系统管理员\nadmin\n退出\n新数据分析\n这次希望分析什么？\n\n描述业务目标即可。助手只使用当前电商数仓，并先生成计划供你审核，不会立即执行查询。\n\n生成分析计划",
+  "goalInputCount": 1,
+  "genBtnCount": 1,
+  "genClicked": true,
+  "planGenerated": true,
+  "planHasSteps": 2,
+  "execBtnCount": 1,
+  "execClicked": true,
+  "execDone": false,
+  "finalTextHead": "AI数分助手\nAI data analyst\n问数\n数据分析\n新建分析\n分析项目\n2\n2025年各地区销售表现与品类贡献、月度异常分析\n越权删除验证-f19518\nAPI\nVite /api proxy\n分析项目\n2\n2025年各地区销售表现与品类贡献、月度异常分析\n制定计划 · 审核步骤 · 生成洞察\n系统管理员\nadmin\n退出\n正在执行 3/3\n2025年各地区销售表现与品类贡献、月度异常分析\n\n从地区整体概览起步，先看2025年各地区的销售额、销量、订单基础表现；再下钻到地区×品类，定位每个地区贡献最高的品类；最后下钻到地区×月份，通过环比增长率的极值来识别各地可能的异常月份。全程仅使用销售数仓现有数据，不做因果推断。\n\n停止分析\n\n识别2025年销售体量最高和最低的地区，建立地区间对比基准。\n\n数据洞察\n\n共 5 个数据点；销售额 合计 279,159.5，平均 55,831.9。最高为 华东（107,373），最低为 华中（28,957）。\n\n合计\n279,159.5\n平均值\n55,831.9\n最高项\n华东\n数据点\n5 条\n柱状\n趋势\n占比\n分析指标\n销售额\n销量\n订单数\n华东\n华南\n华北\n西南\n华中\n0\n30,000\n60,000\n90,000\n120,000\n查询结果\n5 行\nCSV\n地区\t销售额\t销量\t订单数\n华东\t107373\t235\t44\n华南\t70202\t132\t26\n华北\t41099.5\t82\t19\n西南\t31528\t90\t14\n华中\t28957\t83\t12\n\n找出各地区贡献最高的品类，直接回答用户的目标问题。\n\n数据洞察\n\n共 5 个数据点；销售额 合计 194,771，平均 38,954.2。最高为 华东（78,688），最低为 华中（16,498）。\n\n合计\n194,771\n平均值\n38,954.2\n最高项\n华东\n数据点\n5 条\n柱状\n趋势\n占比\n分析指标\n销售额\n销售额占比\n华东\n华南\n华北\n西南\n华中\n0\n20,000\n40,000\n60,000\n80,000\n查询结果\n5 行\nCSV\n地区\t品类\t销售额\t销售额占比\n华东\t手机数码\t78688\t0.7328471775958574\n华南\t手机数码\t51893\t0.7391954645166804\n华北\t手机数码\t26896\t0.6544118541588098\n西南\t手机数码\t20796\t0.6596041613803603\n华中\t手机数码\t16498\t0.5697413406084885\n\n识别各地区销售波动异常的月份，为后续进一步排查提供候选月份。\n\n过滤表信息\n\n20,000",
+  "apiCalls": [
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:5173/api/auth/login"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/f195186d-14d2-4b45-9097-f3eba2f18d36"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/9449313d-5bcf-439a-8d68-a55722d813a0"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/f195186d-14d2-4b45-9097-f3eba2f18d36"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:5173/api/analysis/plan"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:5173/api/query"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/9449313d-5bcf-439a-8d68-a55722d813a0"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/f195186d-14d2-4b45-9097-f3eba2f18d36"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/9449313d-5bcf-439a-8d68-a55722d813a0"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/f195186d-14d2-4b45-9097-f3eba2f18d36"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/9449313d-5bcf-439a-8d68-a55722d813a0"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/f195186d-14d2-4b45-9097-f3eba2f18d36"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/9449313d-5bcf-439a-8d68-a55722d813a0"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/f195186d-14d2-4b45-9097-f3eba2f18d36"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/9449313d-5bcf-439a-8d68-a55722d813a0"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/f195186d-14d2-4b45-9097-f3eba2f18d36"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/9449313d-5bcf-439a-8d68-a55722d813a0"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/f195186d-14d2-4b45-9097-f3eba2f18d36"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:5173/api/query"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/9449313d-5bcf-439a-8d68-a55722d813a0"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/f195186d-14d2-4b45-9097-f3eba2f18d36"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/9449313d-5bcf-439a-8d68-a55722d813a0"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/f195186d-14d2-4b45-9097-f3eba2f18d36"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/9449313d-5bcf-439a-8d68-a55722d813a0"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/f195186d-14d2-4b45-9097-f3eba2f18d36"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/9449313d-5bcf-439a-8d68-a55722d813a0"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/f195186d-14d2-4b45-9097-f3eba2f18d36"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/9449313d-5bcf-439a-8d68-a55722d813a0"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/f195186d-14d2-4b45-9097-f3eba2f18d36"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/9449313d-5bcf-439a-8d68-a55722d813a0"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/f195186d-14d2-4b45-9097-f3eba2f18d36"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/9449313d-5bcf-439a-8d68-a55722d813a0"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/f195186d-14d2-4b45-9097-f3eba2f18d36"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:5173/api/query"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/9449313d-5bcf-439a-8d68-a55722d813a0"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/f195186d-14d2-4b45-9097-f3eba2f18d36"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/9449313d-5bcf-439a-8d68-a55722d813a0"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/f195186d-14d2-4b45-9097-f3eba2f18d36"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/9449313d-5bcf-439a-8d68-a55722d813a0"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/f195186d-14d2-4b45-9097-f3eba2f18d36"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/9449313d-5bcf-439a-8d68-a55722d813a0"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/f195186d-14d2-4b45-9097-f3eba2f18d36"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/9449313d-5bcf-439a-8d68-a55722d813a0"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/f195186d-14d2-4b45-9097-f3eba2f18d36"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/9449313d-5bcf-439a-8d68-a55722d813a0"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/f195186d-14d2-4b45-9097-f3eba2f18d36"
+    }
+  ],
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ]
+}

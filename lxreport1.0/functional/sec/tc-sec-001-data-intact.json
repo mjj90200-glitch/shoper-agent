@@ -1,0 +1,6 @@
+{
+  "query": "统计华北地区的销售总额",
+  "expected": 41099.5,
+  "actual": 41099.5,
+  "passed": true
+}

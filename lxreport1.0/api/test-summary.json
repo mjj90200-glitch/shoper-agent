@@ -1,0 +1,30 @@
+{
+  "generated_at": "2026-09-08 12:23:32",
+  "project": "shoper-agent-main",
+  "report_dir": "lxreport1.0",
+  "total_evidence_files": 32,
+  "passed": 28,
+  "failed": 4,
+  "failed_items": {
+    "perm/tc-perm-001-national.json": {
+      "case": "tc-perm-001-national",
+      "passed": false,
+      "evidence": "functional\\perm\\tc-perm-001-national.json"
+    },
+    "perm/tc-perm-001-north.json": {
+      "case": "tc-perm-001-north",
+      "passed": false,
+      "evidence": "functional\\perm\\tc-perm-001-north.json"
+    },
+    "sec/tc-sec-001-delete.json": {
+      "case": "TC-SEC-001",
+      "passed": false,
+      "evidence": "functional\\sec\\tc-sec-001-delete.json"
+    },
+    "sec/tc-sec-001-update.json": {
+      "case": "TC-SEC-001",
+      "passed": false,
+      "evidence": "functional\\sec\\tc-sec-001-update.json"
+    }
+  }
+}

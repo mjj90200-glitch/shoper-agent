@@ -1,0 +1,7092 @@
+{
+  "summary": {
+    "total_turns": 35,
+    "passed_turns": 35,
+    "failed_turns": 0,
+    "pass_rate": 1.0,
+    "failed_case_ids": []
+  },
+  "turns": [
+    {
+      "case_id": "region-sales",
+      "turn": 1,
+      "query": "统计华东地区 2025 年第一季度的销售总额",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "0281dbda-1780-4750-b0a3-efb5b0ea6e51"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "统计华东地区 2025 年第一季度的销售总额",
+          "resolved_query": "统计华东地区 2025 年第一季度的销售总额"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "success"
+        },
+        {
+          "type": "sql",
+          "sql": "SELECT SUM(o.order_amount) AS 销售总额 FROM fact_order o JOIN dim_region r ON o.region_id = r.region_id JOIN dim_date d ON o.date_id = d.date_id WHERE r.region_name = '华东' AND d.year = 2025 AND d.quarter = 'Q1' LIMIT 1000"
+        },
+        {
+          "type": "result",
+          "data": [
+            {
+              "销售总额": 107373.0
+            }
+          ]
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "running"
+        },
+        {
+          "type": "analysis",
+          "summary": "共 1 行；销售总额 最大值为 107,373，最小值为 107,373。",
+          "chart": null
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "case_id": "region-orders",
+      "turn": 1,
+      "query": "按大区统计 2025 年第一季度的订单数",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "0bf9aa8b-7dde-41a9-af65-231d045d1be6"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "按大区统计 2025 年第一季度的订单数",
+          "resolved_query": "按大区统计 2025 年第一季度的订单数"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "success"
+        },
+        {
+          "type": "sql",
+          "sql": "SELECT r.region_name AS 大区, COUNT(f.order_id) AS 订单数 FROM fact_order f JOIN dim_region r ON f.region_id = r.region_id WHERE f.date_id BETWEEN 20250101 AND 20250331 GROUP BY r.region_name LIMIT 1000"
+        },
+        {
+          "type": "result",
+          "data": [
+            {
+              "大区": "华南",
+              "订单数": 26
+            },
+            {
+              "大区": "华东",
+              "订单数": 44
+            },
+            {
+              "大区": "华北",
+              "订单数": 19
+            },
+            {
+              "大区": "西南",
+              "订单数": 14
+            },
+            {
+              "大区": "华中",
+              "订单数": 12
+            }
+          ]
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "running"
+        },
+        {
+          "type": "analysis",
+          "summary": "共 5 个数据点；订单数 合计 115，平均 23。最高为 华东（44），最低为 华中（12）。",
+          "chart": {
+            "type": "bar",
+            "label_key": "大区",
+            "value_key": "订单数",
+            "data": [
+              {
+                "label": "华南",
+                "value": 26.0
+              },
+              {
+                "label": "华东",
+                "value": 44.0
+              },
+              {
+                "label": "华北",
+                "value": 19.0
+              },
+              {
+                "label": "西南",
+                "value": 14.0
+              },
+              {
+                "label": "华中",
+                "value": 12.0
+              }
+            ],
+            "truncated": false
+          }
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "case_id": "region-volume",
+      "turn": 1,
+      "query": "统计华北地区 2025 年第一季度的销量",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "913b8ec4-d52c-431e-8c2e-a3cb11fdeff8"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "统计华北地区 2025 年第一季度的销量",
+          "resolved_query": "统计华北地区 2025 年第一季度的销量"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "success"
+        },
+        {
+          "type": "sql",
+          "sql": "SELECT SUM(o.order_quantity) AS 销量\nFROM fact_order o\nJOIN dim_region r ON o.region_id = r.region_id\nWHERE r.region_name = '华北'\n  AND o.date_id BETWEEN 20250101 AND 20250331 LIMIT 1000"
+        },
+        {
+          "type": "result",
+          "data": [
+            {
+              "销量": "82"
+            }
+          ]
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "running"
+        },
+        {
+          "type": "analysis",
+          "summary": "共 1 行；销量 最大值为 82，最小值为 82。",
+          "chart": null
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "case_id": "province-sales",
+      "turn": 1,
+      "query": "按省份统计 2025 年第一季度销售额",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "73867d31-2de7-4187-a698-3f8045765c31"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "按省份统计 2025 年第一季度销售额",
+          "resolved_query": "按省份统计 2025 年第一季度销售额"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "success"
+        },
+        {
+          "type": "sql",
+          "sql": "SELECT dim_region.province, SUM(fact_order.order_amount) AS 销售额 FROM fact_order INNER JOIN dim_region ON fact_order.region_id = dim_region.region_id WHERE fact_order.date_id BETWEEN 20250101 AND 20250331 GROUP BY dim_region.province LIMIT 1000"
+        },
+        {
+          "type": "result",
+          "data": [
+            {
+              "province": "广东省",
+              "销售额": 70202.0
+            },
+            {
+              "province": "上海市",
+              "销售额": 60210.0
+            },
+            {
+              "province": "浙江省",
+              "销售额": 47163.0
+            },
+            {
+              "province": "北京市",
+              "销售额": 41099.5
+            },
+            {
+              "province": "四川省",
+              "销售额": 31528.0
+            },
+            {
+              "province": "湖北省",
+              "销售额": 28957.0
+            }
+          ]
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "running"
+        },
+        {
+          "type": "analysis",
+          "summary": "共 6 个数据点；销售额 合计 279,159.5，平均 46,526.58。最高为 广东省（70,202），最低为 湖北省（28,957）。",
+          "chart": {
+            "type": "bar",
+            "label_key": "province",
+            "value_key": "销售额",
+            "data": [
+              {
+                "label": "广东省",
+                "value": 70202.0
+              },
+              {
+                "label": "上海市",
+                "value": 60210.0
+              },
+              {
+                "label": "浙江省",
+                "value": 47163.0
+              },
+              {
+                "label": "北京市",
+                "value": 41099.5
+              },
+              {
+                "label": "四川省",
+                "value": 31528.0
+              },
+              {
+                "label": "湖北省",
+                "value": 28957.0
+              }
+            ],
+            "truncated": false
+          }
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "case_id": "category-sales",
+      "turn": 1,
+      "query": "统计 2025 年第一季度各商品品类的销售额",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "5e10e3ff-273b-4d42-b3a5-a7999eb2196a"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "统计 2025 年第一季度各商品品类的销售额",
+          "resolved_query": "统计 2025 年第一季度各商品品类的销售额"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "success"
+        },
+        {
+          "type": "sql",
+          "sql": "SELECT dp.category AS 品类, SUM(fo.order_amount) AS 销售额 FROM fact_order fo JOIN dim_product dp ON fo.product_id = dp.product_id WHERE fo.date_id BETWEEN 20250101 AND 20250331 GROUP BY dp.category LIMIT 1000"
+        },
+        {
+          "type": "result",
+          "data": [
+            {
+              "品类": "手机数码",
+              "销售额": 194771.0
+            },
+            {
+              "品类": "食品饮料",
+              "销售额": 2490.0
+            },
+            {
+              "品类": "鞋靴",
+              "销售额": 13188.0
+            },
+            {
+              "品类": "休闲零食",
+              "销售额": 1239.5
+            },
+            {
+              "品类": "服饰",
+              "销售额": 6683.0
+            },
+            {
+              "品类": "家用电器",
+              "销售额": 60788.0
+            }
+          ]
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "running"
+        },
+        {
+          "type": "analysis",
+          "summary": "共 6 个数据点；销售额 合计 279,159.5，平均 46,526.58。最高为 手机数码（194,771），最低为 休闲零食（1,239.5）。",
+          "chart": {
+            "type": "bar",
+            "label_key": "品类",
+            "value_key": "销售额",
+            "data": [
+              {
+                "label": "手机数码",
+                "value": 194771.0
+              },
+              {
+                "label": "食品饮料",
+                "value": 2490.0
+              },
+              {
+                "label": "鞋靴",
+                "value": 13188.0
+              },
+              {
+                "label": "休闲零食",
+                "value": 1239.5
+              },
+              {
+                "label": "服饰",
+                "value": 6683.0
+              },
+              {
+                "label": "家用电器",
+                "value": 60788.0
+              }
+            ],
+            "truncated": false
+          }
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "case_id": "category-volume",
+      "turn": 1,
+      "query": "统计 2025 年第一季度各商品品类的销量",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "35cace17-3c45-4e64-b3d1-094503f31992"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "统计 2025 年第一季度各商品品类的销量",
+          "resolved_query": "统计 2025 年第一季度各商品品类的销量"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "success"
+        },
+        {
+          "type": "sql",
+          "sql": "SELECT dp.category, SUM(fo.order_quantity) AS 销量 FROM fact_order fo JOIN dim_product dp ON fo.product_id = dp.product_id WHERE fo.date_id BETWEEN 20250101 AND 20250331 GROUP BY dp.category LIMIT 1000"
+        },
+        {
+          "type": "result",
+          "data": [
+            {
+              "category": "手机数码",
+              "销量": "29"
+            },
+            {
+              "category": "食品饮料",
+              "销量": "246"
+            },
+            {
+              "category": "鞋靴",
+              "销量": "12"
+            },
+            {
+              "category": "休闲零食",
+              "销量": "298"
+            },
+            {
+              "category": "服饰",
+              "销量": "18"
+            },
+            {
+              "category": "家用电器",
+              "销量": "19"
+            }
+          ]
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "running"
+        },
+        {
+          "type": "analysis",
+          "summary": "共 6 个数据点；销量 合计 622，平均 103.67。最高为 休闲零食（298），最低为 鞋靴（12）。",
+          "chart": {
+            "type": "bar",
+            "label_key": "category",
+            "value_key": "销量",
+            "data": [
+              {
+                "label": "手机数码",
+                "value": 29.0
+              },
+              {
+                "label": "食品饮料",
+                "value": 246.0
+              },
+              {
+                "label": "鞋靴",
+                "value": 12.0
+              },
+              {
+                "label": "休闲零食",
+                "value": 298.0
+              },
+              {
+                "label": "服饰",
+                "value": 18.0
+              },
+              {
+                "label": "家用电器",
+                "value": 19.0
+              }
+            ],
+            "truncated": false
+          }
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "case_id": "brand-sales",
+      "turn": 1,
+      "query": "按品牌统计 2025 年第一季度销售总额",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "f295e213-5064-4ab4-bc71-af26bc092b5f"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "按品牌统计 2025 年第一季度销售总额",
+          "resolved_query": "按品牌统计 2025 年第一季度销售总额"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "success"
+        },
+        {
+          "type": "sql",
+          "sql": "SELECT p.brand AS 品牌, SUM(f.order_amount) AS 销售总额 FROM fact_order f JOIN dim_product p ON f.product_id = p.product_id WHERE f.date_id BETWEEN 20250101 AND 20250331 GROUP BY p.brand LIMIT 1000"
+        },
+        {
+          "type": "result",
+          "data": [
+            {
+              "品牌": "苹果",
+              "销售总额": 71992.0
+            },
+            {
+              "品牌": "华为",
+              "销售总额": 55992.0
+            },
+            {
+              "品牌": "雀巢",
+              "销售总额": 1575.0
+            },
+            {
+              "品牌": "耐克",
+              "销售总额": 5394.0
+            },
+            {
+              "品牌": "蒙牛",
+              "销售总额": 915.0
+            },
+            {
+              "品牌": "亚马逊",
+              "销售总额": 9793.0
+            },
+            {
+              "品牌": "乐事",
+              "销售总额": 655.0
+            },
+            {
+              "品牌": "优衣库",
+              "销售总额": 1891.0
+            },
+            {
+              "品牌": "三星",
+              "销售总额": 56994.0
+            },
+            {
+              "品牌": "奥利奥",
+              "销售总额": 584.5
+            },
+            {
+              "品牌": "美的",
+              "销售总额": 22400.0
+            },
+            {
+              "品牌": "李维斯",
+              "销售总额": 4792.0
+            },
+            {
+              "品牌": "阿迪达斯",
+              "销售总额": 7794.0
+            },
+            {
+              "品牌": "戴森",
+              "销售总额": 32994.0
+            },
+            {
+              "品牌": "Instant Pot",
+              "销售总额": 5394.0
+            }
+          ]
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "running"
+        },
+        {
+          "type": "analysis",
+          "summary": "共 15 个数据点；销售总额 合计 279,159.5，平均 18,610.63。最高为 苹果（71,992），最低为 奥利奥（584.5）。",
+          "chart": {
+            "type": "bar",
+            "label_key": "品牌",
+            "value_key": "销售总额",
+            "data": [
+              {
+                "label": "苹果",
+                "value": 71992.0
+              },
+              {
+                "label": "华为",
+                "value": 55992.0
+              },
+              {
+                "label": "雀巢",
+                "value": 1575.0
+              },
+              {
+                "label": "耐克",
+                "value": 5394.0
+              },
+              {
+                "label": "蒙牛",
+                "value": 915.0
+              },
+              {
+                "label": "亚马逊",
+                "value": 9793.0
+              },
+              {
+                "label": "乐事",
+                "value": 655.0
+              },
+              {
+                "label": "优衣库",
+                "value": 1891.0
+              },
+              {
+                "label": "三星",
+                "value": 56994.0
+              },
+              {
+                "label": "奥利奥",
+                "value": 584.5
+              },
+              {
+                "label": "美的",
+                "value": 22400.0
+              },
+              {
+                "label": "李维斯",
+                "value": 4792.0
+              }
+            ],
+            "truncated": true
+          }
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "case_id": "product-top-sales",
+      "turn": 1,
+      "query": "查询 2025 年第一季度销售额最高的前 5 个商品",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "ed1eb863-3df3-42e5-8045-24d378a44378"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "查询 2025 年第一季度销售额最高的前 5 个商品",
+          "resolved_query": "查询 2025 年第一季度销售额最高的前 5 个商品"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "success"
+        },
+        {
+          "type": "sql",
+          "sql": "SELECT dp.product_name AS 商品名称, SUM(fo.order_amount) AS 销售额 FROM fact_order fo JOIN dim_product dp ON fo.product_id = dp.product_id WHERE fo.date_id BETWEEN 20250101 AND 20250331 GROUP BY dp.product_id, dp.product_name ORDER BY 销售额 DESC LIMIT 5"
+        },
+        {
+          "type": "result",
+          "data": [
+            {
+              "商品名称": "iPhone 15 Pro",
+              "销售额": 71992.0
+            },
+            {
+              "商品名称": "Galaxy S24 Ultra",
+              "销售额": 56994.0
+            },
+            {
+              "商品名称": "Mate 60 Pro",
+              "销售额": 55992.0
+            },
+            {
+              "商品名称": "戴森 V15 吸尘器",
+              "销售额": 32994.0
+            },
+            {
+              "商品名称": "美的空调 KFR-35GW",
+              "销售额": 22400.0
+            }
+          ]
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "running"
+        },
+        {
+          "type": "analysis",
+          "summary": "共 5 个数据点；销售额 合计 240,372，平均 48,074.4。最高为 iPhone 15 Pro（71,992），最低为 美的空调 KFR-35GW（22,400）。",
+          "chart": {
+            "type": "bar",
+            "label_key": "商品名称",
+            "value_key": "销售额",
+            "data": [
+              {
+                "label": "iPhone 15 Pro",
+                "value": 71992.0
+              },
+              {
+                "label": "Galaxy S24 Ultra",
+                "value": 56994.0
+              },
+              {
+                "label": "Mate 60 Pro",
+                "value": 55992.0
+              },
+              {
+                "label": "戴森 V15 吸尘器",
+                "value": 32994.0
+              },
+              {
+                "label": "美的空调 KFR-35GW",
+                "value": 22400.0
+              }
+            ],
+            "truncated": false
+          }
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "case_id": "product-top-volume",
+      "turn": 1,
+      "query": "查询 2025 年第一季度销量最高的前 5 个商品",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "23e437f4-01d8-44af-a3d8-2df9347fab40"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "查询 2025 年第一季度销量最高的前 5 个商品",
+          "resolved_query": "查询 2025 年第一季度销量最高的前 5 个商品"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "success"
+        },
+        {
+          "type": "sql",
+          "sql": "SELECT p.product_name AS 商品名称, SUM(f.order_quantity) AS 销量\nFROM fact_order f\nJOIN dim_product p ON f.product_id = p.product_id\nWHERE f.date_id BETWEEN 20250101 AND 20250331\nGROUP BY p.product_name\nORDER BY 销量 DESC\nLIMIT 5"
+        },
+        {
+          "type": "result",
+          "data": [
+            {
+              "商品名称": "蒙牛纯牛奶 250ml*12",
+              "销量": "183"
+            },
+            {
+              "商品名称": "奥利奥巧克力夹心饼干",
+              "销量": "167"
+            },
+            {
+              "商品名称": "乐事原味薯片 150g",
+              "销量": "131"
+            },
+            {
+              "商品名称": "雀巢金牌速溶咖啡",
+              "销量": "63"
+            },
+            {
+              "商品名称": "优衣库 Heattech 保暖夹克",
+              "销量": "10"
+            }
+          ]
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "running"
+        },
+        {
+          "type": "analysis",
+          "summary": "共 5 个数据点；销量 合计 554，平均 110.8。最高为 蒙牛纯牛奶 250ml*12（183），最低为 优衣库 Heattech 保暖夹克（10）。",
+          "chart": {
+            "type": "bar",
+            "label_key": "商品名称",
+            "value_key": "销量",
+            "data": [
+              {
+                "label": "蒙牛纯牛奶 250ml*12",
+                "value": 183.0
+              },
+              {
+                "label": "奥利奥巧克力夹心饼干",
+                "value": 167.0
+              },
+              {
+                "label": "乐事原味薯片 150g",
+                "value": 131.0
+              },
+              {
+                "label": "雀巢金牌速溶咖啡",
+                "value": 63.0
+              },
+              {
+                "label": "优衣库 Heattech 保暖夹克",
+                "value": 10.0
+              }
+            ],
+            "truncated": false
+          }
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "case_id": "member-sales",
+      "turn": 1,
+      "query": "按会员等级统计 2025 年第一季度销售额",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "7c4fbef9-de93-4724-afa8-7ed0af9f904a"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "按会员等级统计 2025 年第一季度销售额",
+          "resolved_query": "按会员等级统计 2025 年第一季度销售额"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "success"
+        },
+        {
+          "type": "sql",
+          "sql": "SELECT c.member_level AS 会员等级, SUM(o.order_amount) AS 销售额\nFROM fact_order o\nINNER JOIN dim_customer c ON o.customer_id = c.customer_id\nWHERE o.date_id BETWEEN 20250101 AND 20250331\nGROUP BY c.member_level LIMIT 1000"
+        },
+        {
+          "type": "result",
+          "data": [
+            {
+              "会员等级": "黄金",
+              "销售额": 100178.5
+            },
+            {
+              "会员等级": "铂金",
+              "销售额": 57679.0
+            },
+            {
+              "会员等级": "青铜",
+              "销售额": 50208.0
+            },
+            {
+              "会员等级": "白银",
+              "销售额": 71094.0
+            }
+          ]
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "running"
+        },
+        {
+          "type": "analysis",
+          "summary": "共 4 个数据点；销售额 合计 279,159.5，平均 69,789.88。最高为 黄金（100,178.5），最低为 青铜（50,208）。",
+          "chart": {
+            "type": "bar",
+            "label_key": "会员等级",
+            "value_key": "销售额",
+            "data": [
+              {
+                "label": "黄金",
+                "value": 100178.5
+              },
+              {
+                "label": "铂金",
+                "value": 57679.0
+              },
+              {
+                "label": "青铜",
+                "value": 50208.0
+              },
+              {
+                "label": "白银",
+                "value": 71094.0
+              }
+            ],
+            "truncated": false
+          }
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "case_id": "member-orders",
+      "turn": 1,
+      "query": "按会员等级统计 2025 年第一季度订单数",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "cd9b60ef-2fa6-40b9-b32f-9bb56f87548b"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "按会员等级统计 2025 年第一季度订单数",
+          "resolved_query": "按会员等级统计 2025 年第一季度订单数"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "success"
+        },
+        {
+          "type": "sql",
+          "sql": "SELECT c.member_level, COUNT(o.order_id) AS 订单数\nFROM fact_order o\nJOIN dim_customer c ON o.customer_id = c.customer_id\nWHERE o.date_id BETWEEN 20250101 AND 20250331\nGROUP BY c.member_level\nORDER BY 订单数 DESC LIMIT 1000"
+        },
+        {
+          "type": "result",
+          "data": [
+            {
+              "member_level": "黄金",
+              "订单数": 34
+            },
+            {
+              "member_level": "白银",
+              "订单数": 30
+            },
+            {
+              "member_level": "青铜",
+              "订单数": 26
+            },
+            {
+              "member_level": "铂金",
+              "订单数": 25
+            }
+          ]
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "running"
+        },
+        {
+          "type": "analysis",
+          "summary": "共 4 个数据点；订单数 合计 115，平均 28.75。最高为 黄金（34），最低为 铂金（25）。",
+          "chart": {
+            "type": "bar",
+            "label_key": "member_level",
+            "value_key": "订单数",
+            "data": [
+              {
+                "label": "黄金",
+                "value": 34.0
+              },
+              {
+                "label": "白银",
+                "value": 30.0
+              },
+              {
+                "label": "青铜",
+                "value": 26.0
+              },
+              {
+                "label": "铂金",
+                "value": 25.0
+              }
+            ],
+            "truncated": false
+          }
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "case_id": "gender-sales",
+      "turn": 1,
+      "query": "按性别统计 2025 年第一季度销售额",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "bc883be0-aff5-4892-bdd6-e27ba87f1b9a"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "按性别统计 2025 年第一季度销售额",
+          "resolved_query": "按性别统计 2025 年第一季度销售额"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "success"
+        },
+        {
+          "type": "sql",
+          "sql": "SELECT dc.gender, SUM(fo.order_amount) AS 销售额\nFROM fact_order fo\nJOIN dim_customer dc ON fo.customer_id = dc.customer_id\nJOIN dim_date dd ON fo.date_id = dd.date_id\nWHERE dd.year = 2025 AND dd.quarter = 'Q1'\nGROUP BY dc.gender LIMIT 1000"
+        },
+        {
+          "type": "result",
+          "data": [
+            {
+              "gender": "男",
+              "销售额": 135370.5
+            },
+            {
+              "gender": "女",
+              "销售额": 143789.0
+            }
+          ]
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "running"
+        },
+        {
+          "type": "analysis",
+          "summary": "共 2 个数据点；销售额 合计 279,159.5，平均 139,579.75。最高为 女（143,789），最低为 男（135,370.5）。",
+          "chart": {
+            "type": "bar",
+            "label_key": "gender",
+            "value_key": "销售额",
+            "data": [
+              {
+                "label": "男",
+                "value": 135370.5
+              },
+              {
+                "label": "女",
+                "value": 143789.0
+              }
+            ],
+            "truncated": false
+          }
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "case_id": "monthly-sales",
+      "turn": 1,
+      "query": "统计 2025 年第一季度每月销售额",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "bd611f06-0322-4c8f-8b16-c38f09e5b122"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "统计 2025 年第一季度每月销售额",
+          "resolved_query": "统计 2025 年第一季度每月销售额"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "success"
+        },
+        {
+          "type": "sql",
+          "sql": "SELECT\n    CONCAT(LEFT(CAST(date_id AS CHAR), 4), '-', SUBSTRING(CAST(date_id AS CHAR), 5, 2)) AS `月份`,\n    SUM(order_amount) AS `销售额`\nFROM fact_order\nWHERE date_id BETWEEN 20250101 AND 20250331\nGROUP BY CONCAT(LEFT(CAST(date_id AS CHAR), 4), '-', SUBSTRING(CAST(date_id AS CHAR), 5, 2))\nORDER BY `月份` LIMIT 1000"
+        },
+        {
+          "type": "result",
+          "data": [
+            {
+              "月份": "2025-01",
+              "销售额": 109030.5
+            },
+            {
+              "月份": "2025-02",
+              "销售额": 80009.0
+            },
+            {
+              "月份": "2025-03",
+              "销售额": 90120.0
+            }
+          ]
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "running"
+        },
+        {
+          "type": "analysis",
+          "summary": "共 3 个数据点；销售额 合计 279,159.5，平均 93,053.17。最高为 2025-01（109,030.5），最低为 2025-02（80,009）。",
+          "chart": {
+            "type": "line",
+            "label_key": "月份",
+            "value_key": "销售额",
+            "data": [
+              {
+                "label": "2025-01",
+                "value": 109030.5
+              },
+              {
+                "label": "2025-02",
+                "value": 80009.0
+              },
+              {
+                "label": "2025-03",
+                "value": 90120.0
+              }
+            ],
+            "truncated": false
+          }
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "case_id": "daily-sales",
+      "turn": 1,
+      "query": "统计 2025 年 3 月每天的销售额",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "6f94961b-1ab4-4b7f-82ba-3df8135b3006"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "统计 2025 年 3 月每天的销售额",
+          "resolved_query": "统计 2025 年 3 月每天的销售额"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "success"
+        },
+        {
+          "type": "sql",
+          "sql": "SELECT date_id AS `日期`, SUM(order_amount) AS `销售额` FROM fact_order WHERE date_id BETWEEN 20250301 AND 20250331 GROUP BY date_id ORDER BY date_id LIMIT 1000"
+        },
+        {
+          "type": "result",
+          "data": [
+            {
+              "日期": 20250301,
+              "销售额": 7149.0
+            },
+            {
+              "日期": 20250302,
+              "销售额": 45.0
+            },
+            {
+              "日期": 20250303,
+              "销售额": 50.0
+            },
+            {
+              "日期": 20250304,
+              "销售额": 899.0
+            },
+            {
+              "日期": 20250305,
+              "销售额": 1499.0
+            },
+            {
+              "日期": 20250306,
+              "销售额": 199.0
+            },
+            {
+              "日期": 20250307,
+              "销售额": 9499.0
+            },
+            {
+              "日期": 20250308,
+              "销售额": 49.0
+            },
+            {
+              "日期": 20250309,
+              "销售额": 3200.0
+            },
+            {
+              "日期": 20250310,
+              "销售额": 699.0
+            },
+            {
+              "日期": 20250311,
+              "销售额": 1299.0
+            },
+            {
+              "日期": 20250312,
+              "销售额": 5619.0
+            },
+            {
+              "日期": 20250313,
+              "销售额": 899.0
+            },
+            {
+              "日期": 20250314,
+              "销售额": 8999.0
+            },
+            {
+              "日期": 20250315,
+              "销售额": 252.0
+            },
+            {
+              "日期": 20250316,
+              "销售额": 6999.0
+            },
+            {
+              "日期": 20250317,
+              "销售额": 60.0
+            },
+            {
+              "日期": 20250318,
+              "销售额": 195.0
+            },
+            {
+              "日期": 20250319,
+              "销售额": 899.0
+            },
+            {
+              "日期": 20250320,
+              "销售额": 2798.0
+            },
+            {
+              "日期": 20250321,
+              "销售额": 597.0
+            },
+            {
+              "日期": 20250322,
+              "销售额": 9579.0
+            },
+            {
+              "日期": 20250323,
+              "销售额": 56.0
+            },
+            {
+              "日期": 20250324,
+              "销售额": 3200.0
+            },
+            {
+              "日期": 20250325,
+              "销售额": 1448.0
+            },
+            {
+              "日期": 20250326,
+              "销售额": 1299.0
+            },
+            {
+              "日期": 20250327,
+              "销售额": 5499.0
+            },
+            {
+              "日期": 20250328,
+              "销售额": 899.0
+            },
+            {
+              "日期": 20250329,
+              "销售额": 9062.0
+            },
+            {
+              "日期": 20250330,
+              "销售额": 175.0
+            },
+            {
+              "日期": 20250331,
+              "销售额": 6999.0
+            }
+          ]
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "running"
+        },
+        {
+          "type": "analysis",
+          "summary": "共 31 个数据点；销售额 合计 90,120，平均 2,907.1。最高为 20250322（9,579），最低为 20250302（45）。",
+          "chart": {
+            "type": "line",
+            "label_key": "日期",
+            "value_key": "销售额",
+            "data": [
+              {
+                "label": "20250301",
+                "value": 7149.0
+              },
+              {
+                "label": "20250302",
+                "value": 45.0
+              },
+              {
+                "label": "20250303",
+                "value": 50.0
+              },
+              {
+                "label": "20250304",
+                "value": 899.0
+              },
+              {
+                "label": "20250305",
+                "value": 1499.0
+              },
+              {
+                "label": "20250306",
+                "value": 199.0
+              },
+              {
+                "label": "20250307",
+                "value": 9499.0
+              },
+              {
+                "label": "20250308",
+                "value": 49.0
+              },
+              {
+                "label": "20250309",
+                "value": 3200.0
+              },
+              {
+                "label": "20250310",
+                "value": 699.0
+              },
+              {
+                "label": "20250311",
+                "value": 1299.0
+              },
+              {
+                "label": "20250312",
+                "value": 5619.0
+              }
+            ],
+            "truncated": true
+          }
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "case_id": "january-sales",
+      "turn": 1,
+      "query": "统计 2025 年 1 月销售总额",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "901547d9-6bc7-44d2-bfc8-fe972318618b"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "统计 2025 年 1 月销售总额",
+          "resolved_query": "统计 2025 年 1 月销售总额"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "success"
+        },
+        {
+          "type": "sql",
+          "sql": "SELECT SUM(order_amount) AS 销售总额 FROM fact_order WHERE date_id BETWEEN 20250101 AND 20250131 LIMIT 1000"
+        },
+        {
+          "type": "result",
+          "data": [
+            {
+              "销售总额": 109030.5
+            }
+          ]
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "running"
+        },
+        {
+          "type": "analysis",
+          "summary": "共 1 行；销售总额 最大值为 109,030.5，最小值为 109,030.5。",
+          "chart": null
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "case_id": "huabei-top-products",
+      "turn": 1,
+      "query": "查询华北地区销售额最高的前 3 个商品",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "8d5f2ba9-34a6-4302-b9ba-204717d8fbf4"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "查询华北地区销售额最高的前 3 个商品",
+          "resolved_query": "查询华北地区销售额最高的前 3 个商品"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "success"
+        },
+        {
+          "type": "sql",
+          "sql": "SELECT p.product_name AS 商品名称, SUM(o.order_amount) AS 销售额 FROM fact_order o JOIN dim_region r ON o.region_id = r.region_id JOIN dim_product p ON o.product_id = p.product_id WHERE r.region_name = '华北' GROUP BY p.product_name ORDER BY 销售额 DESC LIMIT 3"
+        },
+        {
+          "type": "result",
+          "data": [
+            {
+              "商品名称": "Galaxy S24 Ultra",
+              "销售额": 9499.0
+            },
+            {
+              "商品名称": "iPhone 15 Pro",
+              "销售额": 8999.0
+            },
+            {
+              "商品名称": "Mate 60 Pro",
+              "销售额": 6999.0
+            }
+          ]
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "running"
+        },
+        {
+          "type": "analysis",
+          "summary": "共 3 个数据点；销售额 合计 25,497，平均 8,499。最高为 Galaxy S24 Ultra（9,499），最低为 Mate 60 Pro（6,999）。",
+          "chart": {
+            "type": "bar",
+            "label_key": "商品名称",
+            "value_key": "销售额",
+            "data": [
+              {
+                "label": "Galaxy S24 Ultra",
+                "value": 9499.0
+              },
+              {
+                "label": "iPhone 15 Pro",
+                "value": 8999.0
+              },
+              {
+                "label": "Mate 60 Pro",
+                "value": 6999.0
+              }
+            ],
+            "truncated": false
+          }
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "case_id": "huawei-sales",
+      "turn": 1,
+      "query": "统计华为品牌在 2025 年第一季度的销售额",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "1c61d551-7776-484a-9ffd-5647e63be632"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "统计华为品牌在 2025 年第一季度的销售额",
+          "resolved_query": "统计华为品牌在 2025 年第一季度的销售额"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "success"
+        },
+        {
+          "type": "sql",
+          "sql": "SELECT SUM(fo.order_amount) AS 销售额 FROM fact_order fo JOIN dim_product dp ON fo.product_id = dp.product_id WHERE dp.brand = '华为' AND fo.date_id BETWEEN 20250101 AND 20250331 LIMIT 1000"
+        },
+        {
+          "type": "result",
+          "data": [
+            {
+              "销售额": 55992.0
+            }
+          ]
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "running"
+        },
+        {
+          "type": "analysis",
+          "summary": "共 1 行；销售额 最大值为 55,992，最小值为 55,992。",
+          "chart": null
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "case_id": "phone-category-sales",
+      "turn": 1,
+      "query": "统计手机数码品类 2025 年第一季度销售额",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "f874c6fd-fd68-4997-ad94-ce343b7ee2d7"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "统计手机数码品类 2025 年第一季度销售额",
+          "resolved_query": "统计手机数码品类 2025 年第一季度销售额"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "success"
+        },
+        {
+          "type": "sql",
+          "sql": "SELECT SUM(o.order_amount) AS 销售额\nFROM fact_order o\nJOIN dim_product p ON o.product_id = p.product_id\nWHERE p.category = '手机数码'\n  AND o.date_id BETWEEN 20250101 AND 20250331 LIMIT 1000"
+        },
+        {
+          "type": "result",
+          "data": [
+            {
+              "销售额": 194771.0
+            }
+          ]
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "running"
+        },
+        {
+          "type": "analysis",
+          "summary": "共 1 行；销售额 最大值为 194,771，最小值为 194,771。",
+          "chart": null
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "case_id": "platinum-member-sales",
+      "turn": 1,
+      "query": "统计铂金会员在 2025 年第一季度的消费金额",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "7c9c52c6-6366-4e70-b08a-4808baf6bb4a"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "统计铂金会员在 2025 年第一季度的消费金额",
+          "resolved_query": "统计铂金会员在 2025 年第一季度的消费金额"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "success"
+        },
+        {
+          "type": "sql",
+          "sql": "SELECT SUM(o.order_amount) AS 消费金额\nFROM fact_order o\nINNER JOIN dim_customer c ON o.customer_id = c.customer_id\nINNER JOIN dim_date d ON o.date_id = d.date_id\nWHERE c.member_level = '铂金'\n  AND d.quarter = 'Q1'\n  AND o.date_id BETWEEN 20250101 AND 20250331 LIMIT 1000"
+        },
+        {
+          "type": "result",
+          "data": [
+            {
+              "消费金额": 57679.0
+            }
+          ]
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "running"
+        },
+        {
+          "type": "analysis",
+          "summary": "共 1 行；消费金额 最大值为 57,679，最小值为 57,679。",
+          "chart": null
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "case_id": "east-brand-breakdown",
+      "turn": 1,
+      "query": "按品牌统计华东地区 2025 年第一季度销售额",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "fa1c001b-472d-47f1-893c-387d4d71a250"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "按品牌统计华东地区 2025 年第一季度销售额",
+          "resolved_query": "按品牌统计华东地区 2025 年第一季度销售额"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "success"
+        },
+        {
+          "type": "sql",
+          "sql": "SELECT p.brand AS 品牌, SUM(f.order_amount) AS 销售额 FROM fact_order f JOIN dim_region r ON f.region_id = r.region_id JOIN dim_date d ON f.date_id = d.date_id JOIN dim_product p ON f.product_id = p.product_id WHERE r.region_name = '华东' AND d.year = 2025 AND d.quarter = 'Q1' GROUP BY p.brand ORDER BY 销售额 DESC LIMIT 1000"
+        },
+        {
+          "type": "result",
+          "data": [
+            {
+              "品牌": "三星",
+              "销售额": 28497.0
+            },
+            {
+              "品牌": "华为",
+              "销售额": 27996.0
+            },
+            {
+              "品牌": "苹果",
+              "销售额": 17998.0
+            },
+            {
+              "品牌": "戴森",
+              "销售额": 10998.0
+            },
+            {
+              "品牌": "美的",
+              "销售额": 6400.0
+            },
+            {
+              "品牌": "亚马逊",
+              "销售额": 4197.0
+            },
+            {
+              "品牌": "Instant Pot",
+              "销售额": 2697.0
+            },
+            {
+              "品牌": "阿迪达斯",
+              "销售额": 2598.0
+            },
+            {
+              "品牌": "李维斯",
+              "销售额": 2396.0
+            },
+            {
+              "品牌": "耐克",
+              "销售额": 1798.0
+            },
+            {
+              "品牌": "雀巢",
+              "销售额": 650.0
+            },
+            {
+              "品牌": "优衣库",
+              "销售额": 398.0
+            },
+            {
+              "品牌": "奥利奥",
+              "销售额": 350.0
+            },
+            {
+              "品牌": "蒙牛",
+              "销售额": 225.0
+            },
+            {
+              "品牌": "乐事",
+              "销售额": 175.0
+            }
+          ]
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "running"
+        },
+        {
+          "type": "analysis",
+          "summary": "共 15 个数据点；销售额 合计 107,373，平均 7,158.2。最高为 三星（28,497），最低为 乐事（175）。",
+          "chart": {
+            "type": "bar",
+            "label_key": "品牌",
+            "value_key": "销售额",
+            "data": [
+              {
+                "label": "三星",
+                "value": 28497.0
+              },
+              {
+                "label": "华为",
+                "value": 27996.0
+              },
+              {
+                "label": "苹果",
+                "value": 17998.0
+              },
+              {
+                "label": "戴森",
+                "value": 10998.0
+              },
+              {
+                "label": "美的",
+                "value": 6400.0
+              },
+              {
+                "label": "亚马逊",
+                "value": 4197.0
+              },
+              {
+                "label": "Instant Pot",
+                "value": 2697.0
+              },
+              {
+                "label": "阿迪达斯",
+                "value": 2598.0
+              },
+              {
+                "label": "李维斯",
+                "value": 2396.0
+              },
+              {
+                "label": "耐克",
+                "value": 1798.0
+              },
+              {
+                "label": "雀巢",
+                "value": 650.0
+              },
+              {
+                "label": "优衣库",
+                "value": 398.0
+              }
+            ],
+            "truncated": true
+          }
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "case_id": "category-month-breakdown",
+      "turn": 1,
+      "query": "按月份和商品品类统计 2025 年第一季度销售额",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "924b00e4-7967-487a-b1f3-0c6456f373b1"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "按月份和商品品类统计 2025 年第一季度销售额",
+          "resolved_query": "按月份和商品品类统计 2025 年第一季度销售额"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "success"
+        },
+        {
+          "type": "sql",
+          "sql": "SELECT d.month AS 月份, p.category AS 商品品类, SUM(f.order_amount) AS 销售额 FROM fact_order f JOIN dim_date d ON f.date_id = d.date_id JOIN dim_product p ON f.product_id = p.product_id WHERE d.year = 2025 AND d.quarter = 'Q1' GROUP BY d.month, p.category ORDER BY d.month, p.category LIMIT 1000"
+        },
+        {
+          "type": "result",
+          "data": [
+            {
+              "月份": 1,
+              "商品品类": "休闲零食",
+              "销售额": 269.5
+            },
+            {
+              "月份": 1,
+              "商品品类": "家用电器",
+              "销售额": 22396.0
+            },
+            {
+              "月份": 1,
+              "商品品类": "手机数码",
+              "销售额": 78789.0
+            },
+            {
+              "月份": 1,
+              "商品品类": "服饰",
+              "销售额": 2295.0
+            },
+            {
+              "月份": 1,
+              "商品品类": "鞋靴",
+              "销售额": 4396.0
+            },
+            {
+              "月份": 1,
+              "商品品类": "食品饮料",
+              "销售额": 885.0
+            },
+            {
+              "月份": 2,
+              "商品品类": "休闲零食",
+              "销售额": 340.0
+            },
+            {
+              "月份": 2,
+              "商品品类": "家用电器",
+              "销售额": 19196.0
+            },
+            {
+              "月份": 2,
+              "商品品类": "手机数码",
+              "销售额": 53792.0
+            },
+            {
+              "月份": 2,
+              "商品品类": "服饰",
+              "销售额": 1795.0
+            },
+            {
+              "月份": 2,
+              "商品品类": "鞋靴",
+              "销售额": 4396.0
+            },
+            {
+              "月份": 2,
+              "商品品类": "食品饮料",
+              "销售额": 490.0
+            },
+            {
+              "月份": 3,
+              "商品品类": "休闲零食",
+              "销售额": 630.0
+            },
+            {
+              "月份": 3,
+              "商品品类": "家用电器",
+              "销售额": 19196.0
+            },
+            {
+              "月份": 3,
+              "商品品类": "手机数码",
+              "销售额": 62190.0
+            },
+            {
+              "月份": 3,
+              "商品品类": "服饰",
+              "销售额": 2593.0
+            },
+            {
+              "月份": 3,
+              "商品品类": "鞋靴",
+              "销售额": 4396.0
+            },
+            {
+              "月份": 3,
+              "商品品类": "食品饮料",
+              "销售额": 1115.0
+            }
+          ]
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "running"
+        },
+        {
+          "type": "analysis",
+          "summary": "共 18 个数据点；销售额 合计 279,159.5，平均 15,508.86。最高为 1（78,789），最低为 1（269.5）。",
+          "chart": {
+            "type": "line",
+            "label_key": "月份",
+            "value_key": "销售额",
+            "data": [
+              {
+                "label": "1",
+                "value": 269.5
+              },
+              {
+                "label": "1",
+                "value": 22396.0
+              },
+              {
+                "label": "1",
+                "value": 78789.0
+              },
+              {
+                "label": "1",
+                "value": 2295.0
+              },
+              {
+                "label": "1",
+                "value": 4396.0
+              },
+              {
+                "label": "1",
+                "value": 885.0
+              },
+              {
+                "label": "2",
+                "value": 340.0
+              },
+              {
+                "label": "2",
+                "value": 19196.0
+              },
+              {
+                "label": "2",
+                "value": 53792.0
+              },
+              {
+                "label": "2",
+                "value": 1795.0
+              },
+              {
+                "label": "2",
+                "value": 4396.0
+              },
+              {
+                "label": "2",
+                "value": 490.0
+              }
+            ],
+            "truncated": true
+          }
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "case_id": "region-switch-followup",
+      "turn": 1,
+      "query": "统计华东地区 2025 年第一季度的销售总额",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "7f18b868-d3ee-4c45-a395-03802c03e53f"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "统计华东地区 2025 年第一季度的销售总额",
+          "resolved_query": "统计华东地区 2025 年第一季度的销售总额"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "success"
+        },
+        {
+          "type": "sql",
+          "sql": "SELECT SUM(fo.order_amount) AS 销售总额 FROM fact_order fo JOIN dim_region dr ON fo.region_id = dr.region_id JOIN dim_date dd ON fo.date_id = dd.date_id WHERE dr.region_name = '华东' AND dd.year = 2025 AND dd.quarter = 'Q1' LIMIT 1000"
+        },
+        {
+          "type": "result",
+          "data": [
+            {
+              "销售总额": 107373.0
+            }
+          ]
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "running"
+        },
+        {
+          "type": "analysis",
+          "summary": "共 1 行；销售总额 最大值为 107,373，最小值为 107,373。",
+          "chart": null
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "case_id": "region-switch-followup",
+      "turn": 2,
+      "query": "那华北呢？",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "27b5ee4a-41ce-483f-9095-f228581e2ab9"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "那华北呢？",
+          "resolved_query": "统计华北地区 2025 年第一季度的销售总额"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "success"
+        },
+        {
+          "type": "sql",
+          "sql": "SELECT SUM(fo.order_amount) AS 销售总额 FROM fact_order fo JOIN dim_region dr ON fo.region_id = dr.region_id WHERE dr.region_name = '华北' AND fo.date_id BETWEEN 20250101 AND 20250331 LIMIT 1000"
+        },
+        {
+          "type": "result",
+          "data": [
+            {
+              "销售总额": 41099.5
+            }
+          ]
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "running"
+        },
+        {
+          "type": "analysis",
+          "summary": "共 1 行；销售总额 最大值为 41,099.5，最小值为 41,099.5。",
+          "chart": null
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "case_id": "brand-breakdown-followup",
+      "turn": 1,
+      "query": "统计华东地区 2025 年第一季度的销售总额",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "b3c4f990-805b-471a-b691-0fed35f5a611"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "统计华东地区 2025 年第一季度的销售总额",
+          "resolved_query": "统计华东地区 2025 年第一季度的销售总额"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "success"
+        },
+        {
+          "type": "sql",
+          "sql": "SELECT SUM(fo.order_amount) AS 销售总额\nFROM fact_order fo\nJOIN dim_region dr ON fo.region_id = dr.region_id\nJOIN dim_date dd ON fo.date_id = dd.date_id\nWHERE dr.region_name = '华东'\n  AND dd.year = 2025\n  AND dd.quarter = 'Q1' LIMIT 1000"
+        },
+        {
+          "type": "result",
+          "data": [
+            {
+              "销售总额": 107373.0
+            }
+          ]
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "running"
+        },
+        {
+          "type": "analysis",
+          "summary": "共 1 行；销售总额 最大值为 107,373，最小值为 107,373。",
+          "chart": null
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "case_id": "brand-breakdown-followup",
+      "turn": 2,
+      "query": "按品牌再拆一下",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "e9ceee92-52f3-47fc-8070-bcee2491ca49"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "按品牌再拆一下",
+          "resolved_query": "统计华东地区 2025 年第一季度的销售总额，按品牌拆分。"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "success"
+        },
+        {
+          "type": "sql",
+          "sql": "SELECT dim_product.brand, SUM(fact_order.order_amount) AS 销售总额 FROM fact_order JOIN dim_product ON fact_order.product_id = dim_product.product_id JOIN dim_region ON fact_order.region_id = dim_region.region_id JOIN dim_date ON fact_order.date_id = dim_date.date_id WHERE dim_region.region_name = '华东' AND dim_date.year = 2025 AND dim_date.quarter = 'Q1' GROUP BY dim_product.brand LIMIT 1000"
+        },
+        {
+          "type": "result",
+          "data": [
+            {
+              "brand": "华为",
+              "销售总额": 27996.0
+            },
+            {
+              "brand": "雀巢",
+              "销售总额": 650.0
+            },
+            {
+              "brand": "亚马逊",
+              "销售总额": 4197.0
+            },
+            {
+              "brand": "三星",
+              "销售总额": 28497.0
+            },
+            {
+              "brand": "阿迪达斯",
+              "销售总额": 2598.0
+            },
+            {
+              "brand": "戴森",
+              "销售总额": 10998.0
+            },
+            {
+              "brand": "苹果",
+              "销售总额": 17998.0
+            },
+            {
+              "brand": "耐克",
+              "销售总额": 1798.0
+            },
+            {
+              "brand": "蒙牛",
+              "销售总额": 225.0
+            },
+            {
+              "brand": "李维斯",
+              "销售总额": 2396.0
+            },
+            {
+              "brand": "乐事",
+              "销售总额": 175.0
+            },
+            {
+              "brand": "优衣库",
+              "销售总额": 398.0
+            },
+            {
+              "brand": "Instant Pot",
+              "销售总额": 2697.0
+            },
+            {
+              "brand": "美的",
+              "销售总额": 6400.0
+            },
+            {
+              "brand": "奥利奥",
+              "销售总额": 350.0
+            }
+          ]
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "running"
+        },
+        {
+          "type": "analysis",
+          "summary": "共 15 个数据点；销售总额 合计 107,373，平均 7,158.2。最高为 三星（28,497），最低为 乐事（175）。",
+          "chart": {
+            "type": "bar",
+            "label_key": "brand",
+            "value_key": "销售总额",
+            "data": [
+              {
+                "label": "华为",
+                "value": 27996.0
+              },
+              {
+                "label": "雀巢",
+                "value": 650.0
+              },
+              {
+                "label": "亚马逊",
+                "value": 4197.0
+              },
+              {
+                "label": "三星",
+                "value": 28497.0
+              },
+              {
+                "label": "阿迪达斯",
+                "value": 2598.0
+              },
+              {
+                "label": "戴森",
+                "value": 10998.0
+              },
+              {
+                "label": "苹果",
+                "value": 17998.0
+              },
+              {
+                "label": "耐克",
+                "value": 1798.0
+              },
+              {
+                "label": "蒙牛",
+                "value": 225.0
+              },
+              {
+                "label": "李维斯",
+                "value": 2396.0
+              },
+              {
+                "label": "乐事",
+                "value": 175.0
+              },
+              {
+                "label": "优衣库",
+                "value": 398.0
+              }
+            ],
+            "truncated": true
+          }
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "case_id": "time-switch-followup",
+      "turn": 1,
+      "query": "统计华东地区 2025 年第一季度的销售总额",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "068cf7cf-9318-4a5a-9d8b-07f013d171d2"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "统计华东地区 2025 年第一季度的销售总额",
+          "resolved_query": "统计华东地区 2025 年第一季度的销售总额"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "success"
+        },
+        {
+          "type": "sql",
+          "sql": "SELECT SUM(fo.order_amount) AS 销售总额\nFROM fact_order fo\nJOIN dim_region dr ON fo.region_id = dr.region_id\nJOIN dim_date dd ON fo.date_id = dd.date_id\nWHERE dr.region_name = '华东'\n  AND dd.year = 2025\n  AND dd.quarter = 'Q1' LIMIT 1000"
+        },
+        {
+          "type": "result",
+          "data": [
+            {
+              "销售总额": 107373.0
+            }
+          ]
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "running"
+        },
+        {
+          "type": "analysis",
+          "summary": "共 1 行；销售总额 最大值为 107,373，最小值为 107,373。",
+          "chart": null
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "case_id": "time-switch-followup",
+      "turn": 2,
+      "query": "改成 3 月呢？",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "74622a3c-37c7-48e1-ad70-0f93856ee676"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "改成 3 月呢？",
+          "resolved_query": "统计华东地区 2025 年 3 月的销售总额"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "success"
+        },
+        {
+          "type": "sql",
+          "sql": "SELECT SUM(fo.order_amount) AS `销售总额` FROM fact_order fo INNER JOIN dim_region dr ON fo.region_id = dr.region_id WHERE dr.region_name = '华东' AND fo.date_id BETWEEN 20250301 AND 20250331 LIMIT 1000"
+        },
+        {
+          "type": "result",
+          "data": [
+            {
+              "销售总额": 34941.0
+            }
+          ]
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "running"
+        },
+        {
+          "type": "analysis",
+          "summary": "共 1 行；销售总额 最大值为 34,941，最小值为 34,941。",
+          "chart": null
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "case_id": "metric-switch-followup",
+      "turn": 1,
+      "query": "统计华东地区 2025 年第一季度的销售总额",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "755bf437-7403-4aae-8fb9-6886b90e46bf"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "统计华东地区 2025 年第一季度的销售总额",
+          "resolved_query": "统计华东地区 2025 年第一季度的销售总额"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "success"
+        },
+        {
+          "type": "sql",
+          "sql": "SELECT SUM(f.order_amount) AS 销售总额 FROM fact_order f JOIN dim_region r ON f.region_id = r.region_id WHERE r.region_name = '华东' AND f.date_id BETWEEN 20250101 AND 20250331 LIMIT 1000"
+        },
+        {
+          "type": "result",
+          "data": [
+            {
+              "销售总额": 107373.0
+            }
+          ]
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "running"
+        },
+        {
+          "type": "analysis",
+          "summary": "共 1 行；销售总额 最大值为 107,373，最小值为 107,373。",
+          "chart": null
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "case_id": "metric-switch-followup",
+      "turn": 2,
+      "query": "销量是多少？",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "a431fc3e-d7ce-4f1f-80aa-c2fbbfeaa633"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "销量是多少？",
+          "resolved_query": "华东地区2025年第一季度的销量是多少？"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "success"
+        },
+        {
+          "type": "sql",
+          "sql": "SELECT SUM(fo.order_quantity) AS 销量\nFROM fact_order fo\nJOIN dim_region dr ON fo.region_id = dr.region_id\nJOIN dim_date dd ON fo.date_id = dd.date_id\nWHERE dr.region_name = '华东'\n  AND dd.year = 2025\n  AND dd.quarter = 'Q1' LIMIT 1000"
+        },
+        {
+          "type": "result",
+          "data": [
+            {
+              "销量": "235"
+            }
+          ]
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "running"
+        },
+        {
+          "type": "analysis",
+          "summary": "共 1 行；销量 最大值为 235，最小值为 235。",
+          "chart": null
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "case_id": "dimension-switch-followup",
+      "turn": 1,
+      "query": "按大区统计 2025 年第一季度销售额",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "a5ba36eb-aee6-4592-b134-d4cd47cc04ef"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "按大区统计 2025 年第一季度销售额",
+          "resolved_query": "按大区统计 2025 年第一季度销售额"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "success"
+        },
+        {
+          "type": "sql",
+          "sql": "SELECT r.region_name AS 大区, SUM(f.order_amount) AS 销售额 FROM fact_order f JOIN dim_region r ON f.region_id = r.region_id WHERE f.date_id BETWEEN 20250101 AND 20250331 GROUP BY r.region_name LIMIT 1000"
+        },
+        {
+          "type": "result",
+          "data": [
+            {
+              "大区": "华南",
+              "销售额": 70202.0
+            },
+            {
+              "大区": "华东",
+              "销售额": 107373.0
+            },
+            {
+              "大区": "华北",
+              "销售额": 41099.5
+            },
+            {
+              "大区": "西南",
+              "销售额": 31528.0
+            },
+            {
+              "大区": "华中",
+              "销售额": 28957.0
+            }
+          ]
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "running"
+        },
+        {
+          "type": "analysis",
+          "summary": "共 5 个数据点；销售额 合计 279,159.5，平均 55,831.9。最高为 华东（107,373），最低为 华中（28,957）。",
+          "chart": {
+            "type": "bar",
+            "label_key": "大区",
+            "value_key": "销售额",
+            "data": [
+              {
+                "label": "华南",
+                "value": 70202.0
+              },
+              {
+                "label": "华东",
+                "value": 107373.0
+              },
+              {
+                "label": "华北",
+                "value": 41099.5
+              },
+              {
+                "label": "西南",
+                "value": 31528.0
+              },
+              {
+                "label": "华中",
+                "value": 28957.0
+              }
+            ],
+            "truncated": false
+          }
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "case_id": "dimension-switch-followup",
+      "turn": 2,
+      "query": "按会员等级看呢？",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "bead3237-f074-4eee-8ef3-c3682c08aaaf"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "按会员等级看呢？",
+          "resolved_query": "按会员等级统计2025年第一季度销售额。"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "抽取关键词",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段取值",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回字段信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "召回指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "合并召回信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "过滤指标信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "过滤表信息",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "添加额外上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "生成SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "检查SQL安全",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "校验SQL",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "执行SQL",
+          "status": "success"
+        },
+        {
+          "type": "sql",
+          "sql": "SELECT c.member_level AS 会员等级, SUM(o.order_amount) AS 销售额 FROM fact_order o JOIN dim_customer c ON o.customer_id = c.customer_id WHERE o.date_id BETWEEN 20250101 AND 20250331 GROUP BY c.member_level LIMIT 1000"
+        },
+        {
+          "type": "result",
+          "data": [
+            {
+              "会员等级": "黄金",
+              "销售额": 100178.5
+            },
+            {
+              "会员等级": "铂金",
+              "销售额": 57679.0
+            },
+            {
+              "会员等级": "青铜",
+              "销售额": 50208.0
+            },
+            {
+              "会员等级": "白银",
+              "销售额": 71094.0
+            }
+          ]
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "running"
+        },
+        {
+          "type": "analysis",
+          "summary": "共 4 个数据点；销售额 合计 279,159.5，平均 69,789.88。最高为 黄金（100,178.5），最低为 青铜（50,208）。",
+          "chart": {
+            "type": "bar",
+            "label_key": "会员等级",
+            "value_key": "销售额",
+            "data": [
+              {
+                "label": "黄金",
+                "value": 100178.5
+              },
+              {
+                "label": "铂金",
+                "value": 57679.0
+              },
+              {
+                "label": "青铜",
+                "value": 50208.0
+              },
+              {
+                "label": "白银",
+                "value": 71094.0
+              }
+            ],
+            "truncated": false
+          }
+        },
+        {
+          "type": "progress",
+          "step": "解读查询结果",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "case_id": "non-data-greeting",
+      "turn": 1,
+      "query": "你好",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "9075a35f-da55-46ab-a98f-94863635abb6"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "你好",
+          "resolved_query": "你好"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "assistant_message",
+          "category": "non_data",
+          "message": "抱歉，我目前仅支持电商经营数据分析。请描述你想查询的销售、订单、商品、地区或会员数据。",
+          "suggested_queries": []
+        }
+      ]
+    },
+    {
+      "case_id": "non-data-weather",
+      "turn": 1,
+      "query": "今天天气怎么样",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "2dd38049-f481-4bf4-8892-7428c8b7afe3"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "今天天气怎么样",
+          "resolved_query": "今天天气怎么样"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "assistant_message",
+          "category": "non_data",
+          "message": "抱歉，我目前仅支持电商经营数据分析。请描述你想查询的销售、订单、商品、地区或会员数据。",
+          "suggested_queries": []
+        }
+      ]
+    },
+    {
+      "case_id": "non-data-programming",
+      "turn": 1,
+      "query": "帮我写一段 Python 代码",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "290483bc-4af8-4506-b3d3-8e5353d296b5"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "帮我写一段 Python 代码",
+          "resolved_query": "帮我写一段 Python 代码"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "assistant_message",
+          "category": "non_data",
+          "message": "抱歉，我目前仅支持电商经营数据分析。请描述你想查询的销售、订单、商品、地区或会员数据。",
+          "suggested_queries": []
+        }
+      ]
+    },
+    {
+      "case_id": "capability-boundary",
+      "turn": 1,
+      "query": "你可以做什么？",
+      "passed": true,
+      "errors": [],
+      "events": [
+        {
+          "type": "audit_context",
+          "audit_id": "9c94df0b-012f-44c7-b45d-7a48455c73f9"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "running"
+        },
+        {
+          "type": "query_context",
+          "original_query": "你可以做什么？",
+          "resolved_query": "你可以做什么？"
+        },
+        {
+          "type": "progress",
+          "step": "理解上下文",
+          "status": "success"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "running"
+        },
+        {
+          "type": "progress",
+          "step": "识别问题意图",
+          "status": "success"
+        },
+        {
+          "type": "assistant_message",
+          "category": "non_data",
+          "message": "抱歉，我目前仅支持电商经营数据分析。请描述你想查询的销售、订单、商品、地区或会员数据。",
+          "suggested_queries": []
+        }
+      ]
+    }
+  ]
+}

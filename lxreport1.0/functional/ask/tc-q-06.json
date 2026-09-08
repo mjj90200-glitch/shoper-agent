@@ -1,0 +1,215 @@
+{
+  "case": "tc-q-06",
+  "query": "统计 2025 年第一季度每月销售额",
+  "http_status": 200,
+  "http_status_text": 200,
+  "event_count": 35,
+  "events": [
+    {
+      "type": "audit_context",
+      "audit_id": "a8cef332-4404-44d8-abae-f6a28e5a35e3"
+    },
+    {
+      "type": "progress",
+      "step": "理解上下文",
+      "status": "running"
+    },
+    {
+      "type": "query_context",
+      "original_query": "统计 2025 年第一季度每月销售额",
+      "resolved_query": "统计 2025 年第一季度每月销售额"
+    },
+    {
+      "type": "progress",
+      "step": "理解上下文",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "识别问题意图",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "识别问题意图",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "抽取关键词",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "抽取关键词",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "召回字段信息",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "召回指标信息",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "召回字段取值",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "召回指标信息",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "召回字段信息",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "召回字段取值",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "合并召回信息",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "合并召回信息",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "过滤指标信息",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "过滤表信息",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "过滤指标信息",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "过滤表信息",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "添加额外上下文",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "添加额外上下文",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "生成SQL",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "生成SQL",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "检查SQL安全",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "检查SQL安全",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "校验SQL",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "校验SQL",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "执行SQL",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "执行SQL",
+      "status": "success"
+    },
+    {
+      "type": "sql",
+      "sql": "SELECT d.month AS 月份, SUM(o.order_amount) AS 销售额\nFROM fact_order o\nJOIN dim_date d ON o.date_id = d.date_id\nWHERE o.date_id BETWEEN 20250101 AND 20250331\nGROUP BY d.month\nORDER BY d.month LIMIT 1000"
+    },
+    {
+      "type": "result",
+      "data": [
+        {
+          "月份": 1,
+          "销售额": 109030.5
+        },
+        {
+          "月份": 2,
+          "销售额": 80009.0
+        },
+        {
+          "月份": 3,
+          "销售额": 90120.0
+        }
+      ]
+    },
+    {
+      "type": "progress",
+      "step": "解读查询结果",
+      "status": "running"
+    },
+    {
+      "type": "analysis",
+      "summary": "共 3 个数据点；销售额 合计 279,159.5，平均 93,053.17。最高为 1（109,030.5），最低为 2（80,009）。",
+      "chart": {
+        "type": "line",
+        "label_key": "月份",
+        "value_key": "销售额",
+        "data": [
+          {
+            "label": "1",
+            "value": 109030.5
+          },
+          {
+            "label": "2",
+            "value": 80009.0
+          },
+          {
+            "label": "3",
+            "value": 90120.0
+          }
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "type": "progress",
+      "step": "解读查询结果",
+      "status": "success"
+    }
+  ],
+  "error": null,
+  "requested_at": "2026-09-08 10:05:46"
+}
