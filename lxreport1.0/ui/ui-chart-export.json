@@ -1,0 +1,24 @@
+{
+  "queryReady": true,
+  "chartButtonCount": 3,
+  "chartSwitch": {
+    "柱状": {
+      "svgCount": 196
+    },
+    "趋势": {
+      "svgCount": 196
+    },
+    "占比": {
+      "svgCount": 196
+    }
+  },
+  "metricButtonCount": 35,
+  "metricSwitched": true,
+  "csvDownload": {
+    "ok": false,
+    "reason": "CSV button not found on result"
+  },
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ]
+}

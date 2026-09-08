@@ -1,0 +1,8 @@
+{
+  "query": "统计华北地区销售额",
+  "expected": "blocked",
+  "passed": false,
+  "has_result": true,
+  "has_error": false,
+  "error_detail": null
+}

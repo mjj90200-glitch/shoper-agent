@@ -1,0 +1,41 @@
+{
+  "url": "http://127.0.0.1:5173/",
+  "title": "AI数分助手",
+  "inputs": [
+    {
+      "placeholder": "",
+      "type": "text",
+      "name": "",
+      "id": ""
+    },
+    {
+      "placeholder": "",
+      "type": "password",
+      "name": "",
+      "id": ""
+    }
+  ],
+  "buttons": [
+    {
+      "text": "登录",
+      "ariaLabel": null,
+      "title": null
+    },
+    {
+      "text": "admin / admin123 · 管理员：全部数据",
+      "ariaLabel": null,
+      "title": null
+    },
+    {
+      "text": "east_manager / east123 · 区域经理：",
+      "ariaLabel": null,
+      "title": null
+    },
+    {
+      "text": "analyst / analyst123 · 分析员：全地区",
+      "ariaLabel": null,
+      "title": null
+    }
+  ],
+  "bodyText": "AI数分助手\n\n让数据直接回答业务问题\n\n用户名\n密码\n登录\n演示账号\nadmin / admin123 · 管理员：全部数据\neast_manager / east123 · 区域经理：仅华东，姓名脱敏\nanalyst / analyst123 · 分析员：全地区汇总，姓名脱敏"
+}

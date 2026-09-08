@@ -1,0 +1,28 @@
+{
+  "enteredConfirm": true,
+  "stillVisible": true,
+  "noticeDeleteFailed": false,
+  "noticeDeleted": false,
+  "apiCalls": [
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:5173/api/auth/login"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/api/sessions"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:5173/api/analysis/projects"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:5173/api/analysis/projects/f195186d-14d2-4b45-9097-f3eba2f18d36"
+    },
+    {
+      "method": "DELETE",
+      "url": "http://127.0.0.1:5173/api/sessions/d52f4472-46a5-4ce5-a238-3a732d0645ed"
+    }
+  ]
+}
