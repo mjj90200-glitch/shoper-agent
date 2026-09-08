@@ -1,0 +1,401 @@
+{
+  "case": "tc-analysis-001-exec-step5",
+  "query": "按地区、月份统计2025年销售额；对每个地区，计算该地区2025年1月至12月月销售额的平均值和总体标准差；若标准差为0，则该地区所有月份均标记为正常；否则计算Z-score=(月销售额-月平均销售额)/总体标准差，将Z-score绝对值大于2的月份标记为异常，其余标记为正常；返回地区、月份、销售额、月平均销售额、总体标准差、Z-score和异常标记。",
+  "http_status": 200,
+  "http_status_text": 200,
+  "event_count": 35,
+  "events": [
+    {
+      "type": "audit_context",
+      "audit_id": "18bb4b81-97f0-42d7-81e7-138815cbd291"
+    },
+    {
+      "type": "progress",
+      "step": "理解上下文",
+      "status": "running"
+    },
+    {
+      "type": "query_context",
+      "original_query": "按地区、月份统计2025年销售额；对每个地区，计算该地区2025年1月至12月月销售额的平均值和总体标准差；若标准差为0，则该地区所有月份均标记为正常；否则计算Z-score=(月销售额-月平均销售额)/总体标准差，将Z-score绝对值大于2的月份标记为异常，其余标记为正常；返回地区、月份、销售额、月平均销售额、总体标准差、Z-score和异常标记。",
+      "resolved_query": "按地区、月份统计2025年销售额；对每个地区，计算该地区2025年1月至12月月销售额的平均值和总体标准差；若标准差为0，则该地区所有月份均标记为正常；否则计算Z-score=(月销售额-月平均销售额)/总体标准差，将Z-score绝对值大于2的月份标记为异常，其余标记为正常；返回地区、月份、销售额、月平均销售额、总体标准差、Z-score和异常标记。"
+    },
+    {
+      "type": "progress",
+      "step": "理解上下文",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "识别问题意图",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "识别问题意图",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "抽取关键词",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "抽取关键词",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "召回字段信息",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "召回指标信息",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "召回字段取值",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "召回字段取值",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "召回指标信息",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "召回字段信息",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "合并召回信息",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "合并召回信息",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "过滤指标信息",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "过滤表信息",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "过滤指标信息",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "过滤表信息",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "添加额外上下文",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "添加额外上下文",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "生成SQL",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "生成SQL",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "检查SQL安全",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "检查SQL安全",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "校验SQL",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "校验SQL",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "执行SQL",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "执行SQL",
+      "status": "success"
+    },
+    {
+      "type": "sql",
+      "sql": "WITH monthly_sales AS (\n    SELECT\n        dr.region_id,\n        dr.region_name,\n        dd.month,\n        SUM(fo.order_amount) AS month_sales\n    FROM fact_order fo\n    JOIN dim_region dr ON fo.region_id = dr.region_id\n    JOIN dim_date dd ON fo.date_id = dd.date_id\n    WHERE dd.year = 2025\n    GROUP BY dr.region_id, dr.region_name, dd.month\n),\nregion_stats AS (\n    SELECT\n        region_id,\n        region_name,\n        month,\n        month_sales,\n        AVG(month_sales) OVER (PARTITION BY region_id) AS avg_month_sales,\n        STDDEV_POP(month_sales) OVER (PARTITION BY region_id) AS stddev_sales\n    FROM monthly_sales\n)\nSELECT\n    region_name AS 地区,\n    month AS 月份,\n    month_sales AS 销售额,\n    avg_month_sales AS 月平均销售额,\n    stddev_sales AS 总体标准差,\n    CASE\n        WHEN stddev_sales = 0 THEN NULL\n        ELSE (month_sales - avg_month_sales) / stddev_sales\n    END AS `Z-score`,\n    CASE\n        WHEN stddev_sales = 0 THEN '正常'\n        WHEN ABS((month_sales - avg_month_sales) / stddev_sales) > 2 THEN '异常'\n        ELSE '正常'\n    END AS 异常标记\nFROM region_stats\nORDER BY region_name, month LIMIT 1000"
+    },
+    {
+      "type": "result",
+      "data": [
+        {
+          "地区": "华东",
+          "月份": 1,
+          "销售额": 16796.0,
+          "月平均销售额": 15721.0,
+          "总体标准差": 3442.010168491662,
+          "Z-score": 0.31231749686291027,
+          "异常标记": "正常"
+        },
+        {
+          "地区": "华东",
+          "月份": 1,
+          "销售额": 38128.0,
+          "月平均销售额": 20070.0,
+          "总体标准差": 13311.011682062337,
+          "Z-score": 1.3566211518193327,
+          "异常标记": "正常"
+        },
+        {
+          "地区": "华东",
+          "月份": 2,
+          "销售额": 11072.0,
+          "月平均销售额": 15721.0,
+          "总体标准差": 3442.010168491662,
+          "Z-score": -1.350664225968065,
+          "异常标记": "正常"
+        },
+        {
+          "地区": "华东",
+          "月份": 2,
+          "销售额": 6436.0,
+          "月平均销售额": 20070.0,
+          "总体标准差": 13311.011682062337,
+          "Z-score": -1.0242647460352632,
+          "异常标记": "正常"
+        },
+        {
+          "地区": "华东",
+          "月份": 3,
+          "销售额": 19295.0,
+          "月平均销售额": 15721.0,
+          "总体标准差": 3442.010168491662,
+          "Z-score": 1.0383467291051547,
+          "异常标记": "正常"
+        },
+        {
+          "地区": "华东",
+          "月份": 3,
+          "销售额": 15646.0,
+          "月平均销售额": 20070.0,
+          "总体标准差": 13311.011682062337,
+          "Z-score": -0.33235640578406955,
+          "异常标记": "正常"
+        },
+        {
+          "地区": "华中",
+          "月份": 1,
+          "销售额": 11397.0,
+          "月平均销售额": 9652.333333333334,
+          "总体标准差": 2217.648203740971,
+          "Z-score": 0.7867193109004268,
+          "异常标记": "正常"
+        },
+        {
+          "地区": "华中",
+          "月份": 2,
+          "销售额": 6523.0,
+          "月平均销售额": 9652.333333333334,
+          "总体标准差": 2217.648203740971,
+          "Z-score": -1.411104488103403,
+          "异常标记": "正常"
+        },
+        {
+          "地区": "华中",
+          "月份": 3,
+          "销售额": 11037.0,
+          "月平均销售额": 9652.333333333334,
+          "总体标准差": 2217.648203740971,
+          "Z-score": 0.6243851772029753,
+          "异常标记": "正常"
+        },
+        {
+          "地区": "华北",
+          "月份": 1,
+          "销售额": 4021.0,
+          "月平均销售额": 13699.833333333334,
+          "总体标准差": 10474.666234406814,
+          "Z-score": -0.9240230778466854,
+          "异常标记": "正常"
+        },
+        {
+          "地区": "华北",
+          "月份": 2,
+          "销售额": 8827.5,
+          "月平均销售额": 13699.833333333334,
+          "总体标准差": 10474.666234406814,
+          "Z-score": -0.46515404159884977,
+          "异常标记": "正常"
+        },
+        {
+          "地区": "华北",
+          "月份": 3,
+          "销售额": 28251.0,
+          "月平均销售额": 13699.833333333334,
+          "总体标准差": 10474.666234406814,
+          "Z-score": 1.389177119445535,
+          "异常标记": "正常"
+        },
+        {
+          "地区": "华南",
+          "月份": 1,
+          "销售额": 28096.5,
+          "月平均销售额": 23400.666666666668,
+          "总体标准差": 7546.477680937571,
+          "Z-score": 0.622254981975899,
+          "异常标记": "正常"
+        },
+        {
+          "地区": "华南",
+          "月份": 2,
+          "销售额": 29352.5,
+          "月平均销售额": 23400.666666666668,
+          "总体标准差": 7546.477680937571,
+          "Z-score": 0.7886902453004908,
+          "异常标记": "正常"
+        },
+        {
+          "地区": "华南",
+          "月份": 3,
+          "销售额": 12753.0,
+          "月平均销售额": 23400.666666666668,
+          "总体标准差": 7546.477680937571,
+          "Z-score": -1.4109452272763903,
+          "异常标记": "正常"
+        },
+        {
+          "地区": "西南",
+          "月份": 1,
+          "销售额": 10592.0,
+          "月平均销售额": 10509.333333333334,
+          "总体标准差": 5985.205389588194,
+          "Z-score": 0.013811834563016368,
+          "异常标记": "正常"
+        },
+        {
+          "地区": "西南",
+          "月份": 2,
+          "销售额": 17798.0,
+          "月平均销售额": 10509.333333333334,
+          "总体标准差": 5985.205389588194,
+          "Z-score": 1.2177805425601536,
+          "异常标记": "正常"
+        },
+        {
+          "地区": "西南",
+          "月份": 3,
+          "销售额": 3138.0,
+          "月平均销售额": 10509.333333333334,
+          "总体标准差": 5985.205389588194,
+          "Z-score": -1.2315923771231703,
+          "异常标记": "正常"
+        }
+      ]
+    },
+    {
+      "type": "progress",
+      "step": "解读查询结果",
+      "status": "running"
+    },
+    {
+      "type": "analysis",
+      "summary": "共 18 个数据点；销售额 合计 279,159.5，平均 15,508.86。最高为 1（38,128），最低为 3（3,138）。",
+      "chart": {
+        "type": "line",
+        "label_key": "月份",
+        "value_key": "销售额",
+        "data": [
+          {
+            "label": "1",
+            "value": 16796.0
+          },
+          {
+            "label": "1",
+            "value": 38128.0
+          },
+          {
+            "label": "2",
+            "value": 11072.0
+          },
+          {
+            "label": "2",
+            "value": 6436.0
+          },
+          {
+            "label": "3",
+            "value": 19295.0
+          },
+          {
+            "label": "3",
+            "value": 15646.0
+          },
+          {
+            "label": "1",
+            "value": 11397.0
+          },
+          {
+            "label": "2",
+            "value": 6523.0
+          },
+          {
+            "label": "3",
+            "value": 11037.0
+          },
+          {
+            "label": "1",
+            "value": 4021.0
+          },
+          {
+            "label": "2",
+            "value": 8827.5
+          },
+          {
+            "label": "3",
+            "value": 28251.0
+          }
+        ],
+        "truncated": true
+      }
+    },
+    {
+      "type": "progress",
+      "step": "解读查询结果",
+      "status": "success"
+    }
+  ],
+  "error": null,
+  "requested_at": "2026-09-08 10:58:02"
+}

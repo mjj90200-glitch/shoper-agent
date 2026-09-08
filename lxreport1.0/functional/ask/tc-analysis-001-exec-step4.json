@@ -1,0 +1,383 @@
+{
+  "case": "tc-analysis-001-exec-step4",
+  "query": "按地区和月份统计2025年销售额、销量、订单数（去重订单号），并计算当月销售额占该地区全年销售额的百分比，按地区、月份排序返回。",
+  "http_status": 200,
+  "http_status_text": 200,
+  "event_count": 35,
+  "events": [
+    {
+      "type": "audit_context",
+      "audit_id": "bb5e2d54-8242-4c72-886f-749021a037fd"
+    },
+    {
+      "type": "progress",
+      "step": "理解上下文",
+      "status": "running"
+    },
+    {
+      "type": "query_context",
+      "original_query": "按地区和月份统计2025年销售额、销量、订单数（去重订单号），并计算当月销售额占该地区全年销售额的百分比，按地区、月份排序返回。",
+      "resolved_query": "按地区和月份统计2025年销售额、销量、订单数（去重订单号），并计算当月销售额占该地区全年销售额的百分比，按地区、月份排序返回。"
+    },
+    {
+      "type": "progress",
+      "step": "理解上下文",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "识别问题意图",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "识别问题意图",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "抽取关键词",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "抽取关键词",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "召回字段信息",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "召回指标信息",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "召回字段取值",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "召回字段信息",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "召回字段取值",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "召回指标信息",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "合并召回信息",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "合并召回信息",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "过滤指标信息",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "过滤表信息",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "过滤指标信息",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "过滤表信息",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "添加额外上下文",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "添加额外上下文",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "生成SQL",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "生成SQL",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "检查SQL安全",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "检查SQL安全",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "校验SQL",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "校验SQL",
+      "status": "success"
+    },
+    {
+      "type": "progress",
+      "step": "执行SQL",
+      "status": "running"
+    },
+    {
+      "type": "progress",
+      "step": "执行SQL",
+      "status": "success"
+    },
+    {
+      "type": "sql",
+      "sql": "SELECT r.region_name AS 地区, d.month AS 月份, SUM(f.order_amount) AS 销售额, SUM(f.order_quantity) AS 销量, COUNT(DISTINCT f.order_id) AS 订单数, SUM(f.order_amount) / SUM(SUM(f.order_amount)) OVER (PARTITION BY r.region_id) * 100 AS 当月销售额占比 FROM fact_order f JOIN dim_date d ON f.date_id = d.date_id JOIN dim_region r ON f.region_id = r.region_id WHERE d.year = 2025 GROUP BY r.region_name, r.region_id, d.month ORDER BY r.region_name, d.month LIMIT 1000"
+    },
+    {
+      "type": "result",
+      "data": [
+        {
+          "地区": "华东",
+          "月份": 1,
+          "销售额": 16796.0,
+          "销量": "36",
+          "订单数": 8,
+          "当月销售额占比": 35.61266246846044
+        },
+        {
+          "地区": "华东",
+          "月份": 1,
+          "销售额": 38128.0,
+          "销量": "14",
+          "订单数": 8,
+          "当月销售额占比": 63.32502906493937
+        },
+        {
+          "地区": "华东",
+          "月份": 2,
+          "销售额": 11072.0,
+          "销量": "18",
+          "订单数": 4,
+          "当月销售额占比": 23.47602993872315
+        },
+        {
+          "地区": "华东",
+          "月份": 2,
+          "销售额": 6436.0,
+          "销量": "33",
+          "订单数": 7,
+          "当月销售额占比": 10.689254276698223
+        },
+        {
+          "地区": "华东",
+          "月份": 3,
+          "销售额": 19295.0,
+          "销量": "26",
+          "订单数": 7,
+          "当月销售额占比": 40.91130759281641
+        },
+        {
+          "地区": "华东",
+          "月份": 3,
+          "销售额": 15646.0,
+          "销量": "108",
+          "订单数": 10,
+          "当月销售额占比": 25.985716658362396
+        },
+        {
+          "地区": "华中",
+          "月份": 1,
+          "销售额": 11397.0,
+          "销量": "5",
+          "订单数": 4,
+          "当月销售额占比": 39.358358946023415
+        },
+        {
+          "地区": "华中",
+          "月份": 2,
+          "销售额": 6523.0,
+          "销量": "7",
+          "订单数": 3,
+          "当月销售额占比": 22.526504817488
+        },
+        {
+          "地区": "华中",
+          "月份": 3,
+          "销售额": 11037.0,
+          "销量": "71",
+          "订单数": 5,
+          "当月销售额占比": 38.11513623648859
+        },
+        {
+          "地区": "华北",
+          "月份": 1,
+          "销售额": 4021.0,
+          "销量": "13",
+          "订单数": 6,
+          "当月销售额占比": 9.783574009416173
+        },
+        {
+          "地区": "华北",
+          "月份": 2,
+          "销售额": 8827.5,
+          "销量": "33",
+          "订单数": 6,
+          "当月销售额占比": 21.47836348374068
+        },
+        {
+          "地区": "华北",
+          "月份": 3,
+          "销售额": 28251.0,
+          "销量": "36",
+          "订单数": 7,
+          "当月销售额占比": 68.73806250684315
+        },
+        {
+          "地区": "华南",
+          "月份": 1,
+          "销售额": 28096.5,
+          "销量": "56",
+          "订单数": 9,
+          "当月销售额占比": 40.02236403521267
+        },
+        {
+          "地区": "华南",
+          "月份": 2,
+          "销售额": 29352.5,
+          "销量": "37",
+          "订单数": 9,
+          "当月销售额占比": 41.81148685222643
+        },
+        {
+          "地区": "华南",
+          "月份": 3,
+          "销售额": 12753.0,
+          "销量": "39",
+          "订单数": 8,
+          "当月销售额占比": 18.166149112560895
+        },
+        {
+          "地区": "西南",
+          "月份": 1,
+          "销售额": 10592.0,
+          "销量": "25",
+          "订单数": 5,
+          "当月销售额占比": 33.59553412839381
+        },
+        {
+          "地区": "西南",
+          "月份": 2,
+          "销售额": 17798.0,
+          "销量": "23",
+          "订单数": 4,
+          "当月销售额占比": 56.45140827201218
+        },
+        {
+          "地区": "西南",
+          "月份": 3,
+          "销售额": 3138.0,
+          "销量": "42",
+          "订单数": 5,
+          "当月销售额占比": 9.953057599594011
+        }
+      ]
+    },
+    {
+      "type": "progress",
+      "step": "解读查询结果",
+      "status": "running"
+    },
+    {
+      "type": "analysis",
+      "summary": "共 18 个数据点；销售额 合计 279,159.5，平均 15,508.86。最高为 1（38,128），最低为 3（3,138）。",
+      "chart": {
+        "type": "line",
+        "label_key": "月份",
+        "value_key": "销售额",
+        "data": [
+          {
+            "label": "1",
+            "value": 16796.0
+          },
+          {
+            "label": "1",
+            "value": 38128.0
+          },
+          {
+            "label": "2",
+            "value": 11072.0
+          },
+          {
+            "label": "2",
+            "value": 6436.0
+          },
+          {
+            "label": "3",
+            "value": 19295.0
+          },
+          {
+            "label": "3",
+            "value": 15646.0
+          },
+          {
+            "label": "1",
+            "value": 11397.0
+          },
+          {
+            "label": "2",
+            "value": 6523.0
+          },
+          {
+            "label": "3",
+            "value": 11037.0
+          },
+          {
+            "label": "1",
+            "value": 4021.0
+          },
+          {
+            "label": "2",
+            "value": 8827.5
+          },
+          {
+            "label": "3",
+            "value": 28251.0
+          }
+        ],
+        "truncated": true
+      }
+    },
+    {
+      "type": "progress",
+      "step": "解读查询结果",
+      "status": "success"
+    }
+  ],
+  "error": null,
+  "requested_at": "2026-09-08 10:56:37"
+}

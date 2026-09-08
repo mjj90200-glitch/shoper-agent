@@ -1,0 +1,15 @@
+{
+  "planReady": true,
+  "stepCountBefore": 5,
+  "renameStep": true,
+  "renameQuestion": true,
+  "addStep": true,
+  "deleteStep": true,
+  "stopButtonShown": true,
+  "stopped": true,
+  "backToReview": true,
+  "notPermanentRunning": true,
+  "pageErrors": [
+    "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ]
+}

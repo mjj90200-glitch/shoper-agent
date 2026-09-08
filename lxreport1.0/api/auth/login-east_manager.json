@@ -1,0 +1,18 @@
+{
+  "status": 200,
+  "body": {
+    "access_token": "eyJleHAiOjE3ODg4NjE0MjYsImlhdCI6MTc4ODgzMjYyNiwianRpIjoiNEgtckJ1bzByUENLZnF5ciIsInN1YiI6ImVhc3RfbWFuYWdlciJ9.J6m_NpaIebXlKxl-g8XUdWwvzHG5dP2Na1fres-qFW4",
+    "token_type": "bearer",
+    "user": {
+      "username": "east_manager",
+      "display_name": "华东区域经理",
+      "role": "regional_manager",
+      "allowed_regions": [
+        "华东"
+      ],
+      "masked_fields": [
+        "customer_name"
+      ]
+    }
+  }
+}

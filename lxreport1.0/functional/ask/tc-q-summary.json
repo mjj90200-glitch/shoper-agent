@@ -1,0 +1,531 @@
+{
+  "cases": [
+    {
+      "case": "tc-q-01",
+      "query": "按大区统计 2025 年第一季度订单数",
+      "passed": true,
+      "row_count": 5,
+      "sql": "SELECT dim_region.region_name AS 大区, COUNT(fact_order.order_id) AS 订单数 FROM fact_order INNER JOIN dim_region ON fact_order.region_id = dim_region.region_id WHERE fact_order.date_id BETWEEN 20250101 AND 20250331 GROUP BY dim_region.region_name LIMIT 1000",
+      "result_head": [
+        {
+          "大区": "华南",
+          "订单数": 26
+        },
+        {
+          "大区": "华东",
+          "订单数": 44
+        },
+        {
+          "大区": "华北",
+          "订单数": 19
+        }
+      ],
+      "chart": {
+        "type": "bar",
+        "label_key": "大区",
+        "value_key": "订单数",
+        "data": [
+          {
+            "label": "华南",
+            "value": 26.0
+          },
+          {
+            "label": "华东",
+            "value": 44.0
+          },
+          {
+            "label": "华北",
+            "value": 19.0
+          },
+          {
+            "label": "西南",
+            "value": 14.0
+          },
+          {
+            "label": "华中",
+            "value": 12.0
+          }
+        ],
+        "truncated": false
+      },
+      "error": null
+    },
+    {
+      "case": "tc-q-02",
+      "query": "按省份统计 2025 年第一季度销售额",
+      "passed": true,
+      "row_count": 6,
+      "sql": "SELECT r.province, SUM(o.order_amount) AS 销售额 FROM fact_order o JOIN dim_date d ON o.date_id = d.date_id JOIN dim_region r ON o.region_id = r.region_id WHERE d.year = 2025 AND d.quarter = 'Q1' GROUP BY r.province LIMIT 1000",
+      "result_head": [
+        {
+          "province": "广东省",
+          "销售额": 70202.0
+        },
+        {
+          "province": "上海市",
+          "销售额": 60210.0
+        },
+        {
+          "province": "浙江省",
+          "销售额": 47163.0
+        }
+      ],
+      "chart": {
+        "type": "bar",
+        "label_key": "province",
+        "value_key": "销售额",
+        "data": [
+          {
+            "label": "广东省",
+            "value": 70202.0
+          },
+          {
+            "label": "上海市",
+            "value": 60210.0
+          },
+          {
+            "label": "浙江省",
+            "value": 47163.0
+          },
+          {
+            "label": "北京市",
+            "value": 41099.5
+          },
+          {
+            "label": "四川省",
+            "value": 31528.0
+          },
+          {
+            "label": "湖北省",
+            "value": 28957.0
+          }
+        ],
+        "truncated": false
+      },
+      "error": null
+    },
+    {
+      "case": "tc-q-03",
+      "query": "统计 2025 年第一季度各商品品类销售额",
+      "passed": true,
+      "row_count": 6,
+      "sql": "SELECT dp.category, SUM(fo.order_amount) AS 销售额 FROM fact_order fo JOIN dim_product dp ON fo.product_id = dp.product_id WHERE fo.date_id BETWEEN 20250101 AND 20250331 GROUP BY dp.category LIMIT 1000",
+      "result_head": [
+        {
+          "category": "手机数码",
+          "销售额": 194771.0
+        },
+        {
+          "category": "食品饮料",
+          "销售额": 2490.0
+        },
+        {
+          "category": "鞋靴",
+          "销售额": 13188.0
+        }
+      ],
+      "chart": {
+        "type": "bar",
+        "label_key": "category",
+        "value_key": "销售额",
+        "data": [
+          {
+            "label": "手机数码",
+            "value": 194771.0
+          },
+          {
+            "label": "食品饮料",
+            "value": 2490.0
+          },
+          {
+            "label": "鞋靴",
+            "value": 13188.0
+          },
+          {
+            "label": "休闲零食",
+            "value": 1239.5
+          },
+          {
+            "label": "服饰",
+            "value": 6683.0
+          },
+          {
+            "label": "家用电器",
+            "value": 60788.0
+          }
+        ],
+        "truncated": false
+      },
+      "error": null
+    },
+    {
+      "case": "tc-q-04",
+      "query": "查询 2025 年第一季度销售额最高的前 5 个商品",
+      "passed": true,
+      "row_count": 5,
+      "sql": "SELECT p.product_name, SUM(f.order_amount) AS 销售额\nFROM fact_order f\nJOIN dim_product p ON f.product_id = p.product_id\nWHERE f.date_id BETWEEN 20250101 AND 20250331\nGROUP BY p.product_id, p.product_name\nORDER BY 销售额 DESC\nLIMIT 5",
+      "result_head": [
+        {
+          "product_name": "iPhone 15 Pro",
+          "销售额": 71992.0
+        },
+        {
+          "product_name": "Galaxy S24 Ultra",
+          "销售额": 56994.0
+        },
+        {
+          "product_name": "Mate 60 Pro",
+          "销售额": 55992.0
+        }
+      ],
+      "chart": {
+        "type": "bar",
+        "label_key": "product_name",
+        "value_key": "销售额",
+        "data": [
+          {
+            "label": "iPhone 15 Pro",
+            "value": 71992.0
+          },
+          {
+            "label": "Galaxy S24 Ultra",
+            "value": 56994.0
+          },
+          {
+            "label": "Mate 60 Pro",
+            "value": 55992.0
+          },
+          {
+            "label": "戴森 V15 吸尘器",
+            "value": 32994.0
+          },
+          {
+            "label": "美的空调 KFR-35GW",
+            "value": 22400.0
+          }
+        ],
+        "truncated": false
+      },
+      "error": null
+    },
+    {
+      "case": "tc-q-05",
+      "query": "按品牌统计华东地区 2025 年第一季度销售额",
+      "passed": true,
+      "row_count": 15,
+      "sql": "SELECT p.brand, SUM(o.order_amount) AS 销售额\nFROM fact_order o\nJOIN dim_region r ON o.region_id = r.region_id\nJOIN dim_product p ON o.product_id = p.product_id\nJOIN dim_date d ON o.date_id = d.date_id\nWHERE r.region_name = '华东'\n  AND d.year = 2025\n  AND d.quarter = 'Q1'\nGROUP BY p.brand LIMIT 1000",
+      "result_head": [
+        {
+          "brand": "华为",
+          "销售额": 27996.0
+        },
+        {
+          "brand": "雀巢",
+          "销售额": 650.0
+        },
+        {
+          "brand": "亚马逊",
+          "销售额": 4197.0
+        }
+      ],
+      "chart": {
+        "type": "bar",
+        "label_key": "brand",
+        "value_key": "销售额",
+        "data": [
+          {
+            "label": "华为",
+            "value": 27996.0
+          },
+          {
+            "label": "雀巢",
+            "value": 650.0
+          },
+          {
+            "label": "亚马逊",
+            "value": 4197.0
+          },
+          {
+            "label": "三星",
+            "value": 28497.0
+          },
+          {
+            "label": "阿迪达斯",
+            "value": 2598.0
+          },
+          {
+            "label": "戴森",
+            "value": 10998.0
+          },
+          {
+            "label": "苹果",
+            "value": 17998.0
+          },
+          {
+            "label": "耐克",
+            "value": 1798.0
+          },
+          {
+            "label": "蒙牛",
+            "value": 225.0
+          },
+          {
+            "label": "李维斯",
+            "value": 2396.0
+          },
+          {
+            "label": "乐事",
+            "value": 175.0
+          },
+          {
+            "label": "优衣库",
+            "value": 398.0
+          }
+        ],
+        "truncated": true
+      },
+      "error": null
+    },
+    {
+      "case": "tc-q-06",
+      "query": "统计 2025 年第一季度每月销售额",
+      "passed": true,
+      "row_count": 3,
+      "sql": "SELECT d.month AS 月份, SUM(o.order_amount) AS 销售额\nFROM fact_order o\nJOIN dim_date d ON o.date_id = d.date_id\nWHERE o.date_id BETWEEN 20250101 AND 20250331\nGROUP BY d.month\nORDER BY d.month LIMIT 1000",
+      "result_head": [
+        {
+          "月份": 1,
+          "销售额": 109030.5
+        },
+        {
+          "月份": 2,
+          "销售额": 80009.0
+        },
+        {
+          "月份": 3,
+          "销售额": 90120.0
+        }
+      ],
+      "chart": {
+        "type": "line",
+        "label_key": "月份",
+        "value_key": "销售额",
+        "data": [
+          {
+            "label": "1",
+            "value": 109030.5
+          },
+          {
+            "label": "2",
+            "value": 80009.0
+          },
+          {
+            "label": "3",
+            "value": 90120.0
+          }
+        ],
+        "truncated": false
+      },
+      "error": null
+    },
+    {
+      "case": "tc-q-07",
+      "query": "统计 2025 年 3 月每天销售额",
+      "passed": true,
+      "row_count": 31,
+      "sql": "SELECT date_id AS 下单日期, SUM(order_amount) AS 销售额 FROM fact_order WHERE date_id BETWEEN 20250301 AND 20250331 GROUP BY date_id ORDER BY date_id LIMIT 1000",
+      "result_head": [
+        {
+          "下单日期": 20250301,
+          "销售额": 7149.0
+        },
+        {
+          "下单日期": 20250302,
+          "销售额": 45.0
+        },
+        {
+          "下单日期": 20250303,
+          "销售额": 50.0
+        }
+      ],
+      "chart": {
+        "type": "line",
+        "label_key": "下单日期",
+        "value_key": "销售额",
+        "data": [
+          {
+            "label": "20250301",
+            "value": 7149.0
+          },
+          {
+            "label": "20250302",
+            "value": 45.0
+          },
+          {
+            "label": "20250303",
+            "value": 50.0
+          },
+          {
+            "label": "20250304",
+            "value": 899.0
+          },
+          {
+            "label": "20250305",
+            "value": 1499.0
+          },
+          {
+            "label": "20250306",
+            "value": 199.0
+          },
+          {
+            "label": "20250307",
+            "value": 9499.0
+          },
+          {
+            "label": "20250308",
+            "value": 49.0
+          },
+          {
+            "label": "20250309",
+            "value": 3200.0
+          },
+          {
+            "label": "20250310",
+            "value": 699.0
+          },
+          {
+            "label": "20250311",
+            "value": 1299.0
+          },
+          {
+            "label": "20250312",
+            "value": 5619.0
+          }
+        ],
+        "truncated": true
+      },
+      "error": null
+    },
+    {
+      "case": "tc-q-08",
+      "query": "按会员等级统计销售额和订单数",
+      "passed": true,
+      "row_count": 4,
+      "sql": "SELECT c.member_level, SUM(o.order_amount) AS 销售额, COUNT(o.order_id) AS 订单数 FROM fact_order o JOIN dim_customer c ON o.customer_id = c.customer_id GROUP BY c.member_level LIMIT 1000",
+      "result_head": [
+        {
+          "member_level": "黄金",
+          "销售额": 100178.5,
+          "订单数": 34
+        },
+        {
+          "member_level": "铂金",
+          "销售额": 57679.0,
+          "订单数": 25
+        },
+        {
+          "member_level": "青铜",
+          "销售额": 50208.0,
+          "订单数": 26
+        }
+      ],
+      "chart": {
+        "type": "bar",
+        "label_key": "member_level",
+        "value_key": "销售额",
+        "data": [
+          {
+            "label": "黄金",
+            "value": 100178.5
+          },
+          {
+            "label": "铂金",
+            "value": 57679.0
+          },
+          {
+            "label": "青铜",
+            "value": 50208.0
+          },
+          {
+            "label": "白银",
+            "value": 71094.0
+          }
+        ],
+        "truncated": false
+      },
+      "error": null
+    },
+    {
+      "case": "tc-q-09",
+      "query": "统计华为品牌销售额",
+      "passed": true,
+      "row_count": 1,
+      "sql": "SELECT SUM(fo.order_amount) AS 华为品牌销售额 FROM fact_order fo JOIN dim_product dp ON fo.product_id = dp.product_id WHERE dp.brand = '华为' LIMIT 1000",
+      "result_head": [
+        {
+          "华为品牌销售额": 55992.0
+        }
+      ],
+      "chart": null,
+      "error": null
+    },
+    {
+      "case": "tc-q-10",
+      "query": "查询华北地区销售额最高的前 3 个商品",
+      "passed": true,
+      "row_count": 3,
+      "sql": "SELECT dp.product_id, dp.product_name, SUM(fo.order_amount) AS 销售额 FROM fact_order fo JOIN dim_product dp ON fo.product_id = dp.product_id JOIN dim_region dr ON fo.region_id = dr.region_id WHERE dr.region_name = '华北' GROUP BY dp.product_id, dp.product_name ORDER BY 销售额 DESC LIMIT 3",
+      "result_head": [
+        {
+          "product_id": "P002",
+          "product_name": "Galaxy S24 Ultra",
+          "销售额": 9499.0
+        },
+        {
+          "product_id": "P001",
+          "product_name": "iPhone 15 Pro",
+          "销售额": 8999.0
+        },
+        {
+          "product_id": "P003",
+          "product_name": "Mate 60 Pro",
+          "销售额": 6999.0
+        }
+      ],
+      "chart": {
+        "type": "bar",
+        "label_key": "product_id",
+        "value_key": "销售额",
+        "data": [
+          {
+            "label": "P002",
+            "value": 9499.0
+          },
+          {
+            "label": "P001",
+            "value": 8999.0
+          },
+          {
+            "label": "P003",
+            "value": 6999.0
+          }
+        ],
+        "truncated": false
+      },
+      "error": null
+    }
+  ],
+  "passed": [
+    "TC-Q-01",
+    "TC-Q-02",
+    "TC-Q-03",
+    "TC-Q-04",
+    "TC-Q-05",
+    "TC-Q-06",
+    "TC-Q-07",
+    "TC-Q-08",
+    "TC-Q-09",
+    "TC-Q-10"
+  ],
+  "failed": []
+}

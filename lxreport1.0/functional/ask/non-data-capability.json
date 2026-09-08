@@ -1,0 +1,11 @@
+{
+  "query": "你可以做什么？",
+  "passed": true,
+  "assistant_message": {
+    "type": "assistant_message",
+    "category": "non_data",
+    "message": "抱歉，我目前仅支持电商经营数据分析。请描述你想查询的销售、订单、商品、地区或会员数据。",
+    "suggested_queries": []
+  },
+  "has_sql": false
+}
