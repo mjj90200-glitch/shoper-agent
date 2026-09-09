@@ -7,6 +7,7 @@ import { ResultTable } from "./ResultTable";
 import { ResultInsight } from "./ResultInsight";
 import { CompactStepStatus, StepRail } from "./StepRail";
 import { FeedbackControls } from "./FeedbackControls";
+import { SpeechControls } from "./SpeechControls";
 import { cn, formatTime, toClipboardText } from "../lib/format";
 import type { ChatMessage } from "../types/agent";
 
@@ -20,6 +21,9 @@ type MessageBubbleProps = {
 
 export function MessageBubble({ message, onUseSuggestion, accessToken, onFeedbackSaved, showFlow = true }: MessageBubbleProps) {
   const isUser = message.role === "user";
+  const speechText = !isUser && message.status === "done" && !message.error && !message.category
+    ? message.analysis?.summary?.trim() || message.content.trim()
+    : "";
 
   const copy = async () => {
     const text = message.result ? toClipboardText(message.result) : message.content;
@@ -81,6 +85,9 @@ export function MessageBubble({ message, onUseSuggestion, accessToken, onFeedbac
             </details>
           )}
           {!isUser && message.analysis && message.result !== undefined && <ResultInsight analysis={message.analysis} data={message.result} />}
+          {speechText && accessToken && (
+            <SpeechControls ownerId={message.id} text={speechText} accessToken={accessToken} />
+          )}
           {!isUser && message.result !== undefined && <ResultTable data={message.result} />}
 
           {!isUser && message.status === "done" && message.auditId && accessToken && (

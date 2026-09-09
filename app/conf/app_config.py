@@ -88,6 +88,18 @@ class LLMConfig:
 
 
 @dataclass
+class TTSConfig:
+    """火山引擎语音合成配置。密钥只在后端读取。"""
+
+    api_key: str | None
+    voice_type: str
+    base_url: str
+    resource_id: str
+    timeout_seconds: float
+    max_chars: int
+
+
+@dataclass
 class AppConfig:
     """项目级总配置入口"""
 
@@ -98,6 +110,7 @@ class AppConfig:
     embedding: EmbeddingConfig
     es: ESConfig
     llm: LLMConfig
+    tts: TTSConfig
 
 
 # 从当前文件位置回到项目根目录，再定位到 conf/app_config.yaml

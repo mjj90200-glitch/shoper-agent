@@ -42,3 +42,11 @@ llm:
   model_name: deepseek-v4-flash
   api_key: ${oc.env:LLM_API_KEY}
   base_url: https://api.deepseek.com
+
+tts:
+  api_key: ${oc.env:VOLCENGINE_TTS_API_KEY,null}
+  voice_type: ${oc.env:VOLCENGINE_TTS_VOICE_TYPE,zh_female_vv_uranus_bigtts}
+  base_url: ${oc.env:VOLCENGINE_TTS_BASE_URL,https://openspeech.bytedance.com/api/v3/tts/unidirectional/sse}
+  resource_id: ${oc.env:VOLCENGINE_TTS_RESOURCE_ID,seed-tts-2.0}
+  timeout_seconds: 60
+  max_chars: 600
