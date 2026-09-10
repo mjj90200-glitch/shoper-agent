@@ -31,6 +31,7 @@ import { cn } from "../lib/format";
 import type { AnalysisPlanStep, DataAnalysisProject } from "../types/analysis";
 import { ResultInsight } from "./ResultInsight";
 import { ResultTable } from "./ResultTable";
+import { SpeechButton } from "./SpeechButton";
 
 type Props = {
   project: DataAnalysisProject;
@@ -184,6 +185,15 @@ export function AnalysisWorkspace({ project, accessToken, onChange }: Props) {
     });
   };
 
+  const reportSpeech = project.report
+    ? [
+        project.report.overview,
+        `关键发现：${project.report.findings.join("；")}`,
+        project.report.recommendations.length > 0 ? `行动建议：${project.report.recommendations.join("；")}` : "",
+        project.report.cautions.length > 0 ? `数据说明：${project.report.cautions.join("；")}` : "",
+      ].filter(Boolean).join("。")
+    : "";
+
   const skipStep = async (stepId: string) => {
     const runs = project.runs.map((run) => run.stepId === stepId ? { ...run, status: "done" as const, error: undefined } : run);
     const status = runs.some((run) => run.status === "error") ? "error" as const : "complete" as const;
@@ -294,7 +304,10 @@ export function AnalysisWorkspace({ project, accessToken, onChange }: Props) {
         <>
           <section className="mt-5 overflow-hidden rounded-2xl bg-gradient-to-r from-blue-700 to-cyan-600 text-white shadow-lg shadow-blue-200">
             <div className="p-5">
-              <div className="flex items-center gap-2 text-sm font-semibold"><BarChart3 className="h-4 w-4" />综合分析报告</div>
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-2 text-sm font-semibold"><BarChart3 className="h-4 w-4" />综合分析报告</div>
+                {project.report && <SpeechButton text={reportSpeech} accessToken={accessToken} label="播放报告" inverted />}
+              </div>
               <p className="mt-3 text-sm leading-6 text-blue-50">{project.report?.overview ?? `已完成 ${completed} 个分析步骤，正在整理综合结论。`}</p>
             </div>
             {project.report && (
@@ -339,7 +352,10 @@ export function AnalysisWorkspace({ project, accessToken, onChange }: Props) {
                 {project.followUps?.map((item) => (
                   <div key={item.id} className="rounded-xl bg-slate-50 p-4 text-sm">
                     <p className="font-medium text-slate-800">问：{item.question}</p>
-                    <p className="mt-2 leading-6 text-slate-600">{item.answer}</p>
+                    <div className="mt-2 flex items-start justify-between gap-3">
+                      <p className="min-w-0 flex-1 leading-6 text-slate-600">{item.answer}</p>
+                      <SpeechButton text={item.answer} accessToken={accessToken} compact />
+                    </div>
                     {item.caution && <p className="mt-2 text-xs text-amber-700">说明：{item.caution}</p>}
                     <div className="mt-2 flex flex-wrap gap-2">
                       {item.step_ids.map((stepId) => (

@@ -7,6 +7,7 @@ import { ResultTable } from "./ResultTable";
 import { ResultInsight } from "./ResultInsight";
 import { CompactStepStatus, StepRail } from "./StepRail";
 import { FeedbackControls } from "./FeedbackControls";
+import { SpeechButton } from "./SpeechButton";
 import { cn, formatTime, toClipboardText } from "../lib/format";
 import type { ChatMessage } from "../types/agent";
 
@@ -46,15 +47,24 @@ export function MessageBubble({ message, onUseSuggestion, accessToken, onFeedbac
           <div className="flex items-start justify-between gap-3">
             <p className="whitespace-pre-wrap text-[15px] leading-7">{message.content}</p>
             {!isUser && message.status !== "streaming" && (
-              <button
-                type="button"
-                onClick={copy}
-                className="shrink-0 rounded-lg p-1.5 text-slate-400 opacity-0 outline-none transition hover:bg-slate-100 hover:text-slate-700 focus:opacity-100 focus:ring-2 focus:ring-moss/30 group-hover:opacity-100"
-                title="复制"
-                aria-label="复制"
-              >
-                <Copy className="h-4 w-4" aria-hidden="true" />
-              </button>
+              <div className="flex shrink-0 items-start gap-1">
+                {accessToken && !message.error && (
+                  <SpeechButton
+                    text={message.analysis?.summary ?? message.content}
+                    accessToken={accessToken}
+                    compact
+                  />
+                )}
+                <button
+                  type="button"
+                  onClick={copy}
+                  className="rounded-lg p-1.5 text-slate-400 opacity-0 outline-none transition hover:bg-slate-100 hover:text-slate-700 focus:opacity-100 focus:ring-2 focus:ring-moss/30 group-hover:opacity-100"
+                  title="复制"
+                  aria-label="复制"
+                >
+                  <Copy className="h-4 w-4" aria-hidden="true" />
+                </button>
+              </div>
             )}
           </div>
 

@@ -217,15 +217,17 @@ pnpm install
 cd ..
 ```
 
-### 2. 配置大模型
+### 2. 配置大模型与语音合成
 
 复制根目录的 `.env.example` 为 `.env`，填入大模型密钥：
 
 ```dotenv
 LLM_API_KEY=your_api_key_here
+VOLCENGINE_TTS_API_KEY=your_volcengine_api_key_here
+VOLCENGINE_TTS_VOICE_TYPE=zh_female_vv_uranus_bigtts
 ```
 
-模型名称和服务地址在 `conf/app_config.yaml` 中配置。当前接入方式兼容 OpenAI Chat API。
+模型名称和服务地址在 `conf/app_config.yaml` 中配置。当前大模型接入方式兼容 OpenAI Chat API；语音功能使用火山引擎新版 API Key 和语音合成 2.0 官方音色。未配置 TTS 时不影响文字问数和数据分析。
 
 ### 3. 准备 Embedding 模型
 
