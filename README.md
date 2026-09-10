@@ -402,6 +402,8 @@ uv run python -m app.scripts.evaluate_query_api --base-url http://127.0.0.1:8000
 
 完整的功能、权限、异常、兼容性和验收要求见 [测试.md](测试.md)。TTS 本轮开发与验证细节见 [9.09 开发日志](workday/9.09.md) 和 [9.09 测试记录](worktest/9.09.md)。
 
+后续架构、安全、评测和部署工作统一记录在 [工程优化开发计划](docs/superpowers/plans/2026-09-10-engineering-optimization.md)，每日实际变更仍分别写入 `workday/` 和 `worktest/`。
+
 ## 🛠️ 运行数据与维护
 
 - `data/langgraph-checkpoints.sqlite` 保存 LangGraph 多轮会话检查点。
