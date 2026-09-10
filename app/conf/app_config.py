@@ -89,13 +89,14 @@ class LLMConfig:
 
 @dataclass
 class TTSConfig:
-    """火山引擎文本转语音配置。"""
+    """火山引擎语音合成配置。密钥只在后端读取。"""
 
-    api_key: str
+    api_key: str | None
     voice_type: str
+    base_url: str
     resource_id: str
-    endpoint: str
-    timeout_seconds: int
+    timeout_seconds: float
+    max_chars: int
 
 
 @dataclass

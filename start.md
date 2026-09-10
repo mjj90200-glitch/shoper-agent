@@ -29,7 +29,11 @@ cd ..
 
 ```dotenv
 LLM_API_KEY=your_api_key_here
+VOLCENGINE_TTS_API_KEY=your_volcengine_tts_api_key_here
+VOLCENGINE_TTS_VOICE_TYPE=zh_female_vv_uranus_bigtts
 ```
+
+TTS 配置只写在项目根目录 `.env`，不要使用 `VITE_*` 前缀。未配置语音密钥时，文字问数、图表和数据分析仍可正常使用，点击朗读会提示语音服务尚未配置。
 
 如果 Embedding 模型尚未下载：
 
@@ -89,7 +93,8 @@ pnpm dev
 2. 在问数模式输入“统计华北地区的销售总额”。
 3. 确认能够看到 SSE 节点进度、结果表格和图表。
 4. 当前初始化数据中，华北销售总额应为 `41099.5`。
-5. 切换到数据分析模式，确认能够新建项目并生成分析计划。
+5. 在问数结果的“数据洞察”下点击“朗读结论”，确认只播放结论、不朗读流程和 SQL。
+6. 切换到数据分析模式，确认能够新建项目并生成分析计划。
 
 ### 接口验证
 
