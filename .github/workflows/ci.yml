@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend quality gates
+    runs-on: ubuntu-latest
+    env:
+      LLM_API_KEY: test-only-key
+      MYSQL_USER: test_user
+      MYSQL_PASSWORD: test_password
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version-file: .python-version
+      - name: Install locked dependencies
+        run: uv sync --frozen --group dev
+      - name: Lint
+        run: uv run ruff check .
+      - name: Unit tests
+        run: uv run python -m unittest discover -s tests -v
+
+  frontend:
+    name: Frontend production build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+      - name: Install locked dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Type-check and build
+        run: pnpm build

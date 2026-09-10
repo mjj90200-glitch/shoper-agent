@@ -2,7 +2,7 @@
   "name": "shopkeeper-agent-frontend",
   "description": "电商问数智能体前端项目，提供聊天式问数界面和 SSE 流程展示。",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite",

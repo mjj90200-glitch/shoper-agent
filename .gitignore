@@ -69,3 +69,7 @@ docker/embedding/
 
 # Local SQLite state (LangGraph checkpoint, demo history and audit data)
 /data/
+
+# Local verification artifacts. Keep reports locally or attach them to a release,
+# but do not commit generated responses, screenshots, access tokens or dependencies.
+/lxreport/

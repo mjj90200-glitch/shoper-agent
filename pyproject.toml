@@ -1,6 +1,6 @@
 [project]
 name = "shopkeeper-agent"
-version = "0.1.0"
+version = "0.2.0"
 description = "面向电商经营场景的自然语言问数与智能数据分析系统"
 readme = "README.md"
 requires-python = ">=3.14"
@@ -39,8 +39,3 @@ target-version = "py314"
 [tool.ruff.lint]
 select = ["E", "F", "I"]
 ignore = ["E501"]
-
-[tool.uv.workspace]
-members = [
-    "shopkeeper-agent-main",
-]

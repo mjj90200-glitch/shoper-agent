@@ -12,6 +12,7 @@
   <img src="https://img.shields.io/badge/MySQL-8.0-4479A1?logo=mysql&amp;logoColor=white" alt="MySQL 8.0">
   <img src="https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&amp;logoColor=white" alt="Docker Compose">
   <img src="https://img.shields.io/badge/License-MIT-22C55E" alt="MIT License">
+  <a href="https://github.com/mjj90200-glitch/shoper-agent/actions/workflows/ci.yml"><img src="https://github.com/mjj90200-glitch/shoper-agent/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <br><br>
   <a href="#product-preview">产品预览</a> ·
   <a href="#core-capabilities">核心能力</a> ·
@@ -227,11 +228,16 @@ cd ..
 
 ```dotenv
 LLM_API_KEY=your_api_key_here
+MYSQL_ROOT_PASSWORD=replace_with_a_local_root_password
+MYSQL_USER=shopkeeper
+MYSQL_PASSWORD=replace_with_a_local_app_password
+MYSQL_HOST=localhost
+MYSQL_PORT=3307
 VOLCENGINE_TTS_API_KEY=your_volcengine_tts_api_key_here
 VOLCENGINE_TTS_VOICE_TYPE=zh_female_vv_uranus_bigtts
 ```
 
-模型名称、服务地址和语音资源在 `conf/app_config.yaml` 中配置。大模型接入方式兼容 OpenAI Chat API；TTS 使用火山引擎 V3 单向流式接口。语音密钥仅由后端读取，禁止放入 `frontend/.env` 或任何 `VITE_*` 变量。
+Docker Compose 和后端共用上述 MySQL 环境变量，仓库不保存真实数据库密码。模型名称、服务地址和语音资源在 `conf/app_config.yaml` 中配置。大模型接入方式兼容 OpenAI Chat API；TTS 使用火山引擎 V3 单向流式接口。语音密钥仅由后端读取，禁止放入 `frontend/.env` 或任何 `VITE_*` 变量。
 
 ### 3. 准备 Embedding 模型
 
@@ -366,6 +372,14 @@ VITE_DEV_PROXY_TARGET=http://127.0.0.1:8000
 
 ## ✅ 测试与质量
 
+安装完后端和前端依赖后，可以在项目根目录执行统一质量门禁：
+
+```powershell
+uv run python -m app.scripts.quality_check
+```
+
+该命令依次执行 Ruff、全部后端单元测试以及前端 TypeScript 检查和生产构建。GitHub Actions 会在每次推送到 `main` 或创建 Pull Request 时执行同样的检查。
+
 运行后端测试：
 
 ```powershell
@@ -411,4 +425,4 @@ uv run python -m app.scripts.evaluate_query_api --base-url http://127.0.0.1:8000
 
 ## 📄 License
 
-本仓库按 [MIT License](LICENSE) 提供许可。项目对外发布或分发前，请根据实际组织和产品要求补充品牌、隐私、数据处理及第三方依赖声明。
+版本变化见 [CHANGELOG.md](CHANGELOG.md)。本仓库按 [MIT License](LICENSE) 提供许可。项目对外发布或分发前，请根据实际组织和产品要求补充品牌、隐私、数据处理及第三方依赖声明。
