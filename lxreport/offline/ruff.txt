@@ -1,3 +1,0 @@
-Uninstalled 1 package in 108ms
-Installed 4 packages in 101ms
-All checks passed!
