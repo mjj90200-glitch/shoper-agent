@@ -1,76 +1,60 @@
-"""数据分析项目的应用级 SQLite 持久化。"""
+"""数据分析项目的应用级 SQLite 持久化。
+
+服务层保留业务规则（2MB 上限、运行中任务的写入权、中断恢复）；
+analysis_projects 的 SQL 由 AnalysisProjectRepository 提供，
+建表由 lifespan 的迁移机制统一完成。
+"""
 
 import json
-import sqlite3
-from contextlib import closing
 from copy import deepcopy
 from pathlib import Path
 from threading import Lock
+
+from app.db.migrations import apply_migrations
+from app.repositories.sqlite.analysis_project_repository import (
+    AnalysisProjectRepository,
+)
+from app.repositories.sqlite.connection import open_connection
+
+MAX_PROJECT_BYTES = 2_000_000
 
 
 class AnalysisProjectService:
     def __init__(self):
         self._database_path: Path | None = None
         self._lock = Lock()
+        self._repo = AnalysisProjectRepository()
 
     def configure_database(self, database_path: Path) -> None:
-        self._database_path = database_path
-        with closing(self._connect()) as connection:
-            connection.executescript(
-                """
-                CREATE TABLE IF NOT EXISTS analysis_projects (
-                    username TEXT NOT NULL,
-                    project_id TEXT NOT NULL,
-                    title TEXT NOT NULL,
-                    status TEXT NOT NULL,
-                    updated_at INTEGER NOT NULL,
-                    project_json TEXT NOT NULL,
-                    PRIMARY KEY (username, project_id)
-                );
-                CREATE INDEX IF NOT EXISTS idx_analysis_projects_user_updated
-                    ON analysis_projects (username, updated_at DESC);
-                PRAGMA optimize;
-                """
-            )
+        """接入持久化库；建表与结构升级统一由迁移机制处理。"""
 
-    def _connect(self) -> sqlite3.Connection:
-        if self._database_path is None:
-            raise RuntimeError("分析项目数据库尚未初始化。")
-        connection = sqlite3.connect(self._database_path)
-        connection.row_factory = sqlite3.Row
-        return connection
+        apply_migrations(database_path)
+        self._database_path = database_path
 
     def list(self, username: str) -> list[dict]:
-        with self._lock, closing(self._connect()) as connection:
-            rows = connection.execute(
-                "SELECT project_json FROM analysis_projects WHERE username=? ORDER BY updated_at DESC LIMIT 100",
-                (username,),
-            ).fetchall()
+        with self._lock, open_connection(self._database_path) as connection:
+            rows = self._repo.list_for_user(connection, username)
         return [json.loads(row["project_json"]) for row in rows]
 
     def get(self, username: str, project_id: str) -> dict | None:
-        with self._lock, closing(self._connect()) as connection:
-            row = connection.execute(
-                "SELECT project_json FROM analysis_projects WHERE username=? AND project_id=?",
-                (username, project_id),
-            ).fetchone()
+        with self._lock, open_connection(self._database_path) as connection:
+            row = self._repo.get(connection, username, project_id)
         return json.loads(row["project_json"]) if row else None
 
     def save(self, username: str, project: dict) -> dict:
         payload = json.dumps(project, ensure_ascii=False, default=str)
-        if len(payload.encode("utf-8")) > 2_000_000:
+        if len(payload.encode("utf-8")) > MAX_PROJECT_BYTES:
             raise ValueError("分析项目数据超过 2MB，请减少结果明细后重试。")
-        with self._lock, closing(self._connect()) as connection:
-            connection.execute(
-                """INSERT INTO analysis_projects
-                   (username, project_id, title, status, updated_at, project_json)
-                   VALUES (?, ?, ?, ?, ?, ?)
-                   ON CONFLICT(username, project_id) DO UPDATE SET
-                     title=excluded.title, status=excluded.status,
-                     updated_at=excluded.updated_at, project_json=excluded.project_json""",
-                (username, project["id"], project["title"], project["status"], project["updatedAt"], payload),
+        with self._lock, open_connection(self._database_path) as connection:
+            self._repo.upsert(
+                connection,
+                username,
+                str(project["id"]),
+                project["title"],
+                project["status"],
+                project["updatedAt"],
+                payload,
             )
-            connection.commit()
         return project
 
     def save_from_client(self, username: str, project: dict) -> dict:
@@ -85,10 +69,8 @@ class AnalysisProjectService:
         """服务重启后把失去执行协程的任务恢复成可以继续的状态。"""
 
         recovered = 0
-        with self._lock, closing(self._connect()) as connection:
-            rows = connection.execute(
-                "SELECT username, project_json FROM analysis_projects WHERE status='running'"
-            ).fetchall()
+        with self._lock, open_connection(self._database_path) as connection:
+            rows = self._repo.list_running(connection)
             for row in rows:
                 project = json.loads(row["project_json"])
                 project["status"] = "review"
@@ -101,12 +83,10 @@ class AnalysisProjectService:
                     for run in project.get("runs", [])
                 ]
                 payload = json.dumps(project, ensure_ascii=False, default=str)
-                connection.execute(
-                    "UPDATE analysis_projects SET status='review', project_json=? WHERE username=? AND project_id=?",
-                    (payload, row["username"], str(project["id"])),
+                self._repo.update_status_and_payload(
+                    connection, row["username"], str(project["id"]), "review", payload
                 )
                 recovered += 1
-            connection.commit()
         return recovered
 
     def snapshot(self, username: str, project_id: str) -> dict | None:
@@ -114,13 +94,8 @@ class AnalysisProjectService:
         return deepcopy(project) if project else None
 
     def delete(self, username: str, project_id: str) -> bool:
-        with self._lock, closing(self._connect()) as connection:
-            result = connection.execute(
-                "DELETE FROM analysis_projects WHERE username=? AND project_id=?",
-                (username, project_id),
-            )
-            connection.commit()
-            return result.rowcount == 1
+        with self._lock, open_connection(self._database_path) as connection:
+            return self._repo.delete(connection, username, project_id)
 
 
 analysis_project_service = AnalysisProjectService()

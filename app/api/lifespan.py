@@ -36,8 +36,9 @@ async def lifespan(app: FastAPI):
 
     database_path = Path(__file__).parents[2] / "data" / "langgraph-checkpoints.sqlite"
     database_path.parent.mkdir(parents=True, exist_ok=True)
-    query_audit_service.configure_database(database_path.parent / "shopkeeper-state.sqlite")
-    analysis_project_service.configure_database(database_path.parent / "shopkeeper-state.sqlite")
+    state_database_path = database_path.parent / "shopkeeper-state.sqlite"
+    query_audit_service.configure_database(state_database_path)
+    analysis_project_service.configure_database(state_database_path)
     analysis_project_service.recover_interrupted()
 
     # Checkpointer 连接必须覆盖整个应用运行期，图实例才能持续写入同一 SQLite 文件。

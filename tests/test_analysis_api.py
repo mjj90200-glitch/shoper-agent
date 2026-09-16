@@ -13,6 +13,7 @@ from fastapi.testclient import TestClient
 from app.api.dependencies import get_current_user
 from app.api.routers.analysis_router import analysis_router
 from app.auth.service import UserIdentity
+from app.db.migrations import apply_migrations
 from app.services.analysis_project_service import analysis_project_service
 
 
@@ -33,9 +34,10 @@ def project_payload(project_id: str) -> dict:
 class AnalysisProjectAPITests(unittest.TestCase):
     def setUp(self):
         self.directory = TemporaryDirectory()
-        analysis_project_service.configure_database(
-            Path(self.directory.name) / "state.sqlite"
-        )
+        database_path = Path(self.directory.name) / "state.sqlite"
+        # 对齐启动契约：建表由迁移机制完成，再接入服务
+        apply_migrations(database_path)
+        analysis_project_service.configure_database(database_path)
         self.app = FastAPI()
         self.app.include_router(analysis_router)
         self.user = UserIdentity("alice", "Alice", "analyst", (), ())

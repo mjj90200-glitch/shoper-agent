@@ -17,13 +17,17 @@ from app.api.dependencies import get_current_user
 from app.api.routers.audit_router import session_router
 from app.audit.service import QueryAuditService
 from app.auth.service import UserIdentity
+from app.db.migrations import apply_migrations
 
 
 class SessionDeleteAPITests(unittest.TestCase):
     def setUp(self):
         self.directory = TemporaryDirectory()
         self.service = QueryAuditService()
-        self.service.configure_database(Path(self.directory.name) / "state.sqlite")
+        database_path = Path(self.directory.name) / "state.sqlite"
+        # 对齐启动契约：建表由迁移机制完成，再接入服务
+        apply_migrations(database_path)
+        self.service.configure_database(database_path)
         self.service_patch = patch(
             "app.api.routers.audit_router.query_audit_service", self.service
         )
