@@ -15,6 +15,8 @@ from app.agent.graph import get_graph
 from app.agent.state import DataAgentState
 from app.audit.service import query_audit_service
 from app.auth.service import UserIdentity
+from app.core.errors import build_sse_error_event
+from app.core.log import logger
 from app.repositories.es.value_es_repository import ValueESRepository
 from app.repositories.mysql.dw.dw_mysql_repository import DWMySQLRepository
 from app.repositories.mysql.meta.meta_mysql_repository import MetaMySQLRepository
@@ -75,8 +77,10 @@ class QueryService:
                 query_audit_service.observe(audit_record, chunk)
                 yield f"data: {json.dumps(chunk, ensure_ascii=False, default=str)}\n\n"
         except Exception as e:
-            # 流式接口已经开始返回后不能再改 HTTP 状态码，因此把异常也包装成一条 SSE 消息
-            error = {"type": "error", "message": str(e)}
+            # 流式接口已经开始返回后不能再改 HTTP 状态码，因此把异常也包装成一条 SSE 消息；
+            # 未知异常对外使用通用文案，完整堆栈进日志便于凭 request_id 定位
+            logger.exception("问数查询失败：{}", e)
+            error = build_sse_error_event(e)
             query_audit_service.observe(audit_record, error)
             yield f"data: {json.dumps(error, ensure_ascii=False, default=str)}\n\n"
         finally:

@@ -6,9 +6,7 @@ FastAPI 应用入口
 具体的接口处理函数。
 """
 
-import uuid
-
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 
 from app.api.lifespan import lifespan
 from app.api.routers.analysis_router import analysis_router
@@ -17,10 +15,16 @@ from app.api.routers.auth_router import auth_router
 from app.api.routers.health_router import health_router
 from app.api.routers.query_router import query_router
 from app.api.routers.tts_router import tts_router
-from app.core.context import request_id_ctx_var
+from app.core.errors import register_exception_handlers
+from app.core.middleware import register_request_id_middleware
 
 # lifespan 交给 FastAPI 管理，用于在服务启动和关闭时统一初始化与释放外部客户端
 app = FastAPI(lifespan=lifespan)
+
+# 统一错误信封：所有 REST 错误返回 code/message/request_id/details 结构
+register_exception_handlers(app)
+# 每个请求注入 request_id 并回传 X-Request-ID 响应头
+register_request_id_middleware(app)
 
 # 把查询路由注册进应用；没有挂载时，/docs 和真实 HTTP 请求都访问不到该接口
 app.include_router(query_router)
@@ -30,13 +34,3 @@ app.include_router(session_router)
 app.include_router(analysis_router)
 app.include_router(tts_router)
 app.include_router(health_router)
-
-
-@app.middleware("http")
-async def add_request_id(request: Request, call_next):
-    # 请求被处理之前
-    request_id = uuid.uuid4()
-    request_id_ctx_var.set(request_id)
-    response = await call_next(request)
-    # 请求被处理之后
-    return response
