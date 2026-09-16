@@ -174,6 +174,12 @@ uv run python -m app.scripts.evaluate_query_api --base-url http://127.0.0.1:8000
 - 查看 `logs/` 中的后端错误日志。
 - Windows 出现控制台乱码或编码异常时设置 `PYTHONUTF8=1`，并使用 Uvicorn 启动方式。
 
+### 启动时报“缺少必需的环境变量”
+
+- 后端启动会校验必需配置，缺失 `LLM_API_KEY`、`MYSQL_USER` 或 `MYSQL_PASSWORD` 时直接退出。
+- 对照 `.env.example` 补齐根目录 `.env` 中缺失的变量后重新启动。
+- `APP_ENV` 只允许 `dev`、`test`、`prod`，其他取值会被拒绝。
+
 ### 请求返回 401
 
 - 登录令牌可能已过期、被篡改或来自旧的签名配置。

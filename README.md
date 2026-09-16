@@ -237,6 +237,8 @@ VOLCENGINE_TTS_API_KEY=your_volcengine_tts_api_key_here
 VOLCENGINE_TTS_VOICE_TYPE=zh_female_vv_uranus_bigtts
 ```
 
+可选环境变量 `APP_ENV` 标识运行环境（`dev` / `test` / `prod`，默认 `dev`）。后端启动时会校验必需配置：缺失 `LLM_API_KEY`、`MYSQL_USER` 或 `MYSQL_PASSWORD` 时立即失败，错误信息只列出变量名，不回显任何取值。
+
 Docker Compose 和后端共用上述 MySQL 环境变量，仓库不保存真实数据库密码。模型名称、服务地址和语音资源在 `conf/app_config.yaml` 中配置。大模型接入方式兼容 OpenAI Chat API；TTS 使用火山引擎 V3 单向流式接口。语音密钥仅由后端读取，禁止放入 `frontend/.env` 或任何 `VITE_*` 变量。
 
 ### 3. 准备 Embedding 模型
