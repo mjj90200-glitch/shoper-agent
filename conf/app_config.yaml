@@ -9,18 +9,20 @@ logging:
     enable: true
     level: INFO
 
+# 数据库与密钥类取值由 app/conf/settings.py 的 ENV_FIELDS 覆盖表从环境变量注入，
+# 这里只保留本地默认值；密钥留空，缺失时由启动校验统一报错。
 db_meta:
-  host: ${oc.env:MYSQL_HOST,localhost}
-  port: ${oc.env:MYSQL_PORT,3307}
-  user: ${oc.env:MYSQL_USER}
-  password: ${oc.env:MYSQL_PASSWORD}
+  host: localhost
+  port: 3307
+  user: ""
+  password: ""
   database: meta
 
 db_dw:
-  host: ${oc.env:MYSQL_HOST,localhost}
-  port: ${oc.env:MYSQL_PORT,3307}
-  user: ${oc.env:MYSQL_USER}
-  password: ${oc.env:MYSQL_PASSWORD}
+  host: localhost
+  port: 3307
+  user: ""
+  password: ""
   database: dw
 
 qdrant:
@@ -40,13 +42,13 @@ es:
 
 llm:
   model_name: deepseek-v4-flash
-  api_key: ${oc.env:LLM_API_KEY}
+  api_key: ""
   base_url: https://api.deepseek.com
 
 tts:
-  api_key: ${oc.env:VOLCENGINE_TTS_API_KEY,null}
-  voice_type: ${oc.env:VOLCENGINE_TTS_VOICE_TYPE,zh_female_vv_uranus_bigtts}
-  base_url: ${oc.env:VOLCENGINE_TTS_BASE_URL,https://openspeech.bytedance.com/api/v3/tts/unidirectional/sse}
-  resource_id: ${oc.env:VOLCENGINE_TTS_RESOURCE_ID,seed-tts-2.0}
+  api_key: null
+  voice_type: zh_female_vv_uranus_bigtts
+  base_url: https://openspeech.bytedance.com/api/v3/tts/unidirectional/sse
+  resource_id: seed-tts-2.0
   timeout_seconds: 60
   max_chars: 600

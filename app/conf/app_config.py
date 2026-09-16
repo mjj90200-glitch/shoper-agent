@@ -1,16 +1,11 @@
 """
-应用主配置
+应用主配置的类型定义
 
-定义 conf/app_config.yaml 在程序中的结构化配置对象
-项目启动后会在这里一次性完成配置文件加载和类型化转换，其他模块只需要导入 app_config
-就可以按属性方式读取日志 MySQL Qdrant Embedding Elasticsearch 和 LLM 配置
+这里只声明 conf/app_config.yaml 的结构化类型（dataclass）。加载与校验逻辑统一在
+app/conf/settings.py；新代码一律通过 app.conf.settings.get_app_config() 获取配置。
 """
 
 from dataclasses import dataclass
-from pathlib import Path
-
-from dotenv import load_dotenv
-from omegaconf import OmegaConf
 
 
 @dataclass
@@ -111,24 +106,12 @@ class AppConfig:
     es: ESConfig
     llm: LLMConfig
     tts: TTSConfig
+    # 运行环境标识（dev/test/prod），由 APP_ENV 环境变量注入
+    app_env: str = "dev"
 
 
-# 从当前文件位置回到项目根目录，再定位到 conf/app_config.yaml
-project_root = Path(__file__).parents[2]
-config_file = project_root / "conf" / "app_config.yaml"
+# 过渡期兼容：旧代码仍以 `from app.conf.app_config import app_config` 获取实例。
+# 全部导入者迁移到 get_app_config() 后，此全局实例将被删除。
+from app.conf.settings import load_app_config  # noqa: E402
 
-# 先读取本地 .env，让 YAML 中的 ${oc.env:...} 可以解析到敏感配置
-load_dotenv(project_root / ".env")
-
-# 读取 YAML 配置内容
-context = OmegaConf.load(config_file)
-
-# 根据 AppConfig 生成结构化配置 schema
-schema = OmegaConf.structured(AppConfig)
-
-# 把配置结构和配置值合并，再转换成可以直接按属性访问的对象
-app_config: AppConfig = OmegaConf.to_object(OmegaConf.merge(schema, context))
-
-if __name__ == "__main__":
-    # 简单测试：验证配置是否能正常读取
-    print(app_config.es.host)
+app_config: AppConfig = load_app_config()
