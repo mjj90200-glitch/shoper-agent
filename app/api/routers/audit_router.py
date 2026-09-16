@@ -87,5 +87,6 @@ async def session_detail(
 async def delete_session(
     session_id: str, user: Annotated[UserIdentity, Depends(get_current_user)]
 ):
-    if not query_audit_service.delete_session(user.username, session_id):
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="未找到会话。")
+    # DELETE 保持幂等：记录已经不存在时，用户期望的最终状态同样已经达成。
+    # 这也允许前端清理本地缓存中仍标记为 remote 的过期会话。
+    query_audit_service.delete_session(user.username, session_id)

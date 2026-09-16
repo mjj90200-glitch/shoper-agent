@@ -29,5 +29,7 @@ export async function renameSession(id: string, title: string, token: string): P
 
 export async function deleteSession(id: string, token: string) {
   const response = await authenticatedFetch(`${base}/api/sessions/${id}`, { method: "DELETE", headers: headers(token) });
+  // 兼容旧后端：404 表示远端记录已经不存在，本地会话仍应继续清理。
+  if (response.status === 404) return;
   if (!response.ok) throw new Error("删除会话失败。");
 }

@@ -1,6 +1,8 @@
 """本地 SQLite 问数审计、反馈和会话元数据服务。"""
 
 import sqlite3
+from collections.abc import Iterator
+from contextlib import contextmanager
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -81,12 +83,17 @@ class QueryAuditService:
                 """
             )
 
-    def _connect(self) -> sqlite3.Connection:
+    @contextmanager
+    def _connect(self) -> Iterator[sqlite3.Connection]:
         if self._database_path is None:
             raise RuntimeError("审计数据库尚未初始化。")
         connection = sqlite3.connect(self._database_path)
         connection.row_factory = sqlite3.Row
-        return connection
+        try:
+            with connection:
+                yield connection
+        finally:
+            connection.close()
 
     def start(self, username: str, session_id: str, query: str) -> QueryAuditRecord:
         now = datetime.now(UTC).isoformat()
