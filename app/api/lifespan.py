@@ -21,6 +21,7 @@ from app.clients.mysql_client_manager import (
     meta_mysql_client_manager,
 )
 from app.clients.qdrant_client_manager import qdrant_client_manager
+from app.conf.settings import ensure_runtime_ready, get_app_config
 from app.services.analysis_execution_service import analysis_execution_service
 from app.services.analysis_project_service import analysis_project_service
 
@@ -28,6 +29,10 @@ from app.services.analysis_project_service import analysis_project_service
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """管理应用启动和关闭两个阶段的外部资源"""
+
+    # 启动第一步校验必需配置：缺失 LLM_API_KEY、MYSQL_USER 等时立即失败，
+    # 错误信息只列出变量名，不进入任何客户端初始化
+    ensure_runtime_ready(get_app_config())
 
     database_path = Path(__file__).parents[2] / "data" / "langgraph-checkpoints.sqlite"
     database_path.parent.mkdir(parents=True, exist_ok=True)

@@ -164,5 +164,28 @@ class GetAppConfigCacheTests(unittest.TestCase):
         self.assertIsNot(get_app_config(), first)
 
 
+class LifespanStartupValidationTests(unittest.TestCase):
+    def test_lifespan_fails_fast_when_required_env_missing(self):
+        import asyncio
+        from unittest.mock import patch
+
+        from fastapi import FastAPI
+
+        import app.api.lifespan as lifespan_module
+
+        config = minimal_config({"MYSQL_USER": ""})
+        app = FastAPI(lifespan=lifespan_module.lifespan)
+
+        async def run_lifespan():
+            async with app.router.lifespan_context(app):
+                pass
+
+        # 只替换配置来源；被测行为是 lifespan 的启动顺序与快速失败
+        with patch.object(lifespan_module, "get_app_config", return_value=config):
+            with self.assertRaises(SettingsValidationError) as ctx:
+                asyncio.run(run_lifespan())
+        self.assertIn("MYSQL_USER", str(ctx.exception))
+
+
 if __name__ == "__main__":
     unittest.main()

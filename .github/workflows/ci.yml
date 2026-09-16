@@ -16,10 +16,6 @@ jobs:
   backend:
     name: Backend quality gates
     runs-on: ubuntu-latest
-    env:
-      LLM_API_KEY: test-only-key
-      MYSQL_USER: test_user
-      MYSQL_PASSWORD: test_password
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
