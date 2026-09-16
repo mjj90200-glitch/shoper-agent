@@ -50,6 +50,8 @@ if __name__ == "__main__":
 
     async def test():
         """执行一次集合创建、写入和查询，验证 Qdrant 接入链路"""
+        # 安全扫描要求避免可预测的 random 模块随机数，调试数据同样使用系统级随机源
+        rng = random.SystemRandom()
         client = qdrant_client_manager.client
         # 如果集合不存在，就先创建一个集合
         if not await client.collection_exists("my_collection"):
@@ -70,7 +72,7 @@ if __name__ == "__main__":
             points=[
                 models.PointStruct(
                     id=i,
-                    vector=[random.random() for _ in range(10)],
+                    vector=[rng.random() for _ in range(10)],
                 )
                 for i in range(100)
             ],
@@ -81,7 +83,7 @@ if __name__ == "__main__":
         # score_threshold=0.8 表示只保留分数不低于 0.8 的结果
         res = await client.query_points(
             collection_name="my_collection",
-            query=[random.random() for _ in range(10)],  # type: ignore
+            query=[rng.random() for _ in range(10)],  # type: ignore
             limit=10,
             score_threshold=0.8,
         )
