@@ -8,7 +8,29 @@ from app.scripts.evaluate_query_api import (
     evaluate_turn,
     parse_sse_events,
     summarize_report,
+    validate_base_url,
 )
+
+
+class ValidateBaseUrlTests(unittest.TestCase):
+    def test_accepts_http_and_https_and_strips_trailing_slash(self):
+        self.assertEqual(validate_base_url("http://127.0.0.1:8000"), "http://127.0.0.1:8000")
+        self.assertEqual(
+            validate_base_url("https://api.example.com/"), "https://api.example.com"
+        )
+
+    def test_rejects_non_http_schemes(self):
+        for url in ["ftp://127.0.0.1:8000", "file:///etc/passwd", "127.0.0.1:8000"]:
+            with self.assertRaises(ValueError):
+                validate_base_url(url)
+
+    def test_rejects_embedded_credentials(self):
+        with self.assertRaises(ValueError):
+            validate_base_url("http://admin:secret@127.0.0.1:8000")
+
+    def test_rejects_missing_host(self):
+        with self.assertRaises(ValueError):
+            validate_base_url("http://")
 
 
 class QueryEvaluatorTests(unittest.TestCase):
