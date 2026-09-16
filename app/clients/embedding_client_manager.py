@@ -10,7 +10,8 @@ from typing import Optional
 
 from langchain_huggingface import HuggingFaceEndpointEmbeddings
 
-from app.conf.app_config import EmbeddingConfig, app_config
+from app.conf.app_config import EmbeddingConfig
+from app.conf.settings import get_app_config
 
 
 class EmbeddingClientManager:
@@ -30,7 +31,7 @@ class EmbeddingClientManager:
 
 
 # 模块级单例，供整个项目复用同一套 Embedding 客户端管理器
-embedding_client_manager = EmbeddingClientManager(app_config.embedding)
+embedding_client_manager = EmbeddingClientManager(get_app_config().embedding)
 
 
 if __name__ == "__main__":

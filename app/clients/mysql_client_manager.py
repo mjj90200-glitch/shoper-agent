@@ -16,7 +16,8 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
-from app.conf.app_config import DBConfig, app_config
+from app.conf.app_config import DBConfig
+from app.conf.settings import get_app_config
 
 
 class MySQLClientManager:
@@ -55,8 +56,8 @@ class MySQLClientManager:
 
 # 一套连元数据库，一套连数仓模拟库
 # 后续由不同 repository 按职责分别使用
-meta_mysql_client_manager = MySQLClientManager(app_config.db_meta)
-dw_mysql_client_manager = MySQLClientManager(app_config.db_dw)
+meta_mysql_client_manager = MySQLClientManager(get_app_config().db_meta)
+dw_mysql_client_manager = MySQLClientManager(get_app_config().db_dw)
 
 if __name__ == "__main__":
     dw_mysql_client_manager.init()

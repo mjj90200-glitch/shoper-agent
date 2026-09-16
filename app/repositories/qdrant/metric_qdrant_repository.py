@@ -10,7 +10,7 @@
 from qdrant_client import AsyncQdrantClient
 from qdrant_client.models import Distance, PointStruct, VectorParams
 
-from app.conf.app_config import app_config
+from app.conf.settings import get_app_config
 from app.entities.metric_info import MetricInfo
 
 
@@ -29,7 +29,7 @@ class MetricQdrantRepository:
                 collection_name=self.collection_name,
                 vectors_config=VectorParams(
                     # 向量维度必须和 Embedding 模型输出一致，否则写入时会失败
-                    size=app_config.qdrant.embedding_size,
+                    size=get_app_config().qdrant.embedding_size,
                     distance=Distance.COSINE,
                 ),
             )

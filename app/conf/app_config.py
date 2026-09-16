@@ -108,10 +108,3 @@ class AppConfig:
     tts: TTSConfig
     # 运行环境标识（dev/test/prod），由 APP_ENV 环境变量注入
     app_env: str = "dev"
-
-
-# 过渡期兼容：旧代码仍以 `from app.conf.app_config import app_config` 获取实例。
-# 全部导入者迁移到 get_app_config() 后，此全局实例将被删除。
-from app.conf.settings import load_app_config  # noqa: E402
-
-app_config: AppConfig = load_app_config()

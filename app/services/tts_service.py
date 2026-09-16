@@ -15,7 +15,8 @@ from collections.abc import Callable
 
 import httpx
 
-from app.conf.app_config import TTSConfig, app_config
+from app.conf.app_config import TTSConfig
+from app.conf.settings import get_app_config
 
 
 class TTSConfigurationError(RuntimeError):
@@ -196,4 +197,4 @@ class TTSService:
         return audio
 
 
-tts_service = TTSService(app_config.tts)
+tts_service = TTSService(get_app_config().tts)

@@ -10,7 +10,8 @@ from typing import Optional
 
 from elasticsearch import AsyncElasticsearch
 
-from app.conf.app_config import ESConfig, app_config
+from app.conf.app_config import ESConfig
+from app.conf.settings import get_app_config
 
 
 class ESClientManager:
@@ -39,7 +40,7 @@ class ESClientManager:
 
 
 # 创建一个全局可复用的 ES 客户端管理器对象
-es_client_manager = ESClientManager(app_config.es)
+es_client_manager = ESClientManager(get_app_config().es)
 
 if __name__ == "__main__":
     es_client_manager.init()
