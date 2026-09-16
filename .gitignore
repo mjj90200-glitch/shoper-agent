@@ -73,3 +73,6 @@ docker/embedding/
 # Local verification artifacts. Keep reports locally or attach them to a release,
 # but do not commit generated responses, screenshots, access tokens or dependencies.
 /lxreport/
+
+# Mimosa security hook local state
+/.mimosa/
