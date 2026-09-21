@@ -50,5 +50,7 @@ jobs:
           cache-dependency-path: frontend/pnpm-lock.yaml
       - name: Install locked dependencies
         run: pnpm install --frozen-lockfile
+      - name: Unit tests
+        run: pnpm test
       - name: Type-check and build
         run: pnpm build

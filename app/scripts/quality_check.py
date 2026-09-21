@@ -18,7 +18,7 @@ def run(command: list[str], cwd: Path = PROJECT_ROOT) -> None:
 
 
 def main() -> None:
-    """Check backend lint/tests and the frontend production build."""
+    """Check backend lint/tests and the frontend tests plus production build."""
 
     run([sys.executable, "-m", "ruff", "check", "."])
     run([sys.executable, "-m", "unittest", "discover", "-s", "tests", "-v"])
@@ -26,12 +26,15 @@ def main() -> None:
     pnpm = shutil.which("pnpm")
     corepack = shutil.which("corepack")
     if pnpm:
-        frontend_command = [pnpm, "build"]
+        frontend_test_command = [pnpm, "test"]
+        frontend_build_command = [pnpm, "build"]
     elif corepack:
-        frontend_command = [corepack, "pnpm", "build"]
+        frontend_test_command = [corepack, "pnpm", "test"]
+        frontend_build_command = [corepack, "pnpm", "build"]
     else:
         raise SystemExit("pnpm or corepack is required to check the frontend")
-    run(frontend_command, PROJECT_ROOT / "frontend")
+    run(frontend_test_command, PROJECT_ROOT / "frontend")
+    run(frontend_build_command, PROJECT_ROOT / "frontend")
 
 
 if __name__ == "__main__":
