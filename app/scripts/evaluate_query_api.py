@@ -13,6 +13,7 @@ from urllib.parse import urlsplit
 import httpx
 
 DEFAULT_CASES_PATH = Path("evals/query_cases.json")
+DEFAULT_EXTRA_CASES_PATH = Path("evals/query_cases_p3.json")
 DEFAULT_REPORT_PATH = Path("evals/reports/latest.json")
 ALLOWED_SCHEMES = ("http", "https")
 
@@ -107,14 +108,30 @@ def evaluate_cases(
     cases: list[dict],
     timeout: int,
     access_token: str,
+    credentials: dict[str, tuple[str, str]] | None = None,
 ) -> list[dict]:
-    """按用例顺序执行多轮会话，并返回每轮可审计结果。"""
+    """按用例顺序执行多轮会话，并返回每轮可审计结果。
 
+    用例可携带 username/password 以指定账号运行（P3-A 越权场景）；
+    非默认账号会单独登录。
+    """
+
+    credentials = credentials or {}
+    tokens: dict[str, str] = {"__default__": access_token}
     report: list[dict] = []
     for case in cases:
+        case_user = case.get("username")
+        if case_user:
+            if case_user not in tokens:
+                password = case.get("password") or credentials.get(case_user, (None, None))[1]
+                tokens[case_user] = login(base_url, case_user, password, timeout)
+            case_token = tokens[case_user]
+        else:
+            case_token = tokens["__default__"]
+
         session_id = str(uuid.uuid4())
         for turn_index, turn in enumerate(case["turns"], start=1):
-            events = call_query(base_url, turn["query"], session_id, timeout, access_token)
+            events = call_query(base_url, turn["query"], session_id, timeout, case_token)
             passed, errors = evaluate_turn(events, turn["expected"])
             report.append(
                 {
@@ -161,8 +178,11 @@ def main() -> None:
         return
 
     cases = json.loads(args.cases.read_text(encoding="utf-8"))
+    if DEFAULT_EXTRA_CASES_PATH.exists():
+        cases = cases + json.loads(DEFAULT_EXTRA_CASES_PATH.read_text(encoding="utf-8"))
     access_token = login(base_url, args.username, args.password, args.timeout)
-    report = evaluate_cases(base_url, cases, args.timeout, access_token)
+    credentials = {"east_manager": ("", "east123"), "analyst": ("", "analyst123")}
+    report = evaluate_cases(base_url, cases, args.timeout, access_token, credentials)
     summary = summarize_report(report)
     args.report.parent.mkdir(parents=True, exist_ok=True)
     args.report.write_text(

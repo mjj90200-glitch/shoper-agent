@@ -36,9 +36,14 @@ class ValidateBaseUrlTests(unittest.TestCase):
 class QueryEvaluatorTests(unittest.TestCase):
     def test_eval_cases_cover_required_scenarios(self):
         cases = json.loads(Path("evals/query_cases.json").read_text(encoding="utf-8"))
+        extra_path = Path("evals/query_cases_p3.json")
+        if extra_path.exists():
+            extra = json.loads(extra_path.read_text(encoding="utf-8"))
+            cases = cases + extra
         turns = [turn for case in cases for turn in case["turns"]]
-        self.assertEqual(len(cases), 30)
-        self.assertEqual(len(turns), 35)
+        # P3-A：评测集从 30 场景扩容至 80+（含模糊/多轮/空结果/越权/注入）
+        self.assertGreaterEqual(len(cases), 80)
+        self.assertGreaterEqual(len(turns), 85)
         self.assertGreaterEqual(
             sum("resolved_query_contains" in turn["expected"] for turn in turns), 5
         )
@@ -47,8 +52,14 @@ class QueryEvaluatorTests(unittest.TestCase):
                 turn["expected"]["terminal_type"] == "assistant_message"
                 for turn in turns
             ),
-            4,
+            10,
         )
+        self.assertGreaterEqual(
+            sum(turn["expected"]["terminal_type"] == "error" for turn in turns), 13
+        )
+        # 用例 id 必须全局唯一，避免报告聚合时互相覆盖
+        case_ids = [case["id"] for case in cases]
+        self.assertEqual(len(case_ids), len(set(case_ids)))
 
     def test_parse_sse_events(self):
         events = parse_sse_events('data: {"type":"progress"}\n\ndata: {"type":"result","data":[]}\n\n')
