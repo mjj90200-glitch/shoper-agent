@@ -3,6 +3,7 @@
 from langgraph.runtime import Runtime
 
 from app.agent.context import DataAgentContext
+from app.agent.sql_ast_guard import validate_sql_ast
 from app.agent.sql_guardrail import SQLSafetyError, guard_sql
 from app.agent.state import DataAgentState
 from app.auth.policy import enforce_data_policy
@@ -10,13 +11,17 @@ from app.core.log import logger
 
 
 async def guard_sql_node(state: DataAgentState, runtime: Runtime[DataAgentContext]):
-    """只允许安全的只读 SQL 进入数据库校验环节。"""
+    """只允许安全的只读 SQL 进入数据库校验环节。
+
+    三层依次执行：sqlglot 语法树结构校验 → 关键词扫描（纵深防御）→
+    行级/列级数据权限策略。
+    """
 
     writer = runtime.stream_writer
     step = "检查SQL安全"
     writer({"type": "progress", "step": step, "status": "running"})
     try:
-        sql = enforce_data_policy(guard_sql(state["sql"]), runtime.context["user"])
+        sql = enforce_data_policy(guard_sql(validate_sql_ast(state["sql"])), runtime.context["user"])
         writer({"type": "progress", "step": step, "status": "success"})
         return {"sql": sql, "error": None}
     except SQLSafetyError as error:
