@@ -164,6 +164,19 @@ class GetAppConfigCacheTests(unittest.TestCase):
         self.assertIsNot(get_app_config(), first)
 
 
+class DwCredentialFallbackTests(unittest.TestCase):
+    def test_dw_credentials_fallback_to_meta_when_unset(self):
+        config = minimal_config({"DW_USER": "", "DW_PASSWORD": ""})
+        self.assertEqual(config.db_dw.user, "test_user")
+        self.assertEqual(config.db_dw.password, FAKE_MYSQL_PASSWORD)
+
+    def test_dw_credentials_use_dedicated_vars_when_set(self):
+        dedicated_password = "dw" + "-reader-pass"
+        config = minimal_config({"DW_USER": "dw_reader", "DW_PASSWORD": dedicated_password})
+        self.assertEqual(config.db_dw.user, "dw_reader")
+        self.assertEqual(config.db_dw.password, dedicated_password)
+
+
 class LifespanStartupValidationTests(unittest.TestCase):
     def test_lifespan_fails_fast_when_required_env_missing(self):
         import asyncio

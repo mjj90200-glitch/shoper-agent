@@ -138,6 +138,23 @@ uv run python -m app.scripts.build_meta_knowledge -c conf/meta_config.yaml
 
 初始化脚本不能直接重复导入。需要完全重建时，应先备份数据，再按维护方案清理旧的 `meta` 数据库、Qdrant 集合和 Elasticsearch 索引。
 
+## 6.5 数仓只读账号（P2-B 最小权限）
+
+后端数仓连接默认使用独立只读账号 `dw_reader`（仅 `SELECT` on `dw.*`），即使应用护栏失效，数据库也会拒绝写操作。`.env` 中的 `DW_USER` / `DW_PASSWORD` 缺省回退到 `MYSQL_USER` / `MYSQL_PASSWORD`。
+
+首次部署或重置 Docker 数据卷后，重新创建该账号（幂等，可重复执行）：
+
+```powershell
+docker exec mysql mysql -uroot -p"$env:MYSQL_ROOT_PASSWORD" -e "CREATE USER IF NOT EXISTS 'dw_reader'@'%'; ALTER USER 'dw_reader'@'%' IDENTIFIED BY '$env:DW_PASSWORD'; GRANT SELECT ON dw.* TO 'dw_reader'@'%'; SET GLOBAL max_execution_time = 15000; FLUSH PRIVILEGES;"
+```
+
+验证只读账号写操作被数据库拒绝：
+
+```powershell
+docker exec mysql mysql -udw_reader -p"$env:DW_PASSWORD" -e "INSERT INTO dw.dim_region VALUES (999,'x','x');"
+# 预期输出 ERROR 1142 ... INSERT command denied
+```
+
 ## 7. 测试命令
 
 后端测试：

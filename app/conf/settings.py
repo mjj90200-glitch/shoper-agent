@@ -31,6 +31,9 @@ ENV_FIELDS: dict[str, tuple[list[str], object]] = {
     "MYSQL_PORT": (["db_meta.port", "db_dw.port"], int),
     "MYSQL_USER": (["db_meta.user", "db_dw.user"], str),
     "MYSQL_PASSWORD": (["db_meta.password", "db_dw.password"], str),
+    # 数仓可配置独立只读账号（P2-B 最小权限）；未设置时回退到 MYSQL_* 凭据
+    "DW_USER": (["db_dw.user"], str),
+    "DW_PASSWORD": (["db_dw.password"], str),
     "LLM_API_KEY": (["llm.api_key"], str),
     "APP_ENV": (["app_env"], str),
     "VOLCENGINE_TTS_API_KEY": (["tts.api_key"], lambda value: value or None),
@@ -104,6 +107,13 @@ def load_app_config(
                 setattr(merged, path, value)
 
     config: AppConfig = OmegaConf.to_object(merged)
+
+    # 数仓未配置专用账号时回退到元数据库凭据，保持既有部署开箱即用
+    if not config.db_dw.user:
+        config.db_dw.user = config.db_meta.user
+    if not config.db_dw.password:
+        config.db_dw.password = config.db_meta.password
+
     if errors:
         raise SettingsValidationError(errors)
     return config
