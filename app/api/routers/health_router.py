@@ -13,7 +13,6 @@ import httpx
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 
-from app.clients.embedding_client_manager import embedding_client_manager
 from app.clients.es_client_manager import es_client_manager
 from app.clients.mysql_client_manager import (
     dw_mysql_client_manager,
