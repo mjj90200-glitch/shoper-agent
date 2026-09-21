@@ -19,6 +19,7 @@ from app.api.schemas.analysis_schema import (
     AnalysisSummaryRequest,
 )
 from app.auth.service import UserIdentity
+from app.core.rate_limit import analysis_limiter
 from app.services.analysis_execution_service import (
     AnalysisExecutionError,
     analysis_execution_service,
@@ -29,19 +30,33 @@ from app.services.analysis_project_service import analysis_project_service
 analysis_router = APIRouter(prefix="/api/analysis", tags=["data-analysis"])
 
 
+def _enforce_analysis_limit(user: UserIdentity) -> None:
+    """分析计划与综合报告各消耗一次大模型调用，按用户限流。"""
+
+    from fastapi import HTTPException
+
+    if not analysis_limiter.allow(f"analysis:{user.username}", time()):
+        raise HTTPException(
+            status_code=429,
+            detail="分析请求过于频繁，请稍后再试。",
+        )
+
+
 @analysis_router.post("/plan", response_model=AnalysisPlanResponse)
 async def create_analysis_plan(
     payload: AnalysisPlanRequest,
-    _: Annotated[UserIdentity, Depends(get_current_user)],
+    user: Annotated[UserIdentity, Depends(get_current_user)],
 ) -> AnalysisPlanResponse:
+    _enforce_analysis_limit(user)
     return await analysis_planning_service.create_plan(payload.goal)
 
 
 @analysis_router.post("/summary", response_model=AnalysisReport)
 async def create_analysis_summary(
     payload: AnalysisSummaryRequest,
-    _: Annotated[UserIdentity, Depends(get_current_user)],
+    user: Annotated[UserIdentity, Depends(get_current_user)],
 ) -> AnalysisReport:
+    _enforce_analysis_limit(user)
     return await analysis_planning_service.summarize(payload)
 
 

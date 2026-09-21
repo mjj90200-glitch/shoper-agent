@@ -7,6 +7,7 @@ from fastapi import APIRouter, Depends, HTTPException, Response, status
 from app.api.dependencies import get_current_user
 from app.api.schemas.tts_schema import TTSSynthesizeRequest
 from app.auth.service import UserIdentity
+from app.core.rate_limit import tts_daily_quota, tts_limiter
 from app.services.tts_service import (
     TTSConfigurationError,
     TTSUpstreamError,
@@ -25,9 +26,25 @@ tts_router = APIRouter(prefix="/api/tts", tags=["text-to-speech"])
 )
 async def synthesize_query_conclusion(
     payload: TTSSynthesizeRequest,
-    _: Annotated[UserIdentity, Depends(get_current_user)],
+    user: Annotated[UserIdentity, Depends(get_current_user)],
 ) -> Response:
     """将已经生成的简短业务结论转换为 MP3，不处理流程或 SQL。"""
+
+    import datetime
+    import time
+
+    key = f"tts:{user.username}"
+    if not tts_limiter.allow(key, time.monotonic()):
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="语音合成请求过于频繁，请稍后再试。",
+        )
+    today = datetime.date.today().isoformat()
+    if not tts_daily_quota.try_consume(key, len(payload.text), today):
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="今日语音外发字符配额已用完，明天再试。",
+        )
 
     try:
         audio = await tts_service.synthesize(payload.text)

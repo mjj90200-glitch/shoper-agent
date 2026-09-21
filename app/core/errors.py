@@ -97,6 +97,7 @@ _HTTP_STATUS_CODES = {
     404: "not_found",
     409: "conflict",
     422: "validation_error",
+    429: "rate_limited",
     502: "bad_gateway",
     503: "service_unavailable",
 }

@@ -8,12 +8,13 @@
 
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from starlette.responses import StreamingResponse
 
 from app.api.dependencies import get_current_user, get_query_service
 from app.api.schemas.query_schema import QuerySchema
 from app.auth.service import UserIdentity
+from app.core.rate_limit import query_limiter
 from app.services.query_service import QueryService
 
 # 当前模块只维护查询相关接口，避免后续所有 API 都挤在 main.py 中
@@ -29,6 +30,14 @@ async def query_handler(
     user: Annotated[UserIdentity, Depends(get_current_user)],
 ):
     """接收用户自然语言问题，并流式返回 LangGraph 工作流输出"""
+
+    import time
+
+    if not query_limiter.allow(f"query:{user.username}", time.monotonic()):
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="问数请求过于频繁，请稍后再试。",
+        )
 
     return StreamingResponse(
         # query.query 是用户问题字符串；QueryService.query 返回异步生成器供响应逐段消费
