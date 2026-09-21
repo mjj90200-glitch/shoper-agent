@@ -23,9 +23,9 @@ describe("upsertStep", () => {
     expect(steps).toHaveLength(1);
     steps = upsertStep(steps, { type: "progress", step: "执行SQL", status: "running" });
     expect(steps.map((step) => step.step)).toEqual(["生成SQL", "执行SQL"]);
-    steps = upsertStep(steps, { type: "progress", step: "生成SQL", status: "done" });
+    steps = upsertStep(steps, { type: "progress", step: "生成SQL", status: "success" });
     expect(steps).toHaveLength(2);
-    expect(steps.find((step) => step.step === "生成SQL")?.status).toBe("done");
+    expect(steps.find((step) => step.step === "生成SQL")?.status).toBe("success");
   });
 });
 
@@ -68,7 +68,7 @@ describe("applyAgentEventToMessage", () => {
     const next = applyAgentEventToMessage(streamingMessage(), {
       type: "assistant_message",
       message: "我是数分助手",
-      category: "capability_help",
+      category: "non_data",
       suggested_queries: ["统计销售额"],
     });
     expect(next.status).toBe("done");

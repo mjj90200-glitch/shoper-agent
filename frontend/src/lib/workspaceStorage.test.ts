@@ -22,9 +22,8 @@ describe("deriveConversationTitle", () => {
 
 describe("recordsToMessages", () => {
   it("把审计记录转换为用户/助手成对消息", () => {
-    const audit = {
+    const audit: QueryAudit = {
       id: "a1",
-      username: "admin",
       session_id: "s1",
       query: "统计销售额",
       resolved_query: "统计华北销售额",
@@ -33,9 +32,12 @@ describe("recordsToMessages", () => {
       terminal_type: "result",
       status: "succeeded",
       error: null,
+      feedback_score: null,
+      feedback_comment: null,
+      feedback_at: null,
       started_at: "2026-09-20T10:00:00+00:00",
       duration_ms: 100,
-    } as QueryAudit;
+    };
     const messages = recordsToMessages([audit]);
     expect(messages).toHaveLength(2);
     expect(messages[0]).toMatchObject({ role: "user", content: "统计销售额" });

@@ -13,7 +13,13 @@ const FAKE_TOKEN = ["abc", "def"].join(".");
 const INVALID_TOKEN = ["not", "a", "jwt"].join("-");
 const demoAuth = {
   accessToken: FAKE_TOKEN,
-  user: { username: "admin", display_name: "系统管理员", role: "admin" },
+  user: {
+    username: "admin",
+    display_name: "系统管理员",
+    role: "admin",
+    allowed_regions: [],
+    masked_fields: [],
+  },
 };
 
 describe("useAuth", () => {

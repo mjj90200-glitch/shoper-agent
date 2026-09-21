@@ -94,6 +94,8 @@ export type AssistantMessageEvent = {
 
 export type ErrorEvent = {
   type: "error";
+  /** 后端统一错误码（P1-C 起 SSE 错误事件携带）；旧事件可能缺失 */
+  code?: string;
   message: string;
 };
 
