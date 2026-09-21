@@ -9,6 +9,15 @@ and the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Health endpoints: `/health/live` (process liveness) and `/health/ready` (per-dependency
+  checks for MySQL/Qdrant/Elasticsearch/Embedding aggregated as healthy/degraded/unavailable).
+- Unified REST error envelope (`code`/`message`/`request_id`/`details` with a compatible
+  `detail` field) and `X-Request-ID` response header for request tracing.
+- Stable SSE error events: known errors keep safe messages, unknown ones return generic text.
+- Versioned SQLite migrations (`app/db/migrations.py`) with a `schema_migrations` ledger;
+  legacy databases upgrade in place preserving data.
+- Frontend unit tests with Vitest and Testing Library, wired into the unified quality gate
+  and CI; covers SSE streams, cancellation, 401 expiry, auth hook and event reduction.
 - Unified settings entry (`app/conf/settings.py`) with pure-function loading, explicit
   environment-variable overrides and two-phase validation.
 - Startup validation that fails fast on missing `LLM_API_KEY`, `MYSQL_USER` or
@@ -17,10 +26,14 @@ and the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Frontend `App.tsx` reduced from 1012 to 247 lines: auth/session/stream/analysis state moved
+  into dedicated hooks, presentation split into workspace components; behaviour unchanged.
 - Configuration is no longer loaded at import time; modules read config through
   `get_app_config()`, so tests do not depend on a local `.env` or injected CI variables.
 - Replaced `${oc.env:...}` interpolation in `conf/app_config.yaml` with static defaults.
 - Removed hardcoded test environment variables from the CI backend job.
+- SQLite table access consolidated into repositories under `app/repositories/sqlite/`;
+  services keep transaction and business-rule orchestration only.
 
 ### Fixed
 
