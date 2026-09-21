@@ -58,9 +58,12 @@ class QueryAuditService:
         return record
 
     def observe(self, record: QueryAuditRecord, event: dict) -> None:
-        """从 SSE 业务事件补齐审计字段，不保存完整查询结果。"""
+        """从 SSE 业务事件补齐审计字段与步骤耗时，不保存完整查询结果。"""
 
         event_type = event.get("type")
+        if event_type == "progress":
+            record.note_step_event(event)
+            return
         if event_type == "query_context":
             record.resolved_query = event.get("resolved_query")
         elif event_type == "sql":
@@ -74,6 +77,7 @@ class QueryAuditService:
         elif event_type == "error":
             record.terminal_type, record.status = "error", "failed"
             record.error = str(event.get("message", "未知错误"))
+            record.error_code = str(event.get("code") or "query_failed")
         else:
             return
         self._save_record(record)
@@ -118,6 +122,17 @@ class QueryAuditService:
                 )
                 return row_to_dict(self._audit_repo.get(connection, audit_id))
 
+    @staticmethod
+    def _percentile(sorted_values: list[int], fraction: float) -> int:
+        """最近邻秩百分位；空列表返回 0。"""
+
+        if not sorted_values:
+            return 0
+        import math
+
+        rank = max(1, math.ceil(fraction * len(sorted_values)))
+        return sorted_values[rank - 1]
+
     def quality_summary(self) -> dict:
         with self._lock:
             if self._database_path is None:
@@ -126,14 +141,32 @@ class QueryAuditService:
                 with open_connection(self._database_path) as connection:
                     rows = self._audit_repo.list_all(connection)
         completed = [row for row in rows if row["status"] != "running"]
-        succeeded = [row for row in completed if row["status"] == "succeeded"]
+        succeeded = [row for row in completed if row["status"] == "succeeded" and row["terminal_type"] == "result"]
         feedbacks = [row for row in completed if row["feedback_score"]]
         negative = [row for row in feedbacks if row["feedback_score"] == "down"]
-        durations = [row["duration_ms"] for row in completed if row["duration_ms"] is not None]
+        # 延迟口径：只统计成功查询（快速失败的拒答不参与延迟分位，P3-B 标准口径）
+        durations = sorted(
+            row["duration_ms"]
+            for row in completed
+            if row["duration_ms"] is not None and row["terminal_type"] == "result"
+        )
+
+        # 失败分类：业务拒答、SQL 被拒、依赖失败等按稳定码聚合（P3-B）
+        breakdown: dict[str, int] = {}
+        for row in completed:
+            if row["terminal_type"] == "assistant_message":
+                breakdown["assistant_message"] = breakdown.get("assistant_message", 0) + 1
+            elif row["status"] == "failed":
+                code = row.get("error_code") or "unknown"
+                breakdown[code] = breakdown.get(code, 0) + 1
+
         return {
             "total_queries": len(rows), "completed_queries": len(completed),
             "success_rate": len(succeeded) / len(completed) if completed else 0,
             "average_duration_ms": round(sum(durations) / len(durations)) if durations else 0,
+            "p50_duration_ms": self._percentile(durations, 0.50),
+            "p95_duration_ms": self._percentile(durations, 0.95),
+            "failure_breakdown": breakdown,
             "feedback_count": len(feedbacks),
             "helpful_rate": sum(row["feedback_score"] == "up" for row in feedbacks) / len(feedbacks) if feedbacks else 0,
             "negative_feedback": [

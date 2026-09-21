@@ -54,6 +54,14 @@ CREATE INDEX IF NOT EXISTS idx_analysis_projects_user_updated
 
 MIGRATIONS: list[tuple[int, str]] = [
     (1, MIGRATION_V1),
+    # v2：P3-B/C 可观测性字段——节点耗时（JSON）与错误分类码
+    (
+        2,
+        """
+        ALTER TABLE query_audit_log ADD COLUMN step_timings TEXT;
+        ALTER TABLE query_audit_log ADD COLUMN error_code TEXT;
+        """,
+    ),
 ]
 
 LATEST_VERSION = MIGRATIONS[-1][0] if MIGRATIONS else 0

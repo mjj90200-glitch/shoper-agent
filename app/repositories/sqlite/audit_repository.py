@@ -1,5 +1,6 @@
 """query_audit_log 表的全部 SQL；事务由调用方（服务层）编排。"""
 
+import json
 import sqlite3
 
 from app.entities.audit_record import QueryAuditRecord
@@ -10,13 +11,22 @@ def row_to_dict(row: sqlite3.Row) -> dict:
 
     data = dict(row)
     data["sql"] = data.pop("sql_text")
+    raw_timings = data.pop("step_timings", None)
+    data["step_timings"] = json.loads(raw_timings) if raw_timings else {}
     return data
 
 
 class AuditRepository:
     def insert_running(self, connection: sqlite3.Connection, record: QueryAuditRecord) -> None:
+        # 具名列插入，避免表结构演进时按位置写入错位
         connection.execute(
-            """INSERT INTO query_audit_log VALUES (?, ?, ?, ?, NULL, NULL, NULL, NULL, 'running', NULL, NULL, NULL, NULL, ?, NULL)""",
+            """INSERT INTO query_audit_log
+               (id, username, session_id, query, resolved_query, sql_text,
+                result_row_count, terminal_type, status, error, feedback_score,
+                feedback_comment, feedback_at, started_at, duration_ms,
+                step_timings, error_code)
+               VALUES (?, ?, ?, ?, NULL, NULL, NULL, NULL, 'running', NULL,
+                       NULL, NULL, NULL, ?, NULL, NULL, NULL)""",
             (record.id, record.username, record.session_id, record.query, record.started_at),
         )
 
@@ -24,12 +34,14 @@ class AuditRepository:
         connection.execute(
             """UPDATE query_audit_log SET resolved_query=?, sql_text=?, result_row_count=?,
             terminal_type=?, status=?, error=?, feedback_score=?, feedback_comment=?,
-            feedback_at=?, duration_ms=? WHERE id=?""",
+            feedback_at=?, duration_ms=?, step_timings=?, error_code=? WHERE id=?""",
             (
                 record.resolved_query, record.sql, record.result_row_count,
                 record.terminal_type, record.status, record.error,
                 record.feedback_score, record.feedback_comment, record.feedback_at,
-                record.duration_ms, record.id,
+                record.duration_ms,
+                json.dumps(record.step_timings, ensure_ascii=False) if record.step_timings else None,
+                record.error_code, record.id,
             ),
         )
 

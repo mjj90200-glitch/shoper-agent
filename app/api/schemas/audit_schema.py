@@ -30,6 +30,10 @@ class QualitySummarySchema(BaseModel):
     completed_queries: int
     success_rate: float
     average_duration_ms: int
+    # P3-B：成功查询延迟分位（毫秒）与失败分类聚合
+    p50_duration_ms: int
+    p95_duration_ms: int
+    failure_breakdown: dict[str, int]
     feedback_count: int
     helpful_rate: float
     negative_feedback: list[dict]
