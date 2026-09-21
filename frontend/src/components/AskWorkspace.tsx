@@ -1,0 +1,109 @@
+/**
+ * 问数工作区主区域
+ * 消息滚动区、运行状态条和输入区，均为展示逻辑
+ */
+import { Leaf } from "lucide-react";
+import { useEffect, useMemo, type RefObject } from "react";
+
+import { Composer } from "./Composer";
+import { EmptyState } from "./EmptyState";
+import { MessageBubble } from "./MessageBubble";
+import { examples } from "../lib/workspaceStorage";
+import type { ChatMessage } from "../types/agent";
+
+interface AskWorkspaceProps {
+  scrollRef: RefObject<HTMLDivElement | null>;
+  messages: ChatMessage[];
+  isStreaming: boolean;
+  draft: string;
+  canSubmit: boolean;
+  showFlow: boolean;
+  notice: string | null;
+  focusSignal: number;
+  accessToken: string;
+  onUseExample: (example: string) => void;
+  onSubmit: () => void;
+  onStop: () => void;
+  onChange: (value: string) => void;
+  onToggleFlow: () => void;
+  onRetrySuggestion: (query: string) => void;
+  onFeedbackSaved: (messageId: string, score: "up" | "down") => void;
+}
+
+export function AskWorkspace(props: AskWorkspaceProps) {
+  const {
+    scrollRef,
+    messages,
+    isStreaming,
+    draft,
+    canSubmit,
+    showFlow,
+    notice,
+    focusSignal,
+    accessToken,
+    onUseExample,
+    onSubmit,
+    onStop,
+    onChange,
+    onToggleFlow,
+    onRetrySuggestion,
+    onFeedbackSaved,
+  } = props;
+
+  // 滚动跟随最新消息
+  useEffect(() => {
+    scrollRef.current?.scrollTo({
+      top: scrollRef.current.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [messages, scrollRef]);
+
+  const activeStep = useMemo(() => {
+    const assistant = [...messages].reverse().find((message) => message.role === "assistant" && message.status === "streaming");
+    return [...(assistant?.steps ?? [])].reverse().find((step) => step.status === "running")?.step
+      ?? assistant?.steps?.at(-1)?.step;
+  }, [messages]);
+
+  return (
+    <>
+      <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+        {messages.length === 0 ? (
+          <EmptyState examples={examples} onUseExample={onUseExample} />
+        ) : (
+          <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-7 lg:px-8">
+            {messages.map((message) => (
+              <MessageBubble
+                key={message.id}
+                message={message}
+                onUseSuggestion={onRetrySuggestion}
+                accessToken={accessToken}
+                showFlow={showFlow}
+                onFeedbackSaved={(score) => onFeedbackSaved(message.id, score)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="border-t border-slate-200/70 bg-white/55 px-4 py-2 text-center text-xs text-slate-400">
+        <span className="inline-flex items-center gap-2">
+          <Leaf className="h-3.5 w-3.5 text-brass" aria-hidden="true" />
+          {isStreaming ? "运行中" : "就绪"}
+        </span>
+      </div>
+      <Composer
+        value={draft}
+        disabled={!canSubmit}
+        isStreaming={isStreaming}
+        onChange={onChange}
+        onSubmit={onSubmit}
+        onStop={onStop}
+        showFlow={showFlow}
+        onToggleFlow={onToggleFlow}
+        activeStep={activeStep}
+        notice={notice}
+        focusSignal={focusSignal}
+      />
+    </>
+  );
+}
