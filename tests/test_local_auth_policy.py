@@ -54,10 +54,12 @@ class LocalAuthPolicyTests(unittest.TestCase):
 
         with self.assertRaises(SQLSafetyError):
             enforce_data_policy("SELECT * FROM fact_order", self.east_manager)
-        with self.assertRaises(SQLSafetyError):
-            enforce_data_policy(
-                "SELECT * FROM dim_region WHERE region_name = '华北'", self.east_manager
-            )
+        # P2-C 注入语义：越权地区查询不再报错，而是注入授权范围后返回空结果
+        scoped = enforce_data_policy(
+            "SELECT * FROM dim_region WHERE region_name = '华北'", self.east_manager
+        )
+        self.assertIn("华东", scoped)
+        self.assertIn("华北", scoped)
 
     def test_sensitive_customer_field_is_rejected_and_masked(self):
         with self.assertRaisesRegex(SQLSafetyError, "customer_name"):

@@ -466,7 +466,10 @@
       {
         "query": "统计华北地区 2025 年第一季度的销售总额",
         "expected": {
-          "terminal_type": "error"
+          "terminal_type": "result",
+          "sql_contains": [
+            "'华东'"
+          ]
         }
       }
     ]
@@ -481,7 +484,7 @@
         "expected": {
           "terminal_type": "result",
           "sql_contains": [
-            "__region_scope"
+            "'华东'"
           ]
         }
       }
@@ -526,7 +529,7 @@
         "expected": {
           "terminal_type": "result",
           "sql_contains": [
-            "__region_scope"
+            "'华东'"
           ]
         }
       },
@@ -535,7 +538,7 @@
         "expected": {
           "terminal_type": "result",
           "sql_contains": [
-            "__region_scope"
+            "'华东'"
           ]
         }
       }

@@ -2,8 +2,9 @@
 
 P2-C 起基于 sqlglot 语法树实现两层策略：
 - 列权限：按字段标识（列名）匹配敏感字段，替代展示名子串匹配；
-- 行权限：为区域经理自动注入地区作用域——把原查询包装为子查询，
-  在外层追加 `region_name IN (授权地区)`，多地区、CTE 和别名场景天然支持。
+- 行权限：为区域经理自动注入地区作用域——把 `region_name IN (授权地区)`
+  注入每个引用 dim_region 的 SELECT 层，多地区、CTE、别名和子查询天然支持，
+  且不依赖模型是否在输出中携带地区列。
 
 `mask_sensitive_rows` 查询后脱敏层保持不变，形成纵深防御。
 """
@@ -14,7 +15,6 @@ from sqlglot import exp
 from app.agent.sql_guardrail import SQLSafetyError
 from app.auth.service import UserIdentity
 
-SCOPE_WRAPPER_ALIAS = "__region_scope"
 SCOPE_COLUMN = "region_name"
 
 
@@ -46,60 +46,39 @@ def _reject_masked_columns(sql: str, user: UserIdentity) -> None:
         raise SQLSafetyError("当前角色不能通过通配符查询客户维度。")
 
 
-def _collect_region_derived_names(tree: exp.Expression) -> set[str]:
-    """收集整棵语法树中所有由 region_name 列（含改名）产生的输出名。"""
-
-    names: set[str] = set()
-    for select in tree.find_all(exp.Select):
-        for projection in select.expressions:
-            if isinstance(projection, exp.Alias):
-                inner, output_name = projection.this, projection.alias.lower()
-            else:
-                inner, output_name = projection, projection.output_name.lower()
-            if isinstance(inner, exp.Column) and inner.name.lower() == SCOPE_COLUMN:
-                names.add(output_name)
-    return names
-
-
-def _find_scope_output_name(tree: exp.Select, derived: set[str]) -> str | None:
-    """在外层输出中找到指向地区取值的列名。"""
-
-    for projection in tree.expressions:
-        output_name = projection.output_name.lower()
-        if output_name in derived:
-            return output_name
-    return None
-
-
 def _inject_region_scope(sql: str, user: UserIdentity) -> str:
-    """把查询包装为子查询并在外层注入地区白名单；无输出地区列则拒绝。"""
+    """把 `region_name IN (授权地区)` 直接注入每个引用 dim_region 的查询层。
+
+    相比外层包装，WHERE 注入不依赖模型是否输出地区列，行为完全确定；
+    别名、CTE 与子查询场景下各 SELECT 层都会被独立注入。
+    """
 
     tree = _parse(sql)
 
-    referenced = any(table.name.lower() == "dim_region" for table in tree.find_all(exp.Table))
-    if not referenced:
+    region_tables = [
+        table for table in tree.find_all(exp.Table)
+        if table.name.lower() == "dim_region"
+    ]
+    if not region_tables:
         raise SQLSafetyError("区域经理查询必须关联地区维度，已拒绝执行。")
 
-    # 输出列必须能提供地区取值（允许 CTE/改名引用），外层包装才能完成过滤
-    derived = _collect_region_derived_names(tree)
-    scope_output = _find_scope_output_name(tree, derived)
-    if scope_output is None:
-        raise SQLSafetyError(
-            "区域经理查询必须在结果中包含 region_name 列，已拒绝执行。"
-        )
-
     allowed_values = [exp.Literal.string(region) for region in user.allowed_regions]
-    scope_condition = exp.In(
-        this=exp.column(scope_output, table=SCOPE_WRAPPER_ALIAS),
-        expressions=allowed_values,
-    )
-    wrapped = (
-        exp.select("*")
-        .from_(tree.subquery(alias=SCOPE_WRAPPER_ALIAS))
-        .where(scope_condition)
-        .limit(1000)
-    )
-    return wrapped.sql(dialect="mysql")
+    for table in region_tables:
+        owning_select = table.find_ancestor(exp.Select)
+        if owning_select is None:
+            continue
+        condition = exp.In(
+            this=exp.column(SCOPE_COLUMN, table=table.alias_or_name),
+            expressions=allowed_values,
+        )
+        # sqlglot 的 where() 是返回副本的构建器；这里原地 set 以保留整棵树
+        existing = owning_select.args.get("where")
+        if existing is not None:
+            combined = exp.And(this=existing.this, expression=condition)
+            owning_select.set("where", exp.Where(this=combined))
+        else:
+            owning_select.set("where", exp.Where(this=condition))
+    return tree.sql(dialect="mysql")
 
 
 def enforce_data_policy(sql: str, user: UserIdentity) -> str:

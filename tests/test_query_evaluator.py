@@ -56,7 +56,7 @@ class QueryEvaluatorTests(unittest.TestCase):
         )
         # 安全类用例：显式 error 终态（越权直达拒绝）+ 多层拦截任一终态（注入）
         self.assertGreaterEqual(
-            sum(turn["expected"].get("terminal_type") == "error" for turn in turns), 3
+            sum(turn["expected"].get("terminal_type") == "error" for turn in turns), 2
         )
         self.assertGreaterEqual(
             sum("terminal_type_any" in turn["expected"] for turn in turns), 6

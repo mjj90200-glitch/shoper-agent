@@ -43,9 +43,32 @@ class RegionScopeInjectionTests(unittest.TestCase):
         scoped = enforce_data_policy(sql, manager("华东"))
         self.assertIn("华东", scoped)
 
-    def test_missing_region_output_rejected(self):
-        with self.assertRaises(SQLSafetyError):
-            enforce_data_policy("SELECT region_id FROM dim_region", manager("华东"))
+    def test_missing_region_output_still_scoped(self):
+        """结果不含地区列也照常注入过滤（不再依赖模型输出地区列）。"""
+
+        scoped = enforce_data_policy("SELECT region_id FROM dim_region", manager("华东"))
+        self.assertIn("华东", scoped)
+        self.assertIn("IN", scoped.upper())
+
+    def test_alias_is_respected_in_injection(self):
+        scoped = enforce_data_policy(
+            "SELECT r.region_name FROM dim_region r", manager("华东")
+        )
+        self.assertIn("华东", scoped)
+        # 注入条件应携带表别名前缀，避免多表列名歧义
+        self.assertRegex(scoped.replace("`", ""), r"r\.region_name\s+IN")
+
+    def test_existing_user_filter_combined_not_replaced(self):
+        """注入与用户条件以 AND 组合；授权范围始终生效。"""
+
+        scoped = enforce_data_policy(
+            "SELECT region_name FROM dim_region WHERE region_name = '华北'",
+            manager("华东"),
+        )
+        upper = scoped.upper()
+        self.assertIn("华北", scoped)  # 用户条件保留
+        self.assertIn("华东", scoped)  # 授权注入生效
+        self.assertIn(" AND ", upper)
 
     def test_query_without_dim_region_rejected(self):
         with self.assertRaises(SQLSafetyError):

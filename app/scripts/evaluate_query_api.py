@@ -186,7 +186,8 @@ def main() -> None:
         return
 
     cases = json.loads(args.cases.read_text(encoding="utf-8"))
-    if DEFAULT_EXTRA_CASES_PATH.exists():
+    # 仅按默认主文件运行时附加 P3 扩容套件；显式指定 --cases 时不合并
+    if args.cases == DEFAULT_CASES_PATH and DEFAULT_EXTRA_CASES_PATH.exists():
         cases = cases + json.loads(DEFAULT_EXTRA_CASES_PATH.read_text(encoding="utf-8"))
     access_token = login(base_url, args.username, args.password, args.timeout)
     credentials = {"east_manager": ("", "east123"), "analyst": ("", "analyst123")}

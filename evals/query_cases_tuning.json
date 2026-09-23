@@ -1,0 +1,262 @@
+[
+  {
+    "id": "fuzzy-region-performance",
+    "description": "模糊表达：区域卖得怎么样",
+    "turns": [
+      {
+        "query": "华东卖得怎么样？",
+        "expected": {
+          "terminal_type": "result",
+          "sql_contains": [
+            "fact_order",
+            "limit"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "fuzzy-total-sales",
+    "description": "模糊表达：总共卖了多少钱",
+    "turns": [
+      {
+        "query": "总共卖了多少钱？",
+        "expected": {
+          "terminal_type": "result",
+          "sql_contains": [
+            "fact_order",
+            "limit"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "fuzzy-phone-sales",
+    "description": "模糊表达：手机卖得如何",
+    "turns": [
+      {
+        "query": "手机卖得如何？",
+        "expected": {
+          "terminal_type": "result",
+          "sql_contains": [
+            "limit"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "fuzzy-top-product",
+    "description": "模糊表达：卖得最好的东西",
+    "turns": [
+      {
+        "query": "啥东西卖得最好？",
+        "expected": {
+          "terminal_type": "result",
+          "sql_contains": [
+            "limit"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "fuzzy-recent-trend",
+    "description": "模糊表达：最近卖得怎么样",
+    "turns": [
+      {
+        "query": "最近卖得怎么样？",
+        "expected": {
+          "terminal_type": "result",
+          "sql_contains": [
+            "limit"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "fuzzy-brand-ranking",
+    "description": "模糊表达：品牌排行",
+    "turns": [
+      {
+        "query": "牌子卖得好坏排一下",
+        "expected": {
+          "terminal_type": "result",
+          "sql_contains": [
+            "limit"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "followup-product-compare",
+    "description": "多轮指代：和 Mate 60 比呢",
+    "turns": [
+      {
+        "query": "iPhone 15 Pro 2025 年卖了多少",
+        "expected": {
+          "terminal_type": "result",
+          "sql_contains": [
+            "fact_order"
+          ]
+        }
+      },
+      {
+        "query": "和 Mate 60 Pro 比呢？",
+        "expected": {
+          "terminal_type": "result",
+          "sql_contains": [
+            "fact_order"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "refuse-inventory",
+    "description": "范围外：库存",
+    "turns": [
+      {
+        "query": "查一下各商品的库存还有多少",
+        "expected": {
+          "terminal_type": "assistant_message"
+        }
+      }
+    ]
+  },
+  {
+    "id": "refuse-profit",
+    "description": "范围外：利润",
+    "turns": [
+      {
+        "query": "统计每个商品的利润率",
+        "expected": {
+          "terminal_type": "assistant_message"
+        }
+      }
+    ]
+  },
+  {
+    "id": "refuse-cost",
+    "description": "范围外：成本",
+    "turns": [
+      {
+        "query": "各品类的采购成本是多少？",
+        "expected": {
+          "terminal_type": "assistant_message"
+        }
+      }
+    ]
+  },
+  {
+    "id": "refuse-refund",
+    "description": "范围外：退款率",
+    "turns": [
+      {
+        "query": "统计各地区的退款率",
+        "expected": {
+          "terminal_type": "assistant_message"
+        }
+      }
+    ]
+  },
+  {
+    "id": "refuse-competitor",
+    "description": "范围外：竞品数据",
+    "turns": [
+      {
+        "query": "对比一下京东上同类商品的价格",
+        "expected": {
+          "terminal_type": "assistant_message"
+        }
+      }
+    ]
+  },
+  {
+    "id": "refuse-logistics",
+    "description": "范围外：物流时效",
+    "turns": [
+      {
+        "query": "各地区的平均签收时长是多少？",
+        "expected": {
+          "terminal_type": "assistant_message"
+        }
+      }
+    ]
+  },
+  {
+    "id": "non-data-greeting",
+    "description": "问候边界",
+    "turns": [
+      {
+        "query": "你好",
+        "expected": {
+          "terminal_type": "assistant_message"
+        }
+      }
+    ]
+  },
+  {
+    "id": "non-data-weather",
+    "description": "通用知识边界",
+    "turns": [
+      {
+        "query": "今天天气怎么样",
+        "expected": {
+          "terminal_type": "assistant_message"
+        }
+      }
+    ]
+  },
+  {
+    "id": "non-data-programming",
+    "description": "编程问题边界",
+    "turns": [
+      {
+        "query": "帮我写一段 Python 代码",
+        "expected": {
+          "terminal_type": "assistant_message"
+        }
+      }
+    ]
+  },
+  {
+    "id": "capability-boundary",
+    "description": "能力询问边界",
+    "turns": [
+      {
+        "query": "你可以做什么？",
+        "expected": {
+          "terminal_type": "assistant_message"
+        }
+      }
+    ]
+  },
+  {
+    "id": "refuse-ads",
+    "description": "范围外：广告投放",
+    "turns": [
+      {
+        "query": "上个月广告投放花了多少钱？",
+        "expected": {
+          "terminal_type": "assistant_message"
+        }
+      }
+    ]
+  },
+  {
+    "id": "refuse-traffic",
+    "description": "范围外：流量",
+    "turns": [
+      {
+        "query": "看下今年店铺的访客流量趋势",
+        "expected": {
+          "terminal_type": "assistant_message"
+        }
+      }
+    ]
+  }
+]

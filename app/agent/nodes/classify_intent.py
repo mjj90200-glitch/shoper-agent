@@ -45,6 +45,27 @@ OUT_OF_SCOPE_KEYWORDS = (
     "讲个笑话",
 )
 
+# 数仓范围外的分析主题（P3-A 评测发现）：携带这些词的问题即使同时含有
+# 数据关键词（如"商品""地区"），也必须跳过关键词短路交给 LLM 域分类，
+# 避免把库存/利润等范围外主题编造成看似合理的查询。
+OUT_OF_SCOPE_DOMAIN_KEYWORDS = (
+    "库存",
+    "利润",
+    "成本",
+    "退款",
+    "退货",
+    "物流",
+    "签收",
+    "广告",
+    "投放",
+    "流量",
+    "访客",
+    "竞品",
+    "京东",
+    "淘宝",
+    "拼多多",
+)
+
 DATA_KEYWORDS = (
     "销售",
     "订单",
@@ -65,6 +86,11 @@ DATA_KEYWORDS = (
     "分析",
     "同比",
     "环比",
+    # 口语化销售问法（P3-A 评测：华东卖得怎么样/啥东西卖得最好等）
+    "卖",
+    "畅销",
+    "热销",
+    "排行",
 )
 
 
@@ -76,6 +102,9 @@ def classify_by_rule(query: str) -> Intent | None:
         return "capability_help"
     if any(keyword in normalized_query for keyword in OUT_OF_SCOPE_KEYWORDS):
         return "out_of_scope"
+    # 范围外主题优先于数据关键词，防止"商品的库存"这类问法绕过域检查
+    if any(keyword in normalized_query for keyword in OUT_OF_SCOPE_DOMAIN_KEYWORDS):
+        return None
     if any(keyword in normalized_query for keyword in DATA_KEYWORDS):
         return "data_query"
     return None
