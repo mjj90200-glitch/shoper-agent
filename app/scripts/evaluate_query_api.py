@@ -81,9 +81,14 @@ def evaluate_turn(events: list[dict], expected: dict) -> tuple[bool, list[str]]:
 
     errors: list[str] = []
     event_types = [event.get("type") for event in events]
-    terminal_type = expected["terminal_type"]
-    if terminal_type not in event_types:
+    terminal_type = expected.get("terminal_type")
+    if terminal_type and terminal_type not in event_types:
         errors.append(f"未收到预期终态事件 {terminal_type}，实际为 {event_types}")
+    # 安全类用例：拦截可能发生于意图层（assistant_message）、护栏层（error）
+    # 或安全降级（result），只要任一出现即视为已处理
+    terminal_any = expected.get("terminal_type_any")
+    if terminal_any and not any(t in event_types for t in terminal_any):
+        errors.append(f"未收到预期终态事件任一 {terminal_any}，实际为 {event_types}")
 
     resolved_query = next(
         (event.get("resolved_query", "") for event in events if event.get("type") == "query_context"),
@@ -100,6 +105,9 @@ def evaluate_turn(events: list[dict], expected: dict) -> tuple[bool, list[str]]:
     for phrase in expected.get("sql_contains", []):
         if phrase.lower() not in sql.lower():
             errors.append(f"最终 SQL 未包含 {phrase!r}，实际为 {sql!r}")
+    for phrase in expected.get("sql_not_contains", []):
+        if phrase.lower() in sql.lower():
+            errors.append(f"最终 SQL 不应包含 {phrase!r}，实际为 {sql!r}")
     return not errors, errors
 
 

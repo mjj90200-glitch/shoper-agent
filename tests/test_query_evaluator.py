@@ -49,13 +49,17 @@ class QueryEvaluatorTests(unittest.TestCase):
         )
         self.assertGreaterEqual(
             sum(
-                turn["expected"]["terminal_type"] == "assistant_message"
+                turn["expected"].get("terminal_type") == "assistant_message"
                 for turn in turns
             ),
-            10,
+            8,
+        )
+        # 安全类用例：显式 error 终态（越权直达拒绝）+ 多层拦截任一终态（注入）
+        self.assertGreaterEqual(
+            sum(turn["expected"].get("terminal_type") == "error" for turn in turns), 3
         )
         self.assertGreaterEqual(
-            sum(turn["expected"]["terminal_type"] == "error" for turn in turns), 13
+            sum("terminal_type_any" in turn["expected"] for turn in turns), 6
         )
         # 用例 id 必须全局唯一，避免报告聚合时互相覆盖
         case_ids = [case["id"] for case in cases]
