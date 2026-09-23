@@ -9,6 +9,21 @@ and the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Quality metrics: successful-query P50/P95 latency, failure classification by stable
+  error code, and per-step (LangGraph node) timing captured from SSE progress events;
+  audit schema migrated to v2 in place.
+- Evaluation suite expanded from 30 to 80 scenarios / 85 turns covering fuzzy phrasing,
+  multi-turn references, empty results, out-of-scope refusals, per-account authorization
+  (regional manager / analyst) and prompt-injection cases; the evaluator supports
+  per-case credentials.
+- Application containerization: backend image (uv + python 3.14, health self-check) and
+  frontend multi-stage image (nginx with SPA fallback and SSE-aware `/api` proxy); the
+  Compose `app` profile starts the full stack with one command while the default
+  `up -d` behavior stays infrastructure-only.
+- Deployment guide (`docs/deployment.md`), delivery materials with architecture /
+  LangGraph / ER / sequence diagrams and a STAR narrative (`docs/delivery/`).
+- Infrastructure host/port environment variables (`QDRANT_HOST`, `EMBEDDING_HOST/PORT`,
+  `ES_HOST/PORT`) so the containerized backend can address services by name.
 - Health endpoints: `/health/live` (process liveness) and `/health/ready` (per-dependency
   checks for MySQL/Qdrant/Elasticsearch/Embedding aggregated as healthy/degraded/unavailable).
 - Unified REST error envelope (`code`/`message`/`request_id`/`details` with a compatible
