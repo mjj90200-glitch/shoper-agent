@@ -31,6 +31,12 @@ ENV_FIELDS: dict[str, tuple[list[str], object]] = {
     "MYSQL_PORT": (["db_meta.port", "db_dw.port"], int),
     "MYSQL_USER": (["db_meta.user", "db_dw.user"], str),
     "MYSQL_PASSWORD": (["db_meta.password", "db_dw.password"], str),
+    # 容器化部署（P4-A）通过服务名和容器内端口访问基础设施
+    "QDRANT_HOST": (["qdrant.host"], str),
+    "EMBEDDING_HOST": (["embedding.host"], str),
+    "EMBEDDING_PORT": (["embedding.port"], int),
+    "ES_HOST": (["es.host"], str),
+    "ES_PORT": (["es.port"], int),
     # 数仓可配置独立只读账号（P2-B 最小权限）；未设置时回退到 MYSQL_* 凭据
     "DW_USER": (["db_dw.user"], str),
     "DW_PASSWORD": (["db_dw.password"], str),

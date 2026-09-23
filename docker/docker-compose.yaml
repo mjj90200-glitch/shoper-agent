@@ -14,6 +14,11 @@ services:
       - ./mysql:/docker-entrypoint-initdb.d
     command: --character-set-server=utf8mb4
       --collation-server=utf8mb4_general_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   elasticsearch:
     build: ./elasticsearch
@@ -47,6 +52,54 @@ services:
       - "6334:6334" # gRPC
     volumes:
       - qdrant_data:/qdrant/storage
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c ':> /dev/tcp/127.0.0.1/6333' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: backend
+    restart: unless-stopped
+    profiles: ["app"]
+    env_file:
+      - ../.env
+    environment:
+      MYSQL_HOST: mysql
+      # 容器网络内访问 MySQL 原生端口，而非宿主机映射端口
+      MYSQL_PORT: "3306"
+      QDRANT_HOST: qdrant
+      # embedding 容器内监听 80（宿主机映射为 8086）
+      EMBEDDING_PORT: "80"
+      EMBEDDING_HOST: embedding
+      ES_HOST: elasticsearch
+      NO_PROXY: "localhost,127.0.0.1"
+    ports:
+      - "8000:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_started
+      qdrant:
+        condition: service_started
+      embedding:
+        condition: service_started
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    restart: unless-stopped
+    profiles: ["app"]
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
 
   embedding:
     image: ghcr.io/huggingface/text-embeddings-inference:cpu-1.8

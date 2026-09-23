@@ -177,6 +177,27 @@ class DwCredentialFallbackTests(unittest.TestCase):
         self.assertEqual(config.db_dw.password, dedicated_password)
 
 
+class InfrastructureHostOverrideTests(unittest.TestCase):
+    def test_service_hosts_override_yaml_defaults(self):
+        config = minimal_config(
+            {
+                "MYSQL_HOST": "mysql",
+                "MYSQL_PORT": "3306",
+                "QDRANT_HOST": "qdrant",
+                "EMBEDDING_HOST": "embedding",
+                "EMBEDDING_PORT": "80",
+                "ES_HOST": "elasticsearch",
+            }
+        )
+        self.assertEqual(config.db_meta.host, "mysql")
+        self.assertEqual(config.db_dw.host, "mysql")
+        self.assertEqual(config.db_meta.port, 3306)
+        self.assertEqual(config.qdrant.host, "qdrant")
+        self.assertEqual(config.embedding.host, "embedding")
+        self.assertEqual(config.embedding.port, 80)
+        self.assertEqual(config.es.host, "elasticsearch")
+
+
 class LifespanStartupValidationTests(unittest.TestCase):
     def test_lifespan_fails_fast_when_required_env_missing(self):
         import asyncio
