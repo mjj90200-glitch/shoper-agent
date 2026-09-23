@@ -76,3 +76,6 @@ docker/embedding/
 
 # Mimosa security hook local state
 /.mimosa/
+
+# Evaluation run outputs (regenerable, may contain query responses)
+/evals/reports/
