@@ -1,0 +1,43 @@
+/**
+ * 登录态 Hook
+ * 管理本地登录凭据、登录/退出动作，以及登录过期事件的统一处理
+ */
+import { useCallback, useEffect, useState } from "react";
+import {
+  AUTH_EXPIRED_EVENT,
+  AUTH_STORAGE_KEY,
+  loadAuth,
+  type StoredAuth,
+} from "../lib/workspaceStorage";
+
+export function useAuth(onAuthExpired?: () => void) {
+  const [auth, setAuth] = useState<StoredAuth | null>(loadAuth);
+  const [loginNotice, setLoginNotice] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleAuthExpired = () => {
+      window.localStorage.removeItem(AUTH_STORAGE_KEY);
+      onAuthExpired?.();
+      setAuth(null);
+      setLoginNotice("登录状态已过期，请重新登录。原请求未执行。");
+    };
+    window.addEventListener(AUTH_EXPIRED_EVENT, handleAuthExpired);
+    if (auth && auth.accessToken.split(".").length !== 2) handleAuthExpired();
+    return () => window.removeEventListener(AUTH_EXPIRED_EVENT, handleAuthExpired);
+    // auth 变化时重新校验令牌格式；onAuthExpired 由调用方保证稳定
+  }, [auth, onAuthExpired]);
+
+  const handleLoggedIn = useCallback((nextAuth: StoredAuth) => {
+    window.localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(nextAuth));
+    setAuth(nextAuth);
+    setLoginNotice(null);
+  }, []);
+
+  const logout = useCallback(() => {
+    window.localStorage.removeItem(AUTH_STORAGE_KEY);
+    setAuth(null);
+    setLoginNotice(null);
+  }, []);
+
+  return { auth, loginNotice, setLoginNotice, handleLoggedIn, logout };
+}

@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "mimosa-hook-status/v1",
+  "recordedAt": "2026-09-21T10:23:17.441Z",
+  "sessionId": "sess_0b2dd8f8-ca5a-4cf4-8334-d3b9cd5b2625",
+  "event": "PostToolUse",
+  "toolName": "Edit",
+  "file": "src/lib/workspaceStorage.test.ts",
+  "outcome": "clear",
+  "coverage": "complete",
+  "findingCount": 0,
+  "durationMs": 20,
+  "hostState": "hook_complete",
+  "reportHint": ".mimosa/reports/"
+}

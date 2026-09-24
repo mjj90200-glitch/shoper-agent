@@ -1,6 +1,6 @@
 {
   "schema_version": "mimosa-task-review/v2",
-  "run_id": "20260911T013552280Z-31040-8ad7fb97e728",
+  "run_id": "20260923T131700097Z-49900-2a62d6bea473",
   "run_status": "inconclusive",
   "errors": [
     {
@@ -93,10 +93,10 @@
     ],
     "reasons_truncated": false
   },
-  "generated_at": "2026-09-11T01:35:52.280Z",
+  "generated_at": "2026-09-23T13:17:00.097Z",
   "session_id": "sess_0b2dd8f8-ca5a-4cf4-8334-d3b9cd5b2625",
   "target": ".",
-  "revision": "262aa74e209f3412baa1f794ac7fde2f46ad4830",
+  "revision": "e4e6903d63dd85cacde3c1806c9a8a825452b208",
   "rules_version": "unavailable",
   "diff_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
   "diff": {
@@ -105,9 +105,9 @@
     "changed_files": []
   },
   "timing": {
-    "started_at": "2026-09-11T01:35:51.606Z",
-    "completed_at": "2026-09-11T01:35:52.280Z",
-    "duration_ms": 674,
+    "started_at": "2026-09-23T13:16:59.425Z",
+    "completed_at": "2026-09-23T13:17:00.097Z",
+    "duration_ms": 672,
     "measurement": "hook_wall_clock"
   },
   "tokens": {
@@ -122,8 +122,8 @@
     "profile": "gate",
     "operation": "Stop",
     "outcome": "partial/INCONCLUSIVE",
-    "latencyMs": 674,
-    "peakMemoryBytes": 105418752,
+    "latencyMs": 672,
+    "peakMemoryBytes": 96878592,
     "memoryMeasurement": "max-observed-process-rss",
     "scannedFiles": 0,
     "cache": {
@@ -150,8 +150,8 @@
   "finding_events": [],
   "findings": [],
   "artifacts": {
-    "immutable_report": ".mimosa/reports/task-review-sess_0b2dd8f8-ca5a-4cf4-8334-d3b9cd5b2625-20260911T013552280Z-31040-8ad7fb97e728.json",
+    "immutable_report": ".mimosa/reports/task-review-sess_0b2dd8f8-ca5a-4cf4-8334-d3b9cd5b2625-20260923T131700097Z-49900-2a62d6bea473.json",
     "latest_report": ".mimosa/reports/task-review-sess_0b2dd8f8-ca5a-4cf4-8334-d3b9cd5b2625.json",
-    "history_summary": ".mimosa/history/run-20260911T013552280Z-31040-8ad7fb97e728.json"
+    "history_summary": ".mimosa/history/run-20260923T131700097Z-49900-2a62d6bea473.json"
   }
 }
